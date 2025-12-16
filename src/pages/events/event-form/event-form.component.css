@@ -1,0 +1,20 @@
+.form-input {
+    @apply w-full mt-1 rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 text-sm p-3;
+}
+
+/* Custom toggle switch styles */
+.toggle-checkbox {
+  @apply absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer;
+  transition: right 0.2s ease-in-out;
+  right: 1rem;
+}
+.toggle-checkbox:checked {
+  @apply right-0 border-indigo-600;
+  right: 0;
+}
+.toggle-label {
+  @apply block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer;
+}
+.toggle-checkbox:checked + .toggle-label {
+  @apply bg-indigo-600;
+}

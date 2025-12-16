@@ -1,0 +1,128 @@
+<div class="flex flex-col h-screen w-screen bg-gray-50 font-sans">
+  <!-- Header -->
+  <header class="flex items-center justify-between p-4 bg-white border-b border-gray-200 shrink-0 h-16 z-20">
+    <div class="flex items-center space-x-3">
+       <button (click)="cancel()" class="p-2 rounded-md hover:bg-gray-100">
+          <svg class="w-5 h-5 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" /></svg>
+        </button>
+        <div>
+            <h1 class="text-lg font-semibold text-gray-800">{{ isEditMode() ? 'Edit Segment' : 'Create Segment' }}</h1>
+            <p class="text-sm text-gray-500">{{ isEditMode() ? 'Edit an existing audience segment' : 'Build a dynamic audience segment' }}</p>
+        </div>
+    </div>
+    <div class="flex items-center space-x-2">
+      <button (click)="cancel()" class="px-4 py-2 text-sm font-semibold text-gray-700 bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50">Cancel</button>
+      <button (click)="saveSegment()" class="px-4 py-2 text-sm font-semibold text-white bg-teal-600 rounded-lg shadow-sm hover:bg-teal-700">
+        {{ isEditMode() ? 'Save Changes' : 'Save Segment' }}
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-grow overflow-y-auto">
+    <div [formGroup]="segmentForm" class="p-8 grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-7xl mx-auto">
+      
+      <!-- Left Column: Form -->
+      <div class="lg:col-span-2 space-y-8">
+        <!-- Segment Details -->
+        <div class="bg-white p-6 border border-gray-200 rounded-xl">
+          <div class="space-y-6">
+            <div>
+                <label for="segmentName" class="block text-sm font-medium text-gray-700 mb-1">Segment Name *</label>
+                <input type="text" id="segmentName" formControlName="segmentName" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-2.5" placeholder="e.g., High-value customers">
+            </div>
+            <div>
+                <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <textarea id="description" formControlName="description" rows="3" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-2.5" placeholder="Describe what this segment represents..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Segment Rules -->
+        <div class="bg-white p-6 border border-gray-200 rounded-xl">
+            <h3 class="text-lg font-semibold text-gray-800">Segment Rules</h3>
+            <p class="text-sm text-gray-500 mt-1">Contacts matching these rules will be included in this segment</p>
+            
+            <div formArrayName="ruleGroups" class="mt-6 space-y-6">
+              @for(group of ruleGroups.controls; track group; let i = $index) {
+                <div [formGroupName]="i" class="p-4 bg-gray-50/70 rounded-lg border border-gray-200 relative">
+                    <!-- Rule Group Connector (AND/OR) -->
+                    @if(i > 0) {
+                        <div class="absolute -top-3 left-8 z-10">
+                           <select formControlName="condition" class="rounded-full border-gray-300 text-xs font-semibold shadow-sm focus:ring-teal-500 focus:border-teal-500">
+                               <option value="AND">AND</option>
+                               <option value="OR">OR</option>
+                           </select>
+                        </div>
+                    }
+
+                    <div formArrayName="rules" class="space-y-3">
+                        @for(rule of rules(i).controls; track rule; let j = $index) {
+                          <div [formGroupName]="j" class="flex items-center gap-3">
+                              <!-- Field -->
+                              <select formControlName="field" class="form-select">
+                                @for(field of fields; track field) { <option [value]="field">{{field}}</option> }
+                              </select>
+                              <!-- Operator -->
+                              <select formControlName="operator" class="form-select">
+                                @for(op of operators; track op) { <option [value]="op">{{op}}</option> }
+                              </select>
+                              <!-- Value -->
+                              <input type="text" formControlName="value" placeholder="Value" class="form-input flex-grow">
+                              <!-- Remove Rule -->
+                              <button (click)="removeRule(i, j)" [disabled]="rules(i).length <= 1" class="p-2 text-gray-400 hover:text-red-600 rounded-md disabled:opacity-50 disabled:cursor-not-allowed">
+                                 <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.134-2.09-2.134H8.09a2.09 2.09 0 00-2.09 2.134v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
+                              </button>
+                          </div>
+                        }
+                    </div>
+
+                    <!-- Add Rule Button -->
+                    <div class="mt-4 pt-4 border-t border-gray-200 flex justify-between">
+                       <button (click)="addRule(i)" class="flex items-center text-sm font-semibold text-teal-600 hover:text-teal-800">
+                           <svg class="w-5 h-5 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" /></svg>
+                            Add Rule
+                        </button>
+                        <button (click)="removeRuleGroup(i)" [hidden]="ruleGroups.length <= 1" class="text-sm font-medium text-gray-500 hover:text-red-600">Remove Group</button>
+                    </div>
+                </div>
+              }
+            </div>
+
+            <!-- Add Rule Group Button -->
+             <div class="mt-4">
+                <button (click)="addRuleGroup()" class="w-full flex items-center justify-center p-3 border-2 border-dashed border-gray-300 rounded-lg text-sm font-semibold text-gray-600 hover:border-teal-500 hover:text-teal-600 transition-colors">
+                    <svg class="w-5 h-5 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M10.75 4.75a.75.75 0 00-1.5 0v4.5h-4.5a.75.75 0 000 1.5h4.5v4.5a.75.75 0 001.5 0v-4.5h4.5a.75.75 0 000-1.5h-4.5v-4.5z" /></svg>
+                    Add Rule Group
+                </button>
+            </div>
+        </div>
+      </div>
+
+      <!-- Right Column: Preview -->
+      <div class="lg:col-span-1 space-y-6">
+        <div class="bg-white p-6 border border-gray-200 rounded-xl text-center">
+            <h4 class="text-sm font-medium text-gray-500">Estimated Size</h4>
+            <p class="text-4xl font-bold text-gray-800 my-2">12,450</p>
+            <p class="text-xs text-gray-500">Based on current rule configuration</p>
+            <button class="mt-4 w-full text-center px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg font-semibold hover:bg-gray-50 transition duration-200">Preview Contacts</button>
+        </div>
+        <div class="bg-white p-6 border border-gray-200 rounded-xl">
+            <h4 class="font-semibold text-gray-800">Sample Matches</h4>
+            <div class="mt-4 space-y-3">
+                @for(contact of sampleMatches(); track contact.email) {
+                    <div class="flex items-center space-x-3 bg-gray-50 p-2.5 rounded-md">
+                        <div class="w-8 h-8 rounded-full bg-teal-100 text-teal-700 font-bold flex items-center justify-center text-sm">{{ contact.avatarInitial }}</div>
+                        <div>
+                            <p class="text-sm font-medium text-gray-800">{{ contact.name }}</p>
+                            <p class="text-xs text-gray-500">{{ contact.email }}</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>

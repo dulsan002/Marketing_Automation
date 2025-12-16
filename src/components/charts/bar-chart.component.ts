@@ -40,7 +40,7 @@ export class BarChartComponent implements AfterViewInit, OnChanges {
 
     d3.select(element).select('svg').remove();
     
-    const keys = Object.keys(data[0]).filter(key => key !== 'name');
+    const keys = Object.keys(data[0]).filter(key => key !== 'name' && key !== 'color');
     const groupKey = 'name';
 
     const margin = { top: 20, right: 20, bottom: 40, left: 50 };
@@ -70,7 +70,7 @@ export class BarChartComponent implements AfterViewInit, OnChanges {
 
     const color = d3.scaleOrdinal()
       .domain(keys)
-      .range(['#3B82F6', '#14B8A6']);
+      .range(['#8B5CF6', '#22C55E']); // Purple & Green
 
     this.svg.append('g')
       .selectAll('g')

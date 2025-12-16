@@ -7,7 +7,7 @@ import * as d3 from 'd3';
   imports: [CommonModule],
   template: `
     <div #chartContainer class="w-full h-full relative"></div>
-    <div #tooltip class="absolute bg-gray-800 text-white text-xs px-2 py-1 rounded-md opacity-0 pointer-events-none transition-opacity duration-200"></div>
+    <div #tooltip class="absolute bg-gray-900 text-white text-xs px-3 py-1.5 rounded-lg shadow-lg opacity-0 pointer-events-none transition-opacity duration-200"></div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -55,23 +55,66 @@ export class DonutChartComponent implements AfterViewInit {
     const pie = d3.pie<any>().value((d: any) => d.count).sort(null);
     const data_ready = pie(data);
 
-    const arc = d3.arc().innerRadius(this.radius * 0.6).outerRadius(this.radius);
+    const arc = d3.arc().innerRadius(this.radius * 0.7).outerRadius(this.radius);
 
+    // Paths with animation
     this.svg.selectAll('path')
       .data(data_ready)
       .join('path')
-      .attr('d', arc)
       .attr('fill', (d: any) => d.data.color)
       .attr('stroke', 'white')
-      .style('stroke-width', '2px')
-      .on('mouseover', (event: MouseEvent, d: any) => {
+      .style('stroke-width', '3px')
+      .on('mouseover', function(event: MouseEvent, d: any) {
+        d3.select(this).transition().duration(200).attr('transform', 'scale(1.05)');
         tooltipDiv.style('opacity', 1)
-                  .html(`Range: ${d.data.range}<br/>Leads: ${d.data.count}`)
-                  .style('left', (event.offsetX + 10) + 'px')
-                  .style('top', (event.offsetY - 28) + 'px');
+                  .html(`<b>${d.data.range}</b><br/>${d.data.count} Leads`)
+                  .style('left', (event.pageX - container.getBoundingClientRect().left + 15) + 'px')
+                  .style('top', (event.pageY - container.getBoundingClientRect().top - 30) + 'px');
       })
-      .on('mouseout', () => {
+      .on('mouseout', function() {
+        d3.select(this).transition().duration(200).attr('transform', 'scale(1)');
         tooltipDiv.style('opacity', 0);
+      })
+      .transition()
+      .duration(1000)
+      .attrTween('d', (d: any) => {
+        const i = d3.interpolate({ startAngle: 0, endAngle: 0 }, d);
+        return (t: any) => arc(i(t));
       });
+
+    // Add labels to slices
+    this.svg.selectAll('text.slice-label')
+        .data(data_ready)
+        .join('text')
+        .attr('class', 'slice-label')
+        .text((d: any) => d.data.count)
+        .attr('transform', (d: any) => `translate(${arc.centroid(d)})`)
+        .style('text-anchor', 'middle')
+        .style('font-size', '14px')
+        .style('font-weight', 'bold')
+        .style('fill', 'white')
+        .style('pointer-events', 'none')
+        .style('opacity', 0)
+        .transition()
+        .delay(1000)
+        .duration(500)
+        .style('opacity', 1);
+
+    // Add central text
+    const total = d3.sum(data, d => d.count);
+    this.svg.append('text')
+        .attr('text-anchor', 'middle')
+        .attr('dy', '-0.3em')
+        .style('font-size', '14px')
+        .style('fill', '#6b7280') // text-gray-500
+        .text('Total Leads');
+
+    this.svg.append('text')
+        .attr('text-anchor', 'middle')
+        .attr('dy', '1.0em')
+        .style('font-size', '28px')
+        .style('font-weight', 'bold')
+        .style('fill', '#111827') // text-gray-900
+        .text(total);
   }
 }

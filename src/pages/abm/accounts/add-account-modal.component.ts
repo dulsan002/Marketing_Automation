@@ -22,31 +22,31 @@ import { Account } from '../../../types';
           <div class="p-6 space-y-4">
               <div>
                   <label class="block text-sm font-medium text-gray-700 mb-1">Account Name *</label>
-                  <input type="text" formControlName="name" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2" placeholder="e.g., Acme Corporation">
+                  <input type="text" formControlName="name" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3" placeholder="e.g., Acme Corporation">
               </div>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Industry</label>
-                    <input type="text" formControlName="industry" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2" placeholder="e.g., Technology">
+                    <input type="text" formControlName="industry" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3" placeholder="e.g., Technology">
                 </div>
                  <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Country</label>
-                    <input type="text" formControlName="country" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2" placeholder="e.g., USA">
+                    <input type="text" formControlName="country" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3" placeholder="e.g., USA">
                 </div>
               </div>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                  <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Employees</label>
-                    <input type="number" formControlName="employees" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2" placeholder="e.g., 500">
+                    <input type="number" formControlName="employees" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3" placeholder="e.g., 500">
                 </div>
                  <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Annual Revenue (in millions)</label>
-                    <input type="number" formControlName="revenue" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2" placeholder="e.g., 50">
+                    <input type="number" formControlName="revenue" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3" placeholder="e.g., 50">
                 </div>
               </div>
               <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Tier *</label>
-                <select formControlName="tier" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2">
+                <select formControlName="tier" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3">
                   <option value="T1">Tier 1</option>
                   <option value="T2">Tier 2</option>
                   <option value="T3">Tier 3</option>

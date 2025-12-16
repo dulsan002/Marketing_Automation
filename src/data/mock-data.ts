@@ -1,5 +1,6 @@
 import { Campaign, Workflow, ProspectSegment, SampleContact, ScoringRule, PaletteNode, WorkflowTemplate } from '../types';
 
+/** Mock data for marketing campaigns. */
 export const MOCK_CAMPAIGNS: Campaign[] = [
   { name: 'Q4 Product Launch', type: 'Email', status: 'paused', sent: 7893, openRate: 20.5, ctr: 20.5 },
   { name: 'Enterprise Cloud Webinar Series', type: 'Social Post', status: 'completed', sent: 33824, openRate: 17.7, ctr: 20.8 },
@@ -10,6 +11,7 @@ export const MOCK_CAMPAIGNS: Campaign[] = [
   { name: 'Industry Insights Newsletter', type: 'Offline', status: 'paused', sent: 32876, openRate: 18.2, ctr: 12.5 },
 ];
 
+/** Mock data for automation workflows. */
 export const MOCK_WORKFLOWS: Workflow[] = [
     { 
         id: 'wf_1',
@@ -59,6 +61,7 @@ export const MOCK_WORKFLOWS: Workflow[] = [
     },
 ];
 
+/** Catalog of all available node types for the workflow builder palette. */
 export const MOCK_WORKFLOW_NODES_CATALOG: PaletteNode[] = [
     { type: 'Trigger', subType: 'Contact Created', description: 'When a new contact is added', icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.5 21c-2.305 0-4.47-.612-6.375-1.666z" />' },
     { type: 'Trigger', subType: 'Joined Segment', description: 'When contact joins a segment', icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m-7.5-2.928A3 3 0 017.5 15.25m0-4.01a3 3 0 013-3m0 0a3 3 0 013 3m0 0a3 3 0 01-3 3m0 0a3 3 0 01-3-3m2.25 6H12m-2.25-6l-2.25-2.25" />' },
@@ -80,6 +83,7 @@ export const MOCK_WORKFLOW_NODES_CATALOG: PaletteNode[] = [
     { type: 'End', subType: 'End Workflow', description: 'Marks the end of a path', icon: '<path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75l3 3m0 0l3-3m-3 3v-7.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />'}
 ];
 
+/** Mock data for pre-built workflow templates. */
 export const MOCK_WORKFLOW_TEMPLATES: WorkflowTemplate[] = [
     {
         id: 'tmpl_welcome',
@@ -123,6 +127,7 @@ export const MOCK_WORKFLOW_TEMPLATES: WorkflowTemplate[] = [
     }
 ];
 
+/** Mock data for prospect segments. */
 export const MOCK_SEGMENTS: ProspectSegment[] = [
     { id: 'sg_1', name: 'All Active Customers', description: 'Customers who made a purchase in the last 90 days', type: 'Dynamic', rulesCount: 1, members: 45230, memberChange: 12.5, updated: '2 hours ago', ruleGroups: [{ condition: 'AND', rules: [{ field: 'Last Purchase Date', operator: 'in the last', value: '90 days' }] }] },
     { id: 'sg_2', name: 'VIP Members', description: 'High-value customers with lifetime value > $1000', type: 'Dynamic', rulesCount: 2, members: 8540, memberChange: 5.2, updated: '1 hour ago', ruleGroups: [{ condition: 'AND', rules: [{ field: 'Total Spent', operator: 'is greater than', value: '1000' }, { field: 'Order Count', operator: 'is greater than', value: '5' }] }] },
@@ -130,12 +135,14 @@ export const MOCK_SEGMENTS: ProspectSegment[] = [
     { id: 'sg_4', name: 'Cart Abandoners', description: 'Added items to cart but didn\'t complete purchase', type: 'Dynamic', rulesCount: 1, members: 12340, memberChange: -3.4, updated: '15 minutes ago', ruleGroups: [{ condition: 'AND', rules: [{ field: 'Last Purchase Date', operator: 'is not set', value: '' }] }] },
 ];
 
+/** Mock sample contacts for display in the segment editor preview. */
 export const MOCK_SAMPLE_CONTACTS: SampleContact[] = [
     { name: 'Sarah Johnson', email: 'sarah@example.com', avatarInitial: 'S' },
     { name: 'Michael Chen', email: 'michael@example.com', avatarInitial: 'M' },
     { name: 'Emily Davis', email: 'emily@example.com', avatarInitial: 'E' },
 ];
 
+/** Mock data for the lead score distribution chart. */
 export const MOCK_SCORE_DISTRIBUTION = [
   { range: '0-25', count: 52, color: '#EF4444' },
   { range: '26-50', count: 54, color: '#F97316' },
@@ -143,6 +150,7 @@ export const MOCK_SCORE_DISTRIBUTION = [
   { range: '76-100', count: 50, color: '#22C55E' },
 ];
 
+/** Mock data for lead scoring rules. */
 export const MOCK_SCORING_RULES: ScoringRule[] = [
     { id: 'rule_1', name: 'Email Click', score: 10 },
     { id: 'rule_2', name: 'Webinar Attendance', score: 20 },
@@ -151,6 +159,7 @@ export const MOCK_SCORING_RULES: ScoringRule[] = [
     { id: 'rule_5', name: 'Form Submission', score: 15 },
 ];
 
+/** Mock data for the list of top leads by score. */
 export const MOCK_TOP_LEADS = [
     { name: 'Dorothy Jones', company: 'Synergy Group', title: 'Demand Gen Manager', score: 100 },
     { name: 'Jennifer Martin', company: 'Fusion Enterprises', title: 'VP of Marketing', score: 98 },
@@ -159,6 +168,7 @@ export const MOCK_TOP_LEADS = [
     { name: 'James Miller', company: 'Quantum Corp', title: 'CEO', score: 91 },
 ];
 
+/** Mock data for Key Performance Indicators (KPIs) on the MAP analytics dashboard. */
 export const MOCK_ANALYTICS_KPIS = {
   emailsSent: { value: 303395, change: 12.5 },
   totalOpens: { value: 80835, change: 8.2 },
@@ -166,6 +176,7 @@ export const MOCK_ANALYTICS_KPIS = {
   engagements: { value: 1000, change: 15.0 },
 };
 
+/** Mock data for the lead conversion funnel chart. */
 export const MOCK_CONVERSION_FUNNEL = [
   { stage: 'Emails Sent', count: 303395 },
   { stage: 'Opened', count: 80835, rate: 26.6 },
@@ -173,6 +184,7 @@ export const MOCK_CONVERSION_FUNNEL = [
   { stage: 'Converted', count: 1502, rate: 12.2 }
 ];
 
+/** Mock data for the engagement trends line chart. */
 export const MOCK_ENGAGEMENT_TRENDS = {
   labels: ['Nov 17', 'Nov 20', 'Nov 23', 'Nov 26', 'Nov 29', 'Dec 2', 'Dec 5', 'Dec 8', 'Dec 11', 'Dec 15'],
   series: [
@@ -182,10 +194,11 @@ export const MOCK_ENGAGEMENT_TRENDS = {
   ]
 };
 
+/** Mock data for the campaign performance bar chart. */
 export const MOCK_CAMPAIGN_PERFORMANCE = [
-    { name: 'Q4 Product Launch', openRate: 20, clickRate: 20, color: '#60A5FA' },
-    { name: 'Enterprise Cloud...', openRate: 18, clickRate: 15, color: '#60A5FA' },
-    { name: 'SMB Nurture...', openRate: 26, clickRate: 14, color: '#4F46E5' },
-    { name: 'Digital Transfor...', openRate: 36, clickRate: 23, color: '#4F46E5' },
-    { name: 'Year-End Promotion', openRate: 37, clickRate: 12, color: '#60A5FA' },
+    { name: 'Q4 Product Launch', openRate: 20, clickRate: 20 },
+    { name: 'Enterprise Cloud...', openRate: 18, clickRate: 15 },
+    { name: 'SMB Nurture...', openRate: 26, clickRate: 14 },
+    { name: 'Digital Transfor...', openRate: 36, clickRate: 23 },
+    { name: 'Year-End Promotion', openRate: 37, clickRate: 12 },
 ];

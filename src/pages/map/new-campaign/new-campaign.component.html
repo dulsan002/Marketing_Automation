@@ -1,4 +1,4 @@
-<div class="bg-white rounded-xl shadow-lg border border-gray-200 p-8 max-w-6xl mx-auto flex flex-col h-full">
+<div class="bg-white rounded-xl shadow-lg border border-gray-200 p-8 max-w-6xl mx-auto flex flex-col">
   <!-- Header -->
   <div class="shrink-0">
     <div class="flex justify-between items-center mb-6">
@@ -25,7 +25,7 @@
 
 
   <!-- Step Content -->
-  <div class="flex-grow overflow-y-auto mt-2 pr-4">
+  <div class="overflow-y-auto mt-2 pr-4">
     @switch (currentStep()) {
       @case (1) {
         <!-- Step 1: Campaign Type -->
@@ -57,11 +57,11 @@
                 <form [formGroup]="detailsForm" class="space-y-6">
                     <div>
                         <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Campaign Name *</label>
-                        <input type="text" id="name" formControlName="name" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-2" placeholder="e.g., Q3 Product Launch">
+                        <input type="text" id="name" formControlName="name" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3" placeholder="e.g., Q3 Product Launch">
                     </div>
                     <div>
                         <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                        <textarea id="description" formControlName="description" rows="4" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-2" placeholder="Describe the purpose of this campaign..."></textarea>
+                        <textarea id="description" formControlName="description" rows="4" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3" placeholder="Describe the purpose of this campaign..."></textarea>
                     </div>
                 </form>
             </div>
@@ -76,16 +76,16 @@
                  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                       <div>
                           <label for="senderName" class="block text-sm font-medium text-gray-700 mb-1">Sender Name *</label>
-                          <input type="text" id="senderName" formControlName="senderName" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-2" placeholder="e.g., Marketing Team">
+                          <input type="text" id="senderName" formControlName="senderName" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3" placeholder="e.g., Marketing Team">
                       </div>
                       <div>
                           <label for="senderEmail" class="block text-sm font-medium text-gray-700 mb-1">Sender Email *</label>
-                          <input type="email" id="senderEmail" formControlName="senderEmail" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-2" placeholder="e.g., hello@company.com">
+                          <input type="email" id="senderEmail" formControlName="senderEmail" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3" placeholder="e.g., hello@company.com">
                       </div>
                   </div>
                   <div>
                     <label for="subject" class="block text-sm font-medium text-gray-700">Subject Line *</label>
-                    <input type="text" id="subject" formControlName="subject" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-2 sm:text-sm">
+                    <input type="text" id="subject" formControlName="subject" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3 sm:text-sm">
                   </div>
                   <div>
                       <label class="block text-sm font-medium text-gray-700 mb-1">Email Body *</label>
@@ -98,7 +98,7 @@
                   <h2 class="text-xl font-bold text-gray-800 text-center">SMS Message</h2>
                   <p class="text-gray-500 mt-1 text-center mb-6">Compose your SMS text message.</p>
                   <form [formGroup]="smsContentForm">
-                      <textarea formControlName="message" rows="5" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-2" placeholder="Enter your message..."></textarea>
+                      <textarea formControlName="message" rows="5" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3" placeholder="Enter your message..."></textarea>
                       <div class="text-right text-sm text-gray-500 mt-2">
                         {{ 160 - (smsContentForm.get('message')?.value?.length || 0) }} characters remaining
                       </div>
@@ -120,7 +120,7 @@
                     </div>
                     <div>
                       <label for="social-text" class="block text-sm font-medium text-gray-700 mb-1">Post Text</label>
-                      <textarea id="social-text" formControlName="text" rows="6" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-2" placeholder="What's on your mind?"></textarea>
+                      <textarea id="social-text" formControlName="text" rows="6" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3" placeholder="What's on your mind?"></textarea>
                     </div>
                     <div>
                        <label class="block text-sm font-medium text-gray-700 mb-1">Image</label>
@@ -150,11 +150,11 @@
                  <form [formGroup]="inAppContentForm" class="space-y-6">
                     <div>
                         <label for="inapp-headline" class="block text-sm font-medium text-gray-700 mb-1">Headline</label>
-                        <input type="text" id="inapp-headline" formControlName="headline" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-2" placeholder="e.g., New Feature Alert!">
+                        <input type="text" id="inapp-headline" formControlName="headline" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3" placeholder="e.g., New Feature Alert!">
                     </div>
                     <div>
                         <label for="inapp-body" class="block text-sm font-medium text-gray-700 mb-1">Body Text</label>
-                        <textarea id="inapp-body" formControlName="body" rows="4" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-2" placeholder="Describe the new feature..."></textarea>
+                        <textarea id="inapp-body" formControlName="body" rows="4" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3" placeholder="Describe the new feature..."></textarea>
                     </div>
                  </form>
               </div>
@@ -166,11 +166,11 @@
                  <form [formGroup]="offlineContentForm" class="space-y-6">
                     <div>
                         <label for="offline-title" class="block text-sm font-medium text-gray-700 mb-1">Title / Headline</label>
-                        <input type="text" id="offline-title" formControlName="title" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-2" placeholder="e.g., Q4 Direct Mail Postcard">
+                        <input type="text" id="offline-title" formControlName="title" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3" placeholder="e.g., Q4 Direct Mail Postcard">
                     </div>
                     <div>
                         <label for="offline-details" class="block text-sm font-medium text-gray-700 mb-1">Creative Brief / Details</label>
-                        <textarea id="offline-details" formControlName="details" rows="8" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-2" placeholder="Describe the design, copy, and target audience..."></textarea>
+                        <textarea id="offline-details" formControlName="details" rows="8" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3" placeholder="Describe the design, copy, and target audience..."></textarea>
                     </div>
                  </form>
               </div>
@@ -210,11 +210,11 @@
                  <div class="flex space-x-4 p-4 bg-gray-50 rounded-lg mt-2">
                     <div class="flex-1">
                         <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
-                        <input type="date" id="date" formControlName="date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-2 sm:text-sm">
+                        <input type="date" id="date" formControlName="date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3 sm:text-sm">
                     </div>
                      <div class="flex-1">
                         <label for="time" class="block text-sm font-medium text-gray-700">Time</label>
-                        <input type="time" id="time" formControlName="time" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-2 sm:text-sm">
+                        <input type="time" id="time" formControlName="time" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3 sm:text-sm">
                     </div>
                 </div>
             }
@@ -291,7 +291,7 @@
   </div>
 
    <!-- Navigation Buttons -->
-  <div class="shrink-0 mt-auto pt-5 border-t border-gray-200">
+  <div class="shrink-0 pt-5 border-t border-gray-200 mt-8">
     <div class="flex justify-end items-center space-x-4">
       <button type="button" (click)="prevStep()" [class.invisible]="currentStep() === 1" class="rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
           Back
