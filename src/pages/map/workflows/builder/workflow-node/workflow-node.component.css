@@ -1,0 +1,17 @@
+/* Styles for the main node card */
+.node-card {
+    @apply bg-white border rounded-lg p-3 w-80 cursor-pointer shadow-sm relative transition-all duration-200 z-10;
+}
+.dashed-border {
+    @apply border-dashed;
+}
+
+/* Style for when a node is selected */
+.node-card.selected {
+    @apply border-indigo-500 shadow-lg scale-105 ring-2 ring-indigo-200;
+}
+
+/* Style for the "TRIGGER" badge on trigger nodes */
+.node-badge {
+    @apply absolute -top-2.5 left-4 px-2 py-0.5 bg-green-600 text-white text-[10px] font-bold uppercase rounded-full;
+}

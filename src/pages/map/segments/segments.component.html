@@ -1,0 +1,82 @@
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+    <div class="flex items-center space-x-2 w-full sm:w-auto">
+      <div class="relative w-full sm:w-72">
+        <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+        </svg>
+        <input 
+          type="text" 
+          placeholder="Search segments..." 
+          (input)="onSearch($event)"
+          class="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      </div>
+       <div class="flex items-center bg-gray-100 rounded-lg p-1">
+        <button (click)="setFilter('All')" [class.bg-white]="filter() === 'All'" [class.shadow-sm]="filter() === 'All'" class="px-3 py-1 text-sm font-semibold rounded-md transition-colors" [class.text-gray-700]="filter() === 'All'" [class.text-gray-500]="filter() !== 'All'">All</button>
+        <button (click)="setFilter('Dynamic')" [class.bg-white]="filter() === 'Dynamic'" [class.shadow-sm]="filter() === 'Dynamic'" class="px-3 py-1 text-sm font-semibold rounded-md transition-colors" [class.text-gray-700]="filter() === 'Dynamic'" [class.text-gray-500]="filter() !== 'Dynamic'">Dynamic</button>
+        <button (click)="setFilter('Static')" [class.bg-white]="filter() === 'Static'" [class.shadow-sm]="filter() === 'Static'" class="px-3 py-1 text-sm font-semibold rounded-md transition-colors" [class.text-gray-700]="filter() === 'Static'" [class.text-gray-500]="filter() !== 'Static'">Static</button>
+      </div>
+    </div>
+    <a routerLink="/map/prospect-segments/new" class="w-full sm:w-auto flex justify-center px-4 py-2 bg-teal-600 text-white rounded-lg font-semibold hover:bg-teal-700 transition duration-200 items-center">
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+      Create Segment
+    </a>
+  </div>
+
+  <!-- Segment cards -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    @for (segment of filteredSegments(); track segment.id) {
+      <div class="bg-white p-5 rounded-xl shadow-sm border border-gray-200 flex flex-col justify-between hover:shadow-lg hover:border-teal-300 transition-all duration-300">
+        <div>
+          <div class="flex justify-between items-start">
+            <div class="flex items-center space-x-4">
+              <div class="p-3 bg-gray-100 rounded-full">
+                <svg class="w-6 h-6 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" /></svg>
+              </div>
+              <div>
+                <h3 class="text-lg font-semibold text-gray-900">{{ segment.name }}</h3>
+                <p class="text-sm text-gray-500 mt-1">{{ segment.description }}</p>
+              </div>
+            </div>
+             <div class="relative">
+                <button (click)="toggleDropdown(segment.id)" class="text-gray-500 hover:text-gray-700 p-2 rounded-full focus:outline-none hover:bg-gray-100">
+                  <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" /></svg>
+                </button>
+                @if (activeDropdown() === segment.id) {
+                  <div class="origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+                    <div class="py-1">
+                      <a [routerLink]="['/map/prospect-segments', segment.id]" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Edit</a>
+                      <button (click)="deleteSegment(segment.id)" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">Delete</button>
+                    </div>
+                  </div>
+                }
+            </div>
+          </div>
+           <div class="mt-4 flex flex-wrap items-center gap-2">
+            <span class="px-2.5 py-1 text-xs font-medium rounded-full" [class.bg-blue-100]="segment.type === 'Dynamic'" [class.text-blue-800]="segment.type === 'Dynamic'" [class.bg-gray-100]="segment.type === 'Static'" [class.text-gray-800]="segment.type === 'Static'">
+                {{ segment.type }}
+            </span>
+            <span class="text-xs text-gray-500">{{ segment.rulesCount }} rules</span>
+          </div>
+        </div>
+
+        <div class="mt-6 border-t border-gray-100 pt-4 flex justify-between items-end">
+          <div>
+            <p class="text-3xl font-bold text-gray-900 tracking-tight">{{ segment.members | number }}</p>
+            <p class="text-xs text-gray-500">Updated {{ segment.updated }}</p>
+          </div>
+          <div class="flex items-center text-sm font-semibold" [class]="getChangeClass(segment.memberChange)">
+            @if (segment.memberChange > 0) {
+              <svg class="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 17a.75.75 0 01-.75-.75V5.612L5.03 9.83a.75.75 0 01-1.06-1.06l5.25-5.25a.75.75 0 011.06 0l5.25 5.25a.75.75 0 11-1.06 1.06L10.75 5.612V16.25A.75.75 0 0110 17z" clip-rule="evenodd" /></svg>
+              <span>+{{ segment.memberChange }}%</span>
+            } @else if(segment.memberChange < 0) {
+               <svg class="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a.75.75 0 01.75.75v10.638l4.22-4.22a.75.75 0 111.06 1.06l-5.25 5.25a.75.75 0 01-1.06 0l-5.25-5.25a.75.75 0 111.06-1.06l4.22 4.22V3.75A.75.75 0 0110 3z" clip-rule="evenodd" /></svg>
+              <span>{{ segment.memberChange }}%</span>
+            }
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

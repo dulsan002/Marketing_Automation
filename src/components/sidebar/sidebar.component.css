@@ -1,0 +1,52 @@
+.nav-section-toggle {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 0.75rem 0.5rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem; /* 14px */
+  font-weight: 500; /* medium */
+  color: #374151; /* text-gray-700 */
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.nav-section-toggle:hover {
+  background-color: #F3F4F6; /* bg-gray-100 */
+}
+
+/* Sub-navigation links inside collapsible sections */
+.nav-link {
+  display: block;
+  width: 100%;
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  color: #4B5563; /* text-gray-600 */
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+}
+
+.nav-link:hover {
+  background-color: #F9FAFB; /* bg-gray-50 */
+  color: #111827; /* text-gray-900 */
+}
+
+.nav-link.active {
+  background-color: #4F46E5; /* bg-indigo-600 */
+  color: white;
+  font-weight: 500;
+}
+
+.rotate-180 {
+  transform: rotate(180deg);
+}
+
+.active-section > .nav-section-toggle {
+    color: #4F46E5; /* text-indigo-600 */
+}
+
+/* Special active state for the single contacts link */
+a.nav-section-toggle.active {
+    background-color: #EEF2FF; /* bg-indigo-100 */
+    color: #4338CA; /* text-indigo-700 */
+    font-weight: 600;
+}

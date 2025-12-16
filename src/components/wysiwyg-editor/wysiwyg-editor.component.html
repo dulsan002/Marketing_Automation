@@ -1,0 +1,19 @@
+<div class="border border-gray-300 rounded-md">
+  <div class="toolbar flex items-center p-1 bg-gray-50 border-b border-gray-300 rounded-t-md space-x-1">
+    <button type="button" (click)="execCommand('bold')" title="Bold" class="toolbar-button">B</button>
+    <button type="button" (click)="execCommand('italic')" title="Italic" class="toolbar-button italic">I</button>
+    <button type="button" (click)="execCommand('underline')" title="Underline" class="toolbar-button underline">U</button>
+    <button type="button" (click)="execCommand('justifyLeft')" title="Align Left" class="toolbar-button">L</button>
+    <button type="button" (click)="execCommand('justifyCenter')" title="Align Center" class="toolbar-button">C</button>
+    <button type="button" (click)="execCommand('justifyRight')" title="Align Right" class="toolbar-button">R</button>
+    <button type="button" (click)="execCommand('insertUnorderedList')" title="Unordered List" class="toolbar-button">&bull;</button>
+    <button type="button" (click)="execCommand('insertOrderedList')" title="Ordered List" class="toolbar-button">1.</button>
+  </div>
+  <div 
+    #editor 
+    class="prose max-w-none p-3 h-64 overflow-y-auto focus:outline-none" 
+    contenteditable="true" 
+    (input)="onContentChange($event)"
+    (blur)="onTouched()">
+  </div>
+</div>

@@ -1,0 +1,7 @@
+.form-select {
+    @apply block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm;
+}
+
+.form-input {
+    @apply block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 sm:text-sm;
+}

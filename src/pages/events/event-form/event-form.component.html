@@ -1,0 +1,93 @@
+<div class="bg-white rounded-xl shadow-lg border border-gray-200 p-8 max-w-4xl mx-auto">
+  <!-- Header -->
+  <div>
+    <h1 class="text-2xl font-bold text-gray-900">{{ isEditMode() ? 'Edit Event' : 'Create New Event' }}</h1>
+    <p class="text-sm text-gray-500">Follow the steps to set up your event</p>
+  </div>
+
+  <!-- Stepper -->
+  <div class="my-8">
+    <ol class="flex items-center w-full">
+      @for(step of steps; track step.number; let isLast = $last) {
+        <li class="flex w-full items-center" [class.after:content-['']]="!isLast" [class.after:w-full]="!isLast" [class.after:h-1]="!isLast" [class.after:border-b]="!isLast" [class.after:border-4]="!isLast" [class.after:inline-block]="!isLast" [class.after:border-gray-200]="currentStep() <= step.number" [class.after:border-indigo-600]="currentStep() > step.number">
+          <span class="flex items-center justify-center w-10 h-10 rounded-full shrink-0" [class.bg-gray-200]="currentStep() < step.number" [class.bg-indigo-600]="currentStep() >= step.number" [class.text-white]="currentStep() >= step.number">
+            @if(currentStep() > step.number) {
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.052-.143z"/></svg>
+            } @else {
+              {{ step.number }}
+            }
+          </span>
+        </li>
+      }
+    </ol>
+  </div>
+
+  <!-- Step Content -->
+  <form [formGroup]="eventForm">
+    <div class="mt-8">
+      @switch(currentStep()) {
+        @case(1) {
+          <div formGroupName="basics">
+            <h3 class="text-lg font-semibold">Event Basics</h3>
+            <div class="mt-4 space-y-4 max-w-lg">
+              <div><label class="block text-sm font-medium">Event Name</label><input type="text" formControlName="name" class="w-full mt-1 border-gray-300 rounded-md shadow-sm"></div>
+              <div><label class="block text-sm font-medium">Event Type</label><select formControlName="type" class="w-full mt-1 border-gray-300 rounded-md shadow-sm"><option value="webinar">Webinar</option><option value="conference">Conference</option><option value="meetup">Meetup</option><option value="workshop">Workshop</option></select></div>
+              <div><label class="block text-sm font-medium">Speaker</label><input type="text" formControlName="speaker" class="w-full mt-1 border-gray-300 rounded-md shadow-sm"></div>
+            </div>
+          </div>
+        }
+        @case(2) { 
+          <div formGroupName="schedule">
+            <h3 class="text-lg font-semibold">Schedule</h3>
+            <div class="mt-4 space-y-4 max-w-lg">
+              <div class="grid grid-cols-2 gap-4">
+                <div><label class="block text-sm font-medium">Date</label><input type="date" formControlName="date" class="w-full mt-1 border-gray-300 rounded-md shadow-sm"></div>
+                <div><label class="block text-sm font-medium">Time</label><input type="time" formControlName="time" class="w-full mt-1 border-gray-300 rounded-md shadow-sm"></div>
+              </div>
+              <div><label class="block text-sm font-medium">Duration (in minutes)</label><input type="number" formControlName="duration" class="w-full mt-1 border-gray-300 rounded-md shadow-sm"></div>
+            </div>
+          </div> 
+        }
+        @case(3) { 
+          <div formGroupName="settings">
+            <h3 class="text-lg font-semibold">Registration Settings</h3>
+            <div class="mt-4 space-y-4 max-w-lg">
+              <div><label class="block text-sm font-medium">Capacity</label><input type="number" formControlName="capacity" class="w-full mt-1 border-gray-300 rounded-md shadow-sm"></div>
+              <div class="flex items-center"><input type="checkbox" formControlName="requiresApproval" class="h-4 w-4 rounded border-gray-300"><label class="ml-2 text-sm">Require registration approval</label></div>
+              <fieldset>
+                <legend class="text-sm font-medium">Collect Information:</legend>
+                <div class="mt-2 space-y-2">
+                   <div class="flex items-center"><input type="checkbox" formControlName="collectCompany" class="h-4 w-4 rounded border-gray-300"><label class="ml-2 text-sm">Company Name</label></div>
+                   <div class="flex items-center"><input type="checkbox" formControlName="collectJobTitle" class="h-4 w-4 rounded border-gray-300"><label class="ml-2 text-sm">Job Title</label></div>
+                </div>
+              </fieldset>
+            </div>
+          </div> 
+        }
+        @case(4) { 
+          <div>
+            <h3 class="text-lg font-semibold text-center">Review Your Event</h3>
+            <div class="mt-4 p-6 bg-gray-50 rounded-lg border max-w-2xl mx-auto">
+              <dl class="grid grid-cols-2 gap-x-4 gap-y-6">
+                <div><dt class="text-sm font-medium text-gray-500">Event Name</dt><dd class="text-gray-900 font-semibold">{{ eventForm.value.basics?.name }}</dd></div>
+                <div><dt class="text-sm font-medium text-gray-500">Event Type</dt><dd class="text-gray-900 capitalize">{{ eventForm.value.basics?.type }}</dd></div>
+                <div><dt class="text-sm font-medium text-gray-500">Speaker</dt><dd class="text-gray-900">{{ eventForm.value.basics?.speaker }}</dd></div>
+                <div><dt class="text-sm font-medium text-gray-500">Date & Time</dt><dd class="text-gray-900">{{ eventForm.value.schedule?.date | date:'fullDate' }} at {{ eventForm.value.schedule?.time }}</dd></div>
+              </dl>
+            </div>
+          </div> 
+        }
+      }
+    </div>
+  </form>
+
+  <!-- Navigation -->
+  <div class="mt-8 pt-5 border-t border-gray-200 flex justify-between">
+    <button (click)="prevStep()" [disabled]="currentStep() === 1" class="px-4 py-2 text-sm font-semibold bg-white border border-gray-300 rounded-lg shadow-sm hover:bg-gray-50 disabled:opacity-50">Back</button>
+    @if(currentStep() < steps.length) {
+      <button (click)="nextStep()" [disabled]="!isStepValid()" class="px-4 py-2 text-sm font-semibold text-white bg-indigo-600 rounded-lg shadow-sm hover:bg-indigo-700 disabled:opacity-50">Next</button>
+    } @else {
+      <button (click)="saveEvent()" [disabled]="!eventForm.valid" class="px-4 py-2 text-sm font-semibold text-white bg-green-600 rounded-lg shadow-sm hover:bg-green-700 disabled:opacity-50">{{ isEditMode() ? 'Save Changes' : 'Publish Event' }}</button>
+    }
+  </div>
+</div>

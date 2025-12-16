@@ -1,0 +1,18 @@
+.toolbar-button {
+    width: 2rem;
+    height: 2rem;
+    font-weight: 600;
+    border-radius: 0.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.2s;
+}
+
+.toolbar-button:hover {
+    background-color: #e5e7eb; /* bg-gray-200 */
+}
+
+.toolbar-button:active {
+    background-color: #d1d5db; /* bg-gray-300 */
+}

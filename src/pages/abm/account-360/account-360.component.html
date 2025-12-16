@@ -1,0 +1,149 @@
+@if (account(); as acc) {
+<div class="space-y-6">
+  <button (click)="goBack()" class="flex items-center text-sm font-medium text-gray-600 hover:text-gray-900">
+    <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+    Back to Accounts
+  </button>
+  <!-- Account Header -->
+  <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+    <div class="flex flex-col sm:flex-row justify-between items-start gap-4">
+      <div>
+        <div class="flex items-center gap-3">
+          <h1 class="text-3xl font-bold text-gray-900">{{ acc.name }}</h1>
+          <span class="px-3 py-1 text-sm font-semibold rounded-full" [class]="getTierClass(acc.tier)">{{ acc.tier }}</span>
+        </div>
+        <p class="text-gray-500 mt-1">{{ acc.industry }} • {{ acc.country }}</p>
+      </div>
+      <div class="flex items-center space-x-6">
+        <div class="text-center">
+          <p class="text-sm text-gray-500">Account Score</p>
+          <p class="text-2xl font-bold text-indigo-600">{{ acc.score }}</p>
+        </div>
+        <div class="text-center">
+          <p class="text-sm text-gray-500">Intent</p>
+          <p class="text-2xl font-bold text-blue-600">{{ acc.intent }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tab Navigation -->
+  <div class="border-b border-gray-200">
+    <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+      <button (click)="setTab('overview')"
+              [class.border-indigo-500]="activeTab() === 'overview'" [class.text-indigo-600]="activeTab() === 'overview'"
+              [class.border-transparent]="activeTab() !== 'overview'" [class.text-gray-500]="activeTab() !== 'overview'"
+              class="hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+        Overview
+      </button>
+      <button (click)="setTab('committee')"
+              [class.border-indigo-500]="activeTab() === 'committee'" [class.text-indigo-600]="activeTab() === 'committee'"
+              [class.border-transparent]="activeTab() !== 'committee'" [class.text-gray-500]="activeTab() !== 'committee'"
+              class="hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+        Buying Committee
+      </button>
+       <button (click)="setTab('activities')"
+              [class.border-indigo-500]="activeTab() === 'activities'" [class.text-indigo-600]="activeTab() === 'activities'"
+              [class.border-transparent]="activeTab() !== 'activities'" [class.text-gray-500]="activeTab() !== 'activities'"
+              class="hover:text-gray-700 hover:border-gray-300 whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm">
+        Recent Activities
+      </button>
+    </nav>
+  </div>
+
+  <!-- Tab Content -->
+  @switch (activeTab()) {
+    @case ('overview') {
+      <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">Account Details</h3>
+          <dl class="grid grid-cols-2 gap-x-4 gap-y-6">
+            <div class="sm:col-span-1">
+              <dt class="text-sm font-medium text-gray-500">Industry</dt>
+              <dd class="mt-1 text-gray-900">{{ acc.industry }}</dd>
+            </div>
+            <div class="sm:col-span-1">
+              <dt class="text-sm font-medium text-gray-500">Country</dt>
+              <dd class="mt-1 text-gray-900">{{ acc.country }}</dd>
+            </div>
+            <div class="sm:col-span-1">
+              <dt class="text-sm font-medium text-gray-500">Employees</dt>
+              <dd class="mt-1 text-gray-900">{{ acc.employees | number }}</dd>
+            </div>
+            <div class="sm:col-span-1">
+              <dt class="text-sm font-medium text-gray-500">Annual Revenue</dt>
+              <dd class="mt-1 text-gray-900">${{ acc.revenue }}M</dd>
+            </div>
+          </dl>
+        </div>
+        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">Engagement Summary (Last 30 Days)</h3>
+            <div class="grid grid-cols-2 gap-4">
+              @for (stat of acc.engagementSummary; track stat.metric) {
+                <div class="bg-gray-50 p-4 rounded-md border border-gray-200">
+                  <p class="text-sm text-gray-600">{{ stat.metric }}</p>
+                  <p class="text-2xl font-bold text-gray-900">{{ stat.value }}</p>
+                </div>
+              }
+            </div>
+        </div>
+      </div>
+    }
+    @case ('committee') {
+      <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <h3 class="text-lg font-semibold text-gray-900 mb-4">Buying Committee</h3>
+        @if(acc.buyingCommittee.length > 0) {
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          @for (member of acc.buyingCommittee; track member.id) {
+            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+              <div class="flex justify-between items-start">
+                <h3 class="font-semibold text-gray-800">{{ member.name }}</h3>
+                <span [class]="getRoleClass(member.role)">{{ member.role }}</span>
+              </div>
+              <p class="text-sm text-gray-600 mt-1">{{ member.title }}</p>
+              <div class="mt-4 pt-4 border-t border-gray-200">
+                <p class="text-xs text-gray-500">Influence: <span class="font-semibold" [class]="getInfluenceClass(member.influence)">{{ member.influence }}</span></p>
+              </div>
+            </div>
+          }
+        </div>
+        } @else {
+          <div class="text-center py-12 border-2 border-dashed border-gray-300 rounded-lg">
+            <h3 class="text-md font-medium text-gray-700">No Committee Members</h3>
+            <p class="mt-1 text-sm text-gray-500">No buying committee members have been identified for this account.</p>
+          </div>
+        }
+      </div>
+    }
+    @case ('activities') {
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+        <table class="w-full text-sm text-left text-gray-500">
+          <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+            <tr>
+              <th scope="col" class="px-6 py-3">Date</th>
+              <th scope="col" class="px-6 py-3">Type</th>
+              <th scope="col" class="px-6 py-3">Description</th>
+              <th scope="col" class="px-6 py-3">Contact</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for(activity of acc.recentActivities; track $index) {
+              <tr class="bg-white border-b hover:bg-gray-50">
+                <td class="px-6 py-4">{{ activity.date }}</td>
+                <td class="px-6 py-4">{{ activity.type }}</td>
+                <td class="px-6 py-4 font-medium text-gray-800">{{ activity.description }}</td>
+                <td class="px-6 py-4">{{ activity.contact }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  }
+
+</div>
+} @else if (isLoading()) {
+  <div class="text-center p-12">
+    <p>Loading account data...</p>
+  </div>
+}

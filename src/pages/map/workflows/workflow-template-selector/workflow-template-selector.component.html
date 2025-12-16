@@ -1,0 +1,39 @@
+<div class="fixed inset-0 bg-black bg-opacity-60 z-40 transition-opacity" (click)="close()"></div>
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+  <div class="bg-white rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] flex flex-col animate-fade-in-up">
+    
+    <div class="flex justify-between items-center p-5 border-b border-gray-200 shrink-0">
+      <h2 class="text-xl font-bold text-gray-900">Create a New Workflow</h2>
+      <button (click)="close()" class="text-gray-400 hover:text-gray-600 p-1 rounded-full">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+      </button>
+    </div>
+
+    <div class="p-8 overflow-y-auto">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        
+        <!-- Start from Scratch -->
+        <div (click)="onSelect('scratch')" class="template-card">
+          <div class="flex items-center justify-center w-12 h-12 bg-indigo-100 rounded-lg">
+            <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+          </div>
+          <div class="mt-4">
+            <h3 class="font-semibold text-gray-900">Start from Scratch</h3>
+            <p class="text-sm text-gray-500 mt-1">Build a custom workflow from a blank canvas.</p>
+          </div>
+        </div>
+
+        <!-- Templates -->
+        @for (template of templates(); track template.id) {
+          <div (click)="onSelect(template.id)" class="template-card-banner">
+            <div class="h-24 rounded-t-lg" [class.bg-teal-100]="template.name === 'Welcome Series'" [class.bg-sky-100]="template.name === 'Re-engagement'"></div>
+            <div class="p-4">
+              <h3 class="font-semibold text-gray-900">{{ template.name }}</h3>
+              <p class="text-sm text-gray-500 mt-1">{{ template.description }}</p>
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
