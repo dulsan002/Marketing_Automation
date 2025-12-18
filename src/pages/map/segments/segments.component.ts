@@ -18,8 +18,8 @@ import { SegmentService } from '../../../services/segment.service';
 export class ProspectSegmentsComponent {
   private segmentService = inject(SegmentService);
 
-  /** A read-only signal holding the list of all prospect segments. */
-  readonly segments = this.segmentService.getSegments();
+  /** A signal holding the list of all prospect segments. */
+  readonly segments = signal<ProspectSegment[]>([]);
   /** The current type filter applied to the segments list. */
   readonly filter = signal<'All' | 'Dynamic' | 'Static'>('All');
   /** The current search term entered by the user. */
@@ -27,11 +27,19 @@ export class ProspectSegmentsComponent {
   /** Manages which segment's action dropdown is currently visible. Null if none are open. */
   readonly activeDropdown = signal<string | null>(null);
 
+  constructor() {
+    this.loadData();
+  }
+
+  private loadData() {
+    this.segmentService.getSegments().then(data => this.segments.set(data));
+  }
+
   /** A computed signal that returns a filtered list of segments based on the current search term and type filter. */
   readonly filteredSegments = computed(() => {
     const term = this.searchTerm().toLowerCase();
     const currentFilter = this.filter();
-    
+
     return this.segments().filter(segment => {
       const nameMatch = segment.name.toLowerCase().includes(term) || segment.description.toLowerCase().includes(term);
       const filterMatch = currentFilter === 'All' || segment.type === currentFilter;
@@ -46,7 +54,7 @@ export class ProspectSegmentsComponent {
   onSearch(event: Event): void {
     this.searchTerm.set((event.target as HTMLInputElement).value);
   }
-  
+
   /**
    * Sets the filter type for the segment list.
    * @param filter The filter to apply ('All', 'Dynamic', or 'Static').
@@ -67,8 +75,9 @@ export class ProspectSegmentsComponent {
    * Deletes a segment via the segment service.
    * @param segmentId The ID of the segment to delete.
    */
-  deleteSegment(segmentId: string): void {
-    this.segmentService.deleteSegment(segmentId);
+  async deleteSegment(segmentId: string): Promise<void> {
+    await this.segmentService.deleteSegment(segmentId);
+    this.loadData(); // Reload
     this.activeDropdown.set(null);
   }
 

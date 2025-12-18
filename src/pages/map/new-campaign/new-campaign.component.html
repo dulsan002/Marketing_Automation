@@ -2,7 +2,7 @@
   <!-- Header -->
   <div class="shrink-0">
     <div class="flex justify-between items-center mb-6">
-      <h1 class="text-2xl font-bold text-gray-900">Create New Campaign</h1>
+      <h1 class="text-2xl font-bold text-gray-900">{{ pageTitle() }}</h1>
       <button (click)="cancel()" class="text-sm font-medium text-gray-600 hover:text-gray-900">Cancel</button>
     </div>
 
@@ -14,11 +14,12 @@
     <!-- Stepper Labels -->
     <div class="flex justify-between text-center mb-8">
       @for (step of steps; track step.number) {
-        <div class="flex-1">
-          <span class="text-sm font-medium" [class.text-teal-600]="currentStep() >= step.number" [class.text-gray-500]="currentStep() < step.number">
-            {{ step.name }}
-          </span>
-        </div>
+      <div class="flex-1">
+        <span class="text-sm font-medium" [class.text-teal-600]="currentStep() >= step.number"
+          [class.text-gray-500]="currentStep() < step.number">
+          {{ step.name }}
+        </span>
+      </div>
       }
     </div>
   </div>
@@ -27,285 +28,391 @@
   <!-- Step Content -->
   <div class="overflow-y-auto mt-2 pr-4">
     @switch (currentStep()) {
-      @case (1) {
-        <!-- Step 1: Campaign Type -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          @for (type of campaignTypes; track type.id) {
-            <div 
-              (click)="selectCampaignType(type.id)" 
-              class="p-6 border-2 rounded-lg cursor-pointer flex items-start space-x-4 transition-all"
-              [class.border-teal-500]="campaignType() === type.id"
-              [class.bg-teal-50]="campaignType() === type.id"
-              [class.border-gray-200]="campaignType() !== type.id"
-              [class.hover:border-gray-300]="campaignType() !== type.id"
-            >
-              <svg class="w-6 h-6 text-gray-600 shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" [innerHTML]="type.icon"></svg>
-              <div>
-                <h3 class="text-md font-semibold text-gray-900">{{ type.title }}</h3>
-                <p class="text-sm text-gray-500 mt-1">{{ type.description }}</p>
-              </div>
-            </div>
-          }
+    @case (1) {
+    <!-- Step 1: Campaign Type -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      @for (type of campaignTypes; track type.id) {
+      <div (click)="selectCampaignType(type.id)"
+        class="p-6 border-2 rounded-lg cursor-pointer flex items-start space-x-4 transition-all"
+        [class.border-teal-500]="campaignType() === type.id" [class.bg-teal-50]="campaignType() === type.id"
+        [class.border-gray-200]="campaignType() !== type.id" [class.hover:border-gray-300]="campaignType() !== type.id">
+        <svg class="w-6 h-6 text-gray-600 shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg" [innerHTML]="type.icon"></svg>
+        <div>
+          <h3 class="text-md font-semibold text-gray-900">{{ type.title }}</h3>
+          <p class="text-sm text-gray-500 mt-1">{{ type.description }}</p>
         </div>
+      </div>
       }
-      @case (2) {
-        <!-- Step 2: Detail -->
-        <div class="max-w-3xl mx-auto">
-            <h2 class="text-xl font-bold text-gray-800 text-center">Campaign Details</h2>
-            <p class="text-gray-500 mt-1 text-center">Set up the basic information for your campaign</p>
-            <div class="mt-8 p-8 bg-gray-50 border border-gray-200 rounded-xl">
-                <form [formGroup]="detailsForm" class="space-y-6">
-                    <div>
-                        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Campaign Name *</label>
-                        <input type="text" id="name" formControlName="name" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3" placeholder="e.g., Q3 Product Launch">
-                    </div>
-                    <div>
-                        <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                        <textarea id="description" formControlName="description" rows="4" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3" placeholder="Describe the purpose of this campaign..."></textarea>
-                    </div>
-                </form>
-            </div>
-        </div>
-      }
-      @case (3) {
-        <!-- Step 3: Editor -->
-        <div class="max-w-4xl mx-auto">
-          @switch (campaignType()) {
-            @case ('Email') {
-              <form [formGroup]="contentForm" class="space-y-6">
-                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div>
-                          <label for="senderName" class="block text-sm font-medium text-gray-700 mb-1">Sender Name *</label>
-                          <input type="text" id="senderName" formControlName="senderName" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3" placeholder="e.g., Marketing Team">
-                      </div>
-                      <div>
-                          <label for="senderEmail" class="block text-sm font-medium text-gray-700 mb-1">Sender Email *</label>
-                          <input type="email" id="senderEmail" formControlName="senderEmail" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3" placeholder="e.g., hello@company.com">
-                      </div>
-                  </div>
-                  <div>
-                    <label for="subject" class="block text-sm font-medium text-gray-700">Subject Line *</label>
-                    <input type="text" id="subject" formControlName="subject" class="mt-1 block w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3 sm:text-sm">
-                  </div>
-                  <div>
-                      <label class="block text-sm font-medium text-gray-700 mb-1">Email Body *</label>
-                      <app-wysiwyg-editor formControlName="body"></app-wysiwyg-editor>
-                  </div>
-              </form>
-            }
-            @case ('SMS') {
-              <div class="max-w-lg mx-auto">
-                  <h2 class="text-xl font-bold text-gray-800 text-center">SMS Message</h2>
-                  <p class="text-gray-500 mt-1 text-center mb-6">Compose your SMS text message.</p>
-                  <form [formGroup]="smsContentForm">
-                      <textarea formControlName="message" rows="5" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3" placeholder="Enter your message..."></textarea>
-                      <div class="text-right text-sm text-gray-500 mt-2">
-                        {{ 160 - (smsContentForm.get('message')?.value?.length || 0) }} characters remaining
-                      </div>
-                  </form>
-              </div>
-            }
-            @case ('Social Post') {
-              <div class="max-w-2xl mx-auto">
-                 <h2 class="text-xl font-bold text-gray-800 text-center">Social Post</h2>
-                 <p class="text-gray-500 mt-1 text-center mb-6">Create your post for social media.</p>
-                 <form [formGroup]="socialContentForm" class="space-y-6">
-                    <div>
-                      <label class="block text-sm font-medium text-gray-700 mb-2">Platform</label>
-                      <div class="flex space-x-4">
-                        <label class="flex items-center"><input type="radio" name="platform" formControlName="platform" value="LinkedIn" class="h-4 w-4 border-gray-300 text-teal-600 focus:ring-teal-500"> <span class="ml-2">LinkedIn</span></label>
-                        <label class="flex items-center"><input type="radio" name="platform" formControlName="platform" value="Facebook" class="h-4 w-4 border-gray-300 text-teal-600 focus:ring-teal-500"> <span class="ml-2">Facebook</span></label>
-                        <label class="flex items-center"><input type="radio" name="platform" formControlName="platform" value="Twitter" class="h-4 w-4 border-gray-300 text-teal-600 focus:ring-teal-500"> <span class="ml-2">Twitter</span></label>
-                      </div>
-                    </div>
-                    <div>
-                      <label for="social-text" class="block text-sm font-medium text-gray-700 mb-1">Post Text</label>
-                      <textarea id="social-text" formControlName="text" rows="6" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3" placeholder="What's on your mind?"></textarea>
-                    </div>
-                    <div>
-                       <label class="block text-sm font-medium text-gray-700 mb-1">Image</label>
-                       @if (!socialContentForm.get('imageUrl')?.value) {
-                          <label for="image-upload" class="cursor-pointer w-full flex justify-center px-6 py-10 border-2 border-gray-300 border-dashed rounded-md">
-                            <div class="space-y-1 text-center">
-                              <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true"><path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
-                              <div class="flex text-sm text-gray-600"><p class="pl-1">Upload a file</p></div>
-                              <p class="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
-                            </div>
-                           <input id="image-upload" type="file" (change)="handleImageUpload($event)" class="sr-only">
-                          </label>
-                       } @else {
-                          <div class="relative">
-                            <img [src]="socialContentForm.get('imageUrl')?.value" alt="Image preview" class="w-full rounded-lg object-cover h-64">
-                            <button (click)="socialContentForm.patchValue({imageUrl: ''})" class="absolute top-2 right-2 bg-black bg-opacity-50 text-white rounded-full p-1">&times;</button>
-                          </div>
-                       }
-                    </div>
-                 </form>
-              </div>
-            }
-            @case ('In-app') {
-              <div class="max-w-lg mx-auto">
-                 <h2 class="text-xl font-bold text-gray-800 text-center">In-App Message</h2>
-                 <p class="text-gray-500 mt-1 text-center mb-6">Design your in-app banner or modal.</p>
-                 <form [formGroup]="inAppContentForm" class="space-y-6">
-                    <div>
-                        <label for="inapp-headline" class="block text-sm font-medium text-gray-700 mb-1">Headline</label>
-                        <input type="text" id="inapp-headline" formControlName="headline" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3" placeholder="e.g., New Feature Alert!">
-                    </div>
-                    <div>
-                        <label for="inapp-body" class="block text-sm font-medium text-gray-700 mb-1">Body Text</label>
-                        <textarea id="inapp-body" formControlName="body" rows="4" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3" placeholder="Describe the new feature..."></textarea>
-                    </div>
-                 </form>
-              </div>
-            }
-             @case ('Offline') {
-              <div class="max-w-lg mx-auto">
-                 <h2 class="text-xl font-bold text-gray-800 text-center">Offline Outreach</h2>
-                 <p class="text-gray-500 mt-1 text-center mb-6">Detail the requirements for the offline material.</p>
-                 <form [formGroup]="offlineContentForm" class="space-y-6">
-                    <div>
-                        <label for="offline-title" class="block text-sm font-medium text-gray-700 mb-1">Title / Headline</label>
-                        <input type="text" id="offline-title" formControlName="title" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3" placeholder="e.g., Q4 Direct Mail Postcard">
-                    </div>
-                    <div>
-                        <label for="offline-details" class="block text-sm font-medium text-gray-700 mb-1">Creative Brief / Details</label>
-                        <textarea id="offline-details" formControlName="details" rows="8" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3" placeholder="Describe the design, copy, and target audience..."></textarea>
-                    </div>
-                 </form>
-              </div>
-            }
-          }
-        </div>
-      }
-      @case (4) {
-        <!-- Step 4: Segment -->
-        <div [formGroup]="audienceForm" class="space-y-4 max-w-2xl mx-auto">
-             <h3 class="text-lg font-semibold text-gray-800 mb-4 text-center">Select Audience Segment</h3>
-             <div class="space-y-3">
-                @for(segment of prospectSegments(); track segment.name) {
-                    <label class="flex items-center p-4 border rounded-lg has-[:checked]:bg-teal-50 has-[:checked]:border-teal-400 cursor-pointer">
-                        <input type="radio" name="segmentId" [value]="segment.name" formControlName="segmentId" class="h-4 w-4 border-gray-300 text-teal-600 focus:ring-teal-500">
-                        <span class="ml-3 text-sm font-medium text-gray-700">{{segment.name}} ({{segment.members}} members)</span>
-                    </label>
-                }
-             </div>
-        </div>
-      }
-      @case (5) {
-        <!-- Step 5: Schedule -->
-        <form [formGroup]="scheduleForm" class="space-y-4 max-w-lg mx-auto">
-            <h3 class="text-lg font-semibold text-gray-800 mb-4 text-center">Schedule Campaign</h3>
-            <fieldset class="space-y-3">
-                <label class="flex items-center p-4 border rounded-lg has-[:checked]:bg-teal-50 has-[:checked]:border-teal-400 cursor-pointer">
-                    <input type="radio" name="type" value="immediate" formControlName="type" class="h-4 w-4 border-gray-300 text-teal-600 focus:ring-teal-500">
-                    <span class="ml-3 text-sm font-medium text-gray-700">Send Immediately</span>
-                </label>
-                <label class="flex items-center p-4 border rounded-lg has-[:checked]:bg-teal-50 has-[:checked]:border-teal-400 cursor-pointer">
-                    <input type="radio" name="type" value="later" formControlName="type" class="h-4 w-4 border-gray-300 text-teal-600 focus:ring-teal-500">
-                    <span class="ml-3 text-sm font-medium text-gray-700">Schedule for Later</span>
-                </label>
-            </fieldset>
-            @if(scheduleForm.get('type')?.value === 'later') {
-                 <div class="flex space-x-4 p-4 bg-gray-50 rounded-lg mt-2">
-                    <div class="flex-1">
-                        <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
-                        <input type="date" id="date" formControlName="date" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3 sm:text-sm">
-                    </div>
-                     <div class="flex-1">
-                        <label for="time" class="block text-sm font-medium text-gray-700">Time</label>
-                        <input type="time" id="time" formControlName="time" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3 sm:text-sm">
-                    </div>
-                </div>
-            }
-        </form>
-      }
-      @case (6) {
-        <!-- Step 6: Review -->
-        <div class="max-w-3xl mx-auto">
-          <h2 class="text-xl font-bold text-gray-800 text-center">Review Campaign</h2>
-          <p class="text-gray-500 mt-1 text-center mb-8">Final check before launching your campaign.</p>
+    </div>
+    }
+    @case (2) {
+    <!-- Step 2: Detail -->
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-xl font-bold text-gray-800 text-center">Campaign Details</h2>
+      <p class="text-gray-500 mt-1 text-center">Set up the basic information for your campaign</p>
+      <div class="mt-8 p-8 bg-gray-50 border border-gray-200 rounded-xl">
+        <form [formGroup]="detailsForm" class="space-y-6">
+          <div>
+            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Campaign Name *</label>
+            <input type="text" id="name" formControlName="name"
+              class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3"
+              placeholder="e.g., Q3 Product Launch">
+          </div>
+          <div>
+            <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <textarea id="description" formControlName="description" rows="4"
+              class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3"
+              placeholder="Describe the purpose of this campaign..."></textarea>
+          </div>
 
-           @switch (campaignType()) {
-            @case ('Email') {
-              <div class="w-full max-w-sm mx-auto bg-white border-8 border-black rounded-3xl shadow-lg overflow-hidden">
-                  <div class="px-2 pt-2 pb-1"><div class="h-4 w-28 bg-gray-200 rounded-full mx-auto"></div></div>
-                  <div class="p-4 border-t border-gray-200">
-                      <p class="text-sm text-gray-500">Subject: <span class="font-semibold text-gray-800">{{contentForm.get('subject')?.value}}</span></p>
-                      <hr class="my-3">
-                      <div class="prose prose-sm" [innerHTML]="contentForm.get('body')?.value"></div>
-                  </div>
-              </div>
-            }
-            @case ('SMS') {
-              <div class="w-full max-w-sm mx-auto bg-white border-8 border-black rounded-3xl shadow-lg p-4">
-                <div class="flex justify-end">
-                    <div class="bg-blue-500 text-white p-3 rounded-lg max-w-xs">
-                      <p>{{ smsContentForm.get('message')?.value }}</p>
-                    </div>
-                </div>
-              </div>
-            }
-            @case ('Social Post') {
-              <div class="bg-white rounded-lg shadow-md border border-gray-200 max-w-md mx-auto">
-                <div class="p-4">
-                  <div class="flex items-center space-x-3">
-                    <div class="p-2 bg-gray-200 rounded-full">
-                      <svg class="w-6 h-6 text-gray-600" fill="currentColor" viewBox="0 0 24 24"><path d="M22.23 0H1.77C.8 0 0 .77 0 1.72v20.56C0 23.23.8 24 1.77 24h11.23v-9.29H9.69v-3.62h3.31V8.41c0-3.28 1.99-5.02 4.82-5.02 1.38 0 2.56.1 2.9.15v3.24h-1.92c-1.59 0-1.9.75-1.9 1.86v2.44h3.59l-.47 3.62h-3.12V24h5.98c.97 0 1.77-.77 1.77-1.72V1.72C24 .77 23.2 0 22.23 0z"/></svg>
-                    </div>
-                    <div>
-                      <p class="font-semibold">{{ socialContentForm.get('platform')?.value }} Post</p>
-                      <p class="text-xs text-gray-500">Just now</p>
-                    </div>
-                  </div>
-                  <p class="mt-4 text-gray-800">{{ socialContentForm.get('text')?.value }}</p>
-                </div>
-                @if (socialContentForm.get('imageUrl')?.value) {
-                  <img [src]="socialContentForm.get('imageUrl')?.value" class="w-full h-auto object-cover">
-                }
-              </div>
-            }
-            @case ('In-app') {
-               <div class="bg-white rounded-lg shadow-lg max-w-md mx-auto border border-gray-200 p-6 text-center">
-                  <h3 class="text-xl font-bold text-gray-900">{{ inAppContentForm.get('headline')?.value }}</h3>
-                  <p class="text-gray-600 mt-2">{{ inAppContentForm.get('body')?.value }}</p>
-                  <button class="mt-6 bg-teal-500 text-white px-6 py-2 rounded-lg">Action</button>
-               </div>
-            }
-            @case ('Offline') {
-              <div class="bg-white rounded-lg shadow-md border border-gray-200 max-w-lg mx-auto p-8">
-                <h2 class="text-2xl font-bold border-b pb-2">{{ offlineContentForm.get('title')?.value }}</h2>
-                <p class="mt-4 text-gray-700 whitespace-pre-wrap">{{ offlineContentForm.get('details')?.value }}</p>
-                <div class="mt-8 text-center">
-                  <button class="bg-gray-700 text-white px-6 py-2 rounded-lg hover:bg-gray-800 flex items-center mx-auto">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                    Export as PDF
-                  </button>
-                </div>
-              </div>
-            }
+          <div>
+            <label for="status" class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+            <select id="status" formControlName="status"
+              class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3">
+              <option value="draft">Draft</option>
+              <option value="active">Active</option>
+              <option value="paused">Paused</option>
+              <option value="completed">Completed</option>
+              <option value="scheduled">Scheduled</option>
+            </select>
+          </div>
+        </form>
+      </div>
+    </div>
+    }
+    @case (3) {
+    <!-- Step 3: Editor -->
+    <div class="max-w-4xl mx-auto">
+      @switch (campaignType()) {
+      @case ('Email') {
+      <form [formGroup]="contentForm" class="space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label for="senderName" class="block text-sm font-medium text-gray-700 mb-1">Sender Name *</label>
+            <input type="text" id="senderName" formControlName="senderName"
+              class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3"
+              placeholder="e.g., Marketing Team">
+          </div>
+          <div>
+            <label for="senderEmail" class="block text-sm font-medium text-gray-700 mb-1">Sender Email *</label>
+            <input type="email" id="senderEmail" formControlName="senderEmail"
+              class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3"
+              placeholder="e.g., hello@company.com">
+          </div>
+        </div>
+        <div class="relative">
+          <div class="flex justify-between items-center mb-1">
+            <label for="subject" class="block text-sm font-medium text-gray-700">Subject Line *</label>
+            <button type="button" (click)="generateAiSubjects()"
+              class="text-xs flex items-center text-indigo-600 hover:text-indigo-800 font-medium transition-colors">
+              @if (isGeneratingSubject()) {
+              <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-indigo-600" xmlns="http://www.w3.org/2000/svg"
+                fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                <path class="opacity-75" fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                </path>
+              </svg>
+              Generating...
+              } @else {
+              <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z">
+                </path>
+              </svg>
+              AI Suggestions
+              }
+            </button>
+          </div>
+          <input type="text" id="subject" formControlName="subject"
+            class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3 sm:text-sm"
+            placeholder="Enter a topic and click 'AI Suggestions'...">
+
+          @if (aiSubjectSuggestions().length > 0) {
+          <div
+            class="absolute z-10 mt-1 w-full bg-white rounded-md shadow-lg border border-gray-200 ring-1 ring-black ring-opacity-5">
+            <div class="py-1">
+              <h4 class="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider bg-gray-50 border-b">AI
+                Suggestions</h4>
+              @for (suggestion of aiSubjectSuggestions(); track suggestion) {
+              <button type="button" (click)="useAiSubject(suggestion)"
+                class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50 hover:text-indigo-700 transition-colors">
+                {{ suggestion }}
+              </button>
+              }
+            </div>
+          </div>
           }
         </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-1">Email Body *</label>
+          <app-wysiwyg-editor formControlName="body"></app-wysiwyg-editor>
+        </div>
+      </form>
       }
+      @case ('SMS') {
+      <div class="max-w-lg mx-auto">
+        <h2 class="text-xl font-bold text-gray-800 text-center">SMS Message</h2>
+        <p class="text-gray-500 mt-1 text-center mb-6">Compose your SMS text message.</p>
+        <form [formGroup]="smsContentForm">
+          <textarea formControlName="message" rows="5"
+            class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3"
+            placeholder="Enter your message..."></textarea>
+          <div class="text-right text-sm text-gray-500 mt-2">
+            {{ 160 - (smsContentForm.get('message')?.value?.length || 0) }} characters remaining
+          </div>
+        </form>
+      </div>
+      }
+      @case ('Social Post') {
+      <div class="max-w-2xl mx-auto">
+        <h2 class="text-xl font-bold text-gray-800 text-center">Social Post</h2>
+        <p class="text-gray-500 mt-1 text-center mb-6">Create your post for social media.</p>
+        <form [formGroup]="socialContentForm" class="space-y-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Platform</label>
+            <div class="flex space-x-4">
+              <label class="flex items-center"><input type="radio" name="platform" formControlName="platform"
+                  value="LinkedIn" class="h-4 w-4 border-gray-300 text-teal-600 focus:ring-teal-500"> <span
+                  class="ml-2">LinkedIn</span></label>
+              <label class="flex items-center"><input type="radio" name="platform" formControlName="platform"
+                  value="Facebook" class="h-4 w-4 border-gray-300 text-teal-600 focus:ring-teal-500"> <span
+                  class="ml-2">Facebook</span></label>
+              <label class="flex items-center"><input type="radio" name="platform" formControlName="platform"
+                  value="Twitter" class="h-4 w-4 border-gray-300 text-teal-600 focus:ring-teal-500"> <span
+                  class="ml-2">Twitter</span></label>
+            </div>
+          </div>
+          <div>
+            <label for="social-text" class="block text-sm font-medium text-gray-700 mb-1">Post Text</label>
+            <textarea id="social-text" formControlName="text" rows="6"
+              class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3"
+              placeholder="What's on your mind?"></textarea>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Image</label>
+            @if (!socialContentForm.get('imageUrl')?.value) {
+            <label for="image-upload"
+              class="cursor-pointer w-full flex justify-center px-6 py-10 border-2 border-gray-300 border-dashed rounded-md">
+              <div class="space-y-1 text-center">
+                <svg class="mx-auto h-12 w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48"
+                  aria-hidden="true">
+                  <path
+                    d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8"
+                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+                <div class="flex text-sm text-gray-600">
+                  <p class="pl-1">Upload a file</p>
+                </div>
+                <p class="text-xs text-gray-500">PNG, JPG, GIF up to 10MB</p>
+              </div>
+              <input id="image-upload" type="file" (change)="handleImageUpload($event)" class="sr-only">
+            </label>
+            } @else {
+            <div class="relative">
+              <img [src]="socialContentForm.get('imageUrl')?.value" alt="Image preview"
+                class="w-full rounded-lg object-cover h-64">
+              <button (click)="socialContentForm.patchValue({imageUrl: ''})"
+                class="absolute top-2 right-2 bg-black bg-opacity-50 text-white rounded-full p-1">&times;</button>
+            </div>
+            }
+          </div>
+        </form>
+      </div>
+      }
+      @case ('In-app') {
+      <div class="max-w-lg mx-auto">
+        <h2 class="text-xl font-bold text-gray-800 text-center">In-App Message</h2>
+        <p class="text-gray-500 mt-1 text-center mb-6">Design your in-app banner or modal.</p>
+        <form [formGroup]="inAppContentForm" class="space-y-6">
+          <div>
+            <label for="inapp-headline" class="block text-sm font-medium text-gray-700 mb-1">Headline</label>
+            <input type="text" id="inapp-headline" formControlName="headline"
+              class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3"
+              placeholder="e.g., New Feature Alert!">
+          </div>
+          <div>
+            <label for="inapp-body" class="block text-sm font-medium text-gray-700 mb-1">Body Text</label>
+            <textarea id="inapp-body" formControlName="body" rows="4"
+              class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3"
+              placeholder="Describe the new feature..."></textarea>
+          </div>
+        </form>
+      </div>
+      }
+      @case ('Offline') {
+      <div class="max-w-lg mx-auto">
+        <h2 class="text-xl font-bold text-gray-800 text-center">Offline Outreach</h2>
+        <p class="text-gray-500 mt-1 text-center mb-6">Detail the requirements for the offline material.</p>
+        <form [formGroup]="offlineContentForm" class="space-y-6">
+          <div>
+            <label for="offline-title" class="block text-sm font-medium text-gray-700 mb-1">Title / Headline</label>
+            <input type="text" id="offline-title" formControlName="title"
+              class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3"
+              placeholder="e.g., Q4 Direct Mail Postcard">
+          </div>
+          <div>
+            <label for="offline-details" class="block text-sm font-medium text-gray-700 mb-1">Creative Brief /
+              Details</label>
+            <textarea id="offline-details" formControlName="details" rows="8"
+              class="w-full rounded-lg border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3"
+              placeholder="Describe the design, copy, and target audience..."></textarea>
+          </div>
+        </form>
+      </div>
+      }
+      }
+    </div>
+    }
+    @case (4) {
+    <!-- Step 4: Segment -->
+    <div [formGroup]="audienceForm" class="space-y-4 max-w-2xl mx-auto">
+      <h3 class="text-lg font-semibold text-gray-800 mb-4 text-center">Select Audience Segment</h3>
+      <div class="space-y-3">
+        @for(segment of prospectSegments(); track segment.name) {
+        <label
+          class="flex items-center p-4 border rounded-lg has-[:checked]:bg-teal-50 has-[:checked]:border-teal-400 cursor-pointer">
+          <input type="radio" name="segmentId" [value]="segment.name" formControlName="segmentId"
+            class="h-4 w-4 border-gray-300 text-teal-600 focus:ring-teal-500">
+          <span class="ml-3 text-sm font-medium text-gray-700">{{segment.name}} ({{segment.members}} members)</span>
+        </label>
+        }
+      </div>
+    </div>
+    }
+    @case (5) {
+    <!-- Step 5: Schedule -->
+    <form [formGroup]="scheduleForm" class="space-y-4 max-w-lg mx-auto">
+      <h3 class="text-lg font-semibold text-gray-800 mb-4 text-center">Schedule Campaign</h3>
+      <fieldset class="space-y-3">
+        <label
+          class="flex items-center p-4 border rounded-lg has-[:checked]:bg-teal-50 has-[:checked]:border-teal-400 cursor-pointer">
+          <input type="radio" name="type" value="immediate" formControlName="type"
+            class="h-4 w-4 border-gray-300 text-teal-600 focus:ring-teal-500">
+          <span class="ml-3 text-sm font-medium text-gray-700">Send Immediately</span>
+        </label>
+        <label
+          class="flex items-center p-4 border rounded-lg has-[:checked]:bg-teal-50 has-[:checked]:border-teal-400 cursor-pointer">
+          <input type="radio" name="type" value="later" formControlName="type"
+            class="h-4 w-4 border-gray-300 text-teal-600 focus:ring-teal-500">
+          <span class="ml-3 text-sm font-medium text-gray-700">Schedule for Later</span>
+        </label>
+      </fieldset>
+      @if(scheduleForm.get('type')?.value === 'later') {
+      <div class="flex space-x-4 p-4 bg-gray-50 rounded-lg mt-2">
+        <div class="flex-1">
+          <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
+          <input type="date" id="date" formControlName="date"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3 sm:text-sm">
+        </div>
+        <div class="flex-1">
+          <label for="time" class="block text-sm font-medium text-gray-700">Time</label>
+          <input type="time" id="time" formControlName="time"
+            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-teal-500 focus:ring-teal-500 p-3 sm:text-sm">
+        </div>
+      </div>
+      }
+    </form>
+    }
+    @case (6) {
+    <!-- Step 6: Review -->
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-xl font-bold text-gray-800 text-center">Review Campaign</h2>
+      <p class="text-gray-500 mt-1 text-center mb-8">Final check before launching your campaign.</p>
+
+      @switch (campaignType()) {
+      @case ('Email') {
+      <div class="w-full max-w-sm mx-auto bg-white border-8 border-black rounded-3xl shadow-lg overflow-hidden">
+        <div class="px-2 pt-2 pb-1">
+          <div class="h-4 w-28 bg-gray-200 rounded-full mx-auto"></div>
+        </div>
+        <div class="p-4 border-t border-gray-200">
+          <p class="text-sm text-gray-500">Subject: <span
+              class="font-semibold text-gray-800">{{contentForm.get('subject')?.value}}</span></p>
+          <hr class="my-3">
+          <div class="prose prose-sm" [innerHTML]="contentForm.get('body')?.value"></div>
+        </div>
+      </div>
+      }
+      @case ('SMS') {
+      <div class="w-full max-w-sm mx-auto bg-white border-8 border-black rounded-3xl shadow-lg p-4">
+        <div class="flex justify-end">
+          <div class="bg-blue-500 text-white p-3 rounded-lg max-w-xs">
+            <p>{{ smsContentForm.get('message')?.value }}</p>
+          </div>
+        </div>
+      </div>
+      }
+      @case ('Social Post') {
+      <div class="bg-white rounded-lg shadow-md border border-gray-200 max-w-md mx-auto">
+        <div class="p-4">
+          <div class="flex items-center space-x-3">
+            <div class="p-2 bg-gray-200 rounded-full">
+              <svg class="w-6 h-6 text-gray-600" fill="currentColor" viewBox="0 0 24 24">
+                <path
+                  d="M22.23 0H1.77C.8 0 0 .77 0 1.72v20.56C0 23.23.8 24 1.77 24h11.23v-9.29H9.69v-3.62h3.31V8.41c0-3.28 1.99-5.02 4.82-5.02 1.38 0 2.56.1 2.9.15v3.24h-1.92c-1.59 0-1.9.75-1.9 1.86v2.44h3.59l-.47 3.62h-3.12V24h5.98c.97 0 1.77-.77 1.77-1.72V1.72C24 .77 23.2 0 22.23 0z" />
+              </svg>
+            </div>
+            <div>
+              <p class="font-semibold">{{ socialContentForm.get('platform')?.value }} Post</p>
+              <p class="text-xs text-gray-500">Just now</p>
+            </div>
+          </div>
+          <p class="mt-4 text-gray-800">{{ socialContentForm.get('text')?.value }}</p>
+        </div>
+        @if (socialContentForm.get('imageUrl')?.value) {
+        <img [src]="socialContentForm.get('imageUrl')?.value" class="w-full h-auto object-cover">
+        }
+      </div>
+      }
+      @case ('In-app') {
+      <div class="bg-white rounded-lg shadow-lg max-w-md mx-auto border border-gray-200 p-6 text-center">
+        <h3 class="text-xl font-bold text-gray-900">{{ inAppContentForm.get('headline')?.value }}</h3>
+        <p class="text-gray-600 mt-2">{{ inAppContentForm.get('body')?.value }}</p>
+        <button class="mt-6 bg-teal-500 text-white px-6 py-2 rounded-lg">Action</button>
+      </div>
+      }
+      @case ('Offline') {
+      <div class="bg-white rounded-lg shadow-md border border-gray-200 max-w-lg mx-auto p-8">
+        <h2 class="text-2xl font-bold border-b pb-2">{{ offlineContentForm.get('title')?.value }}</h2>
+        <p class="mt-4 text-gray-700 whitespace-pre-wrap">{{ offlineContentForm.get('details')?.value }}</p>
+        <div class="mt-8 text-center">
+          <button class="bg-gray-700 text-white px-6 py-2 rounded-lg hover:bg-gray-800 flex items-center mx-auto">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+            </svg>
+            Export as PDF
+          </button>
+        </div>
+      </div>
+      }
+      }
+    </div>
+    }
     }
   </div>
 
-   <!-- Navigation Buttons -->
+  <!-- Navigation Buttons -->
   <div class="shrink-0 pt-5 border-t border-gray-200 mt-8">
     <div class="flex justify-end items-center space-x-4">
-      <button type="button" (click)="prevStep()" [class.invisible]="currentStep() === 1" class="rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-          Back
+      <button type="button" (click)="prevStep()" [class.invisible]="currentStep() === 1"
+        class="rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+        Back
       </button>
-      @if (currentStep() < steps.length) {
-        <button type="button" (click)="nextStep()" [disabled]="!isCurrentStepValid()" class="rounded-lg bg-gray-800 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-gray-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">
-            Next
+      @if (currentStep() < steps.length) { <button type="button" (click)="nextStep()" [disabled]="!isCurrentStepValid()"
+        class="rounded-lg bg-black px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-gray-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-800 disabled:opacity-50 disabled:cursor-not-allowed">
+        Next
         </button>
-      }
-      @if (currentStep() === steps.length) {
-         <button type="button" (click)="finish()" class="rounded-lg bg-teal-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-teal-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600">
-            Finish & Save Campaign
+        }
+        @if (currentStep() === steps.length) {
+        <button type="button" (click)="finish()"
+          class="rounded-lg bg-teal-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-teal-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600">
+          Finish & Save Campaign
         </button>
-      }
+        }
     </div>
   </div>
 </div>

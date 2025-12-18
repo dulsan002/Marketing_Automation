@@ -1,0 +1,152 @@
+<div class="fixed inset-0 bg-black bg-opacity-60 z-40 transition-opacity" (click)="closeModal()"></div>
+<div class="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col animate-fade-in-up">
+
+        <!-- Header -->
+        <div class="flex justify-between items-center p-5 border-b border-gray-200">
+            <div>
+                <h2 class="text-xl font-bold text-gray-800">{{ campaign().name }}</h2>
+                @if (campaign().description) {
+                <p class="text-sm text-gray-500 mt-1">{{ campaign().description }}</p>
+                }
+            </div>
+            <button (click)="closeModal()" class="text-gray-400 hover:text-gray-600 p-1 rounded-full">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
+            </button>
+        </div>
+
+        <div class="p-6 overflow-y-auto space-y-8">
+
+            <!-- Key Stats Grid -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <div class="bg-gray-50 p-3 rounded-lg">
+                    <dt class="text-xs font-medium text-gray-500 uppercase">Type</dt>
+                    <dd class="mt-1 text-sm font-bold text-gray-900">{{ campaign().type }}</dd>
+                </div>
+                <div class="bg-gray-50 p-3 rounded-lg">
+                    <dt class="text-xs font-medium text-gray-500 uppercase">Status</dt>
+                    <dd class="mt-1">
+                        <span class="px-2 py-0.5 text-xs font-medium rounded-full capitalize"
+                            [class]="getStatusClass(campaign().status)">
+                            {{ campaign().status }}
+                        </span>
+                    </dd>
+                </div>
+                <div class="bg-gray-50 p-3 rounded-lg">
+                    <dt class="text-xs font-medium text-gray-500 uppercase">Target</dt>
+                    <dd class="mt-1 text-sm font-bold text-gray-900 truncate" [title]="campaign().segmentId">{{
+                        campaign().segmentId || 'Unassigned' }}</dd>
+                </div>
+                <div class="bg-gray-50 p-3 rounded-lg">
+                    <dt class="text-xs font-medium text-gray-500 uppercase">Schedule</dt>
+                    <dd class="mt-1 text-sm font-bold text-gray-900">
+                        @if(campaign().scheduleType === 'later') {
+                        {{ campaign().scheduleDate }} {{ campaign().scheduleTime }}
+                        } @else {
+                        Immediate
+                        }
+                    </dd>
+                </div>
+            </div>
+
+            <!-- Performance Metrics (if active/completed) -->
+            @if (campaign().status !== 'draft') {
+            <div>
+                <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wide mb-3">Performance</h3>
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="border border-gray-100 p-4 rounded-lg text-center shadow-sm">
+                        <dt class="text-sm text-gray-500">Sent</dt>
+                        <dd class="text-2xl font-bold text-indigo-600">{{ campaign().sent | number }}</dd>
+                    </div>
+                    <div class="border border-gray-100 p-4 rounded-lg text-center shadow-sm">
+                        <dt class="text-sm text-gray-500">Open Rate</dt>
+                        <dd class="text-2xl font-bold text-green-600">{{ campaign().openRate }}%</dd>
+                    </div>
+                    <div class="border border-gray-100 p-4 rounded-lg text-center shadow-sm">
+                        <dt class="text-sm text-gray-500">CTR</dt>
+                        <dd class="text-2xl font-bold text-blue-600">{{ campaign().ctr }}%</dd>
+                    </div>
+                </div>
+            </div>
+            }
+
+            <!-- Content Details -->
+            <div>
+                <h3 class="text-sm font-bold text-gray-900 uppercase tracking-wide mb-3">Content Preview</h3>
+                <div class="bg-gray-50 rounded-xl p-5 border border-gray-200">
+
+                    @switch (campaign().type) {
+                    @case ('Email') {
+                    <div class="space-y-3">
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div><span class="text-gray-500">From:</span> <span
+                                    class="font-medium text-gray-900 ml-2">{{ campaign().senderName }}</span></div>
+                            <div><span class="text-gray-500">Email:</span> <span
+                                    class="font-medium text-gray-900 ml-2">{{ campaign().senderEmail }}</span></div>
+                        </div>
+                        <div class="pt-2 border-t border-gray-200">
+                            <div class="text-sm"><span class="text-gray-500">Subject:</span> <span
+                                    class="font-bold text-gray-900 ml-2">{{ campaign().subject }}</span></div>
+                        </div>
+                        <div class="bg-white p-4 rounded border border-gray-200 text-sm text-gray-700 prose max-w-none"
+                            [innerHTML]="campaign().body"></div>
+                    </div>
+                    }
+
+                    @case ('SMS') {
+                    <div class="max-w-sm mx-auto bg-white border-4 border-gray-800 rounded-md p-4 shadow-sm relative">
+                        <div class="absolute -left-1 top-4 w-1 h-3 bg-gray-300 rounded-r"></div>
+                        <div class="bg-blue-100 p-3 rounded-lg rounded-tl-none text-gray-800 text-sm inline-block">
+                            {{ campaign().message }}
+                        </div>
+                    </div>
+                    }
+
+                    @case ('Social Post') {
+                    <div class="bg-white border border-gray-200 rounded-lg p-4 max-w-sm mx-auto">
+                        <div class="flex items-center space-x-2 mb-3">
+                            <div
+                                class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center font-bold text-gray-500">
+                                {{ campaign().platform?.[0] }}</div>
+                            <div class="text-sm font-semibold">{{ campaign().platform }}</div>
+                        </div>
+                        <p class="text-sm text-gray-800 mb-3">{{ campaign().text }}</p>
+                        @if (campaign().imageUrl) {
+                        <img [src]="campaign().imageUrl" class="w-full rounded-md object-cover">
+                        }
+                    </div>
+                    }
+
+                    @case ('In-app') {
+                    <div class="bg-white border border-gray-200 shadow-lg p-6 rounded-lg text-center max-w-sm mx-auto">
+                        <h4 class="text-lg font-bold text-gray-900">{{ campaign().headline }}</h4>
+                        <p class="text-sm text-gray-600 mt-2">{{ campaign().body }}</p>
+                        <div class="mt-4 px-4 py-2 bg-teal-600 text-white text-sm font-bold rounded">Action</div>
+                    </div>
+                    }
+
+                    @case ('Offline') {
+                    <div class="bg-white border border-gray-200 p-6 rounded-lg">
+                        <h4 class="text-lg font-bold text-gray-900">{{ campaign().title }}</h4>
+                        <p class="text-sm text-gray-600 mt-2 whitespace-pre-wrap">{{ campaign().details }}</p>
+                    </div>
+                    }
+                    }
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <div class="p-4 bg-gray-50 border-t border-gray-200 text-right">
+            <button (click)="closeModal()"
+                class="px-4 py-2 bg-white text-gray-700 border border-gray-300 rounded-lg font-semibold hover:bg-gray-100 transition duration-200">
+                Close
+            </button>
+        </div>
+
+    </div>
+</div>

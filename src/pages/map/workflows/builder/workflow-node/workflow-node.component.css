@@ -1,17 +1,23 @@
-/* Styles for the main node card */
+/* Styles for the main node card with Glassmorphism */
 .node-card {
-    @apply bg-white border rounded-lg p-3 w-80 cursor-pointer shadow-sm relative transition-all duration-200 z-10;
+    @apply rounded-xl p-3 w-[340px] cursor-pointer relative transition-all duration-300 z-10 select-none;
+    @apply bg-white/90 backdrop-blur-sm shadow-sm border border-zinc-200;
 }
+
+.node-card:hover {
+    @apply shadow-lg border-zinc-300 -translate-y-0.5;
+}
+
 .dashed-border {
-    @apply border-dashed;
+    @apply border-dashed border-2 border-zinc-300;
 }
 
 /* Style for when a node is selected */
 .node-card.selected {
-    @apply border-indigo-500 shadow-lg scale-105 ring-2 ring-indigo-200;
+    @apply shadow-xl ring-2 ring-black scale-[1.02] z-20 bg-white;
 }
 
 /* Style for the "TRIGGER" badge on trigger nodes */
 .node-badge {
-    @apply absolute -top-2.5 left-4 px-2 py-0.5 bg-green-600 text-white text-[10px] font-bold uppercase rounded-full;
+    @apply absolute -top-3 left-4 px-2.5 py-0.5 bg-zinc-900 text-white text-[10px] font-bold uppercase rounded-full tracking-wide shadow-sm border border-zinc-700;
 }

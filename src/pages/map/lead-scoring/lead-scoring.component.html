@@ -9,94 +9,118 @@
     </div>
     <!-- Top Leads by Score -->
     <div class="bg-white p-1 rounded-lg shadow-sm border border-gray-200">
-       <h3 class="text-lg font-semibold text-gray-900 p-5">Top Leads by Score</h3>
-       <div class="overflow-x-auto">
+      <h3 class="text-lg font-semibold text-gray-900 p-5">Top Leads by Score</h3>
+      <div class="overflow-x-auto">
         <table class="w-full text-sm text-left text-gray-500">
-            <thead class="text-xs text-gray-700 uppercase bg-gray-50">
+          <thead class="text-xs text-gray-700 uppercase bg-gray-50">
             <tr>
-                <th scope="col" class="px-6 py-3">Name</th>
-                <th scope="col" class="px-6 py-3">Company</th>
-                <th scope="col" class="px-6 py-3">Title</th>
-                <th scope="col" class="px-6 py-3 text-right">Score</th>
+              <th scope="col" class="px-6 py-3">Name</th>
+              <th scope="col" class="px-6 py-3">Company</th>
+              <th scope="col" class="px-6 py-3">Title</th>
+              <th scope="col" class="px-6 py-3 text-right">Score</th>
             </tr>
-            </thead>
-            <tbody>
+          </thead>
+          <tbody>
             @for (lead of topLeads(); track lead.name) {
-                <tr class="bg-white border-b hover:bg-gray-50">
-                <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{{ lead.name }}</td>
-                <td class="px-6 py-4">{{ lead.company }}</td>
-                <td class="px-6 py-4">{{ lead.title }}</td>
-                <td class="px-6 py-4 text-right font-bold text-indigo-600">{{ lead.score }}</td>
-                </tr>
+            <tr class="bg-white border-b hover:bg-gray-50">
+              <td class="px-6 py-4 font-medium text-gray-900 whitespace-nowrap">{{ lead.name }}</td>
+              <td class="px-6 py-4">{{ lead.company }}</td>
+              <td class="px-6 py-4">{{ lead.title }}</td>
+              <td class="px-6 py-4 text-right font-bold text-indigo-600">{{ lead.score }}</td>
+            </tr>
             }
-            </tbody>
+          </tbody>
         </table>
-       </div>
+      </div>
     </div>
   </div>
   <div class="lg:col-span-1">
-     <!-- Scoring Rules -->
+    <!-- Scoring Rules -->
     <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
       <div class="flex justify-between items-center">
         <h3 class="text-lg font-semibold text-gray-900">Scoring Rules</h3>
-        <button (click)="startAddingRule()" [disabled]="availableActions().length === 0" [class.hidden]="isAddingRule()" class="px-3 py-1.5 bg-indigo-600 text-white rounded-md text-sm font-semibold hover:bg-indigo-700 transition duration-200 flex items-center disabled:bg-indigo-300 disabled:cursor-not-allowed">
-            <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
-            Add Rule
+        <button (click)="startAddingRule()" [disabled]="availableActions().length === 0" [class.hidden]="isAddingRule()"
+          class="px-3 py-1.5 bg-black text-white rounded-md text-sm font-semibold hover:bg-gray-800 transition duration-200 flex items-center disabled:bg-gray-400 disabled:cursor-not-allowed">
+          <svg class="w-4 h-4 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+          </svg>
+          Add Rule
         </button>
       </div>
       <div class="mt-4 space-y-3">
         @for (rule of scoringRules(); track rule.id) {
-            <div class="group">
-                @if (editingRuleId() !== rule.id) {
-                    <div class="flex justify-between items-center bg-gray-50 group-hover:bg-gray-100 p-3 rounded-md transition-colors">
-                        <span class="text-gray-700 text-sm">{{ rule.name }}</span>
-                        <div class="flex items-center">
-                            <span class="font-bold text-green-600 mr-4">+{{ rule.score }}</span>
-                            <div class="hidden group-hover:flex items-center space-x-2">
-                                <button (click)="startEditingRule(rule)" class="text-gray-500 hover:text-indigo-600">
-                                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" /></svg>
-                                </button>
-                                <button (click)="deleteRule(rule.id)" class="text-gray-500 hover:text-red-600">
-                                    <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.134-2.09-2.134H8.09a2.09 2.09 0 00-2.09 2.134v.916m7.5 0a48.667 48.667 0 00-7.5 0" /></svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                } @else {
-                    <form [formGroup]="ruleForm" (ngSubmit)="saveRule(rule.id)" class="bg-gray-100 p-3 rounded-md border border-indigo-300 space-y-2">
-                        <select formControlName="name" class="w-full text-sm p-2 rounded border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                           @for(action of availableActionsForEdit(); track action) {
-                             <option [value]="action">{{ action }}</option>
-                           }
-                        </select>
-                        <input type="number" formControlName="score" class="w-full text-sm p-2 rounded border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                        <div class="flex justify-end space-x-2 pt-1">
-                            <button type="button" (click)="cancelEditRule()" class="px-3 py-1 text-xs font-semibold rounded bg-white border border-gray-300 text-gray-700 hover:bg-gray-50">Cancel</button>
-                            <button type="submit" [disabled]="ruleForm.invalid" class="px-3 py-1 text-xs font-semibold rounded bg-indigo-600 text-white disabled:bg-indigo-300 hover:bg-indigo-700">Save</button>
-                        </div>
-                    </form>
-                }
+        <div class="group">
+          @if (editingRuleId() !== rule.id) {
+          <div
+            class="flex justify-between items-center bg-gray-50 group-hover:bg-gray-100 p-3 rounded-md transition-colors">
+            <span class="text-gray-700 text-sm">{{ rule.name }}</span>
+            <div class="flex items-center">
+              <span class="font-bold text-green-600 mr-4">+{{ rule.score }}</span>
+              <div class="hidden group-hover:flex items-center space-x-2">
+                <button (click)="startEditingRule(rule)" class="text-gray-500 hover:text-indigo-600">
+                  <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0115.75 21H5.25A2.25 2.25 0 013 18.75V8.25A2.25 2.25 0 015.25 6H10" />
+                  </svg>
+                </button>
+                <button (click)="deleteRule(rule.id)" class="text-gray-500 hover:text-red-600">
+                  <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                    stroke-width="2" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.134-2.09-2.134H8.09a2.09 2.09 0 00-2.09 2.134v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                  </svg>
+                </button>
+              </div>
             </div>
+          </div>
+          } @else {
+          <form [formGroup]="ruleForm" (ngSubmit)="saveRule(rule.id)"
+            class="bg-gray-100 p-3 rounded-md border border-indigo-300 space-y-2">
+            <select formControlName="name"
+              class="w-full text-sm p-2 rounded border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+              @for(action of availableActionsForEdit(); track action) {
+              <option [value]="action">{{ action }}</option>
+              }
+            </select>
+            <input type="number" formControlName="score"
+              class="w-full text-sm p-2 rounded border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+            <div class="flex justify-end space-x-2 pt-1">
+              <button type="button" (click)="cancelEditRule()"
+                class="px-3 py-1 text-xs font-semibold rounded bg-white border border-gray-300 text-gray-700 hover:bg-gray-50">Cancel</button>
+              <button type="submit" [disabled]="ruleForm.invalid"
+                class="px-3 py-1 text-xs font-semibold rounded bg-indigo-600 text-white disabled:bg-indigo-300 hover:bg-indigo-700">Save</button>
+            </div>
+          </form>
+          }
+        </div>
         }
         @if(isAddingRule()) {
-            <form [formGroup]="ruleForm" (ngSubmit)="saveNewRule()" class="bg-gray-50 p-3 rounded-md border border-dashed border-gray-300 space-y-3">
-                <div>
-                  <label class="text-xs font-medium text-gray-600">Action</label>
-                  <select formControlName="name" class="w-full text-sm p-2 mt-1 rounded border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                    @for(action of availableActions(); track action) {
-                      <option [value]="action">{{ action }}</option>
-                    }
-                  </select>
-                </div>
-                 <div>
-                  <label class="text-xs font-medium text-gray-600">Score</label>
-                  <input type="number" formControlName="score" class="w-full text-sm p-2 mt-1 rounded border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                </div>
-                <div class="flex justify-end space-x-2 pt-2">
-                    <button type="button" (click)="cancelAddRule()" class="px-3 py-1 text-xs font-semibold rounded bg-white border border-gray-300 text-gray-700 hover:bg-gray-50">Cancel</button>
-                    <button type="submit" [disabled]="ruleForm.invalid" class="px-3 py-1 text-xs font-semibold rounded bg-indigo-600 text-white disabled:bg-indigo-300 hover:bg-indigo-700">Save Rule</button>
-                </div>
-            </form>
+        <form [formGroup]="ruleForm" (ngSubmit)="saveNewRule()"
+          class="bg-gray-50 p-3 rounded-md border border-dashed border-gray-300 space-y-3">
+          <div>
+            <label class="text-xs font-medium text-gray-600">Action</label>
+            <select formControlName="name"
+              class="w-full text-sm p-2 mt-1 rounded border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+              @for(action of availableActions(); track action) {
+              <option [value]="action">{{ action }}</option>
+              }
+            </select>
+          </div>
+          <div>
+            <label class="text-xs font-medium text-gray-600">Score</label>
+            <input type="number" formControlName="score"
+              class="w-full text-sm p-2 mt-1 rounded border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+          </div>
+          <div class="flex justify-end space-x-2 pt-2">
+            <button type="button" (click)="cancelAddRule()"
+              class="px-3 py-1 text-xs font-semibold rounded bg-white border border-gray-300 text-gray-700 hover:bg-gray-50">Cancel</button>
+            <button type="submit" [disabled]="ruleForm.invalid"
+              class="px-3 py-1 text-xs font-semibold rounded bg-indigo-600 text-white disabled:bg-indigo-300 hover:bg-indigo-700">Save
+              Rule</button>
+          </div>
+        </form>
         }
       </div>
     </div>

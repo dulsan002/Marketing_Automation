@@ -1,26 +1,28 @@
 @if(isModalOpen()) {
-  <app-add-account-modal 
-    (close)="isModalOpen.set(false)"
-    (save)="handleSaveAccount($event)">
-  </app-add-account-modal>
+<app-add-account-modal (close)="isModalOpen.set(false)" (save)="handleSaveAccount($event)">
+</app-add-account-modal>
 }
 <div class="space-y-6">
   <!-- Header with actions -->
   <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
     <div class="flex items-center space-x-4 w-full sm:w-auto">
       <div class="relative w-full sm:w-72">
-        <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+        <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg"
+          fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
         </svg>
-        <input 
-          type="text" 
-          placeholder="Search accounts..." 
+        <input type="text" placeholder="Search accounts..."
           class="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
       </div>
       <!-- Filters can be added here -->
     </div>
-    <button (click)="isModalOpen.set(true)" class="w-full sm:w-auto flex justify-center px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition duration-200 items-center">
-      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+    <button (click)="isModalOpen.set(true)"
+      class="w-full sm:w-auto flex justify-center px-4 py-2 bg-black text-white rounded-lg font-semibold hover:bg-gray-800 transition duration-200 items-center">
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+      </svg>
       New Account
     </button>
   </div>
@@ -42,45 +44,65 @@
         </thead>
         <tbody>
           @if (isLoading()) {
-            @for (_ of [1,2,3,4,5,6]; track _) {
-              <tr class="bg-white border-b animate-pulse">
-                <td class="px-6 py-4">
-                  <div class="h-4 bg-gray-200 rounded w-3/4"></div>
-                  <div class="h-3 bg-gray-200 rounded w-1/2 mt-2"></div>
-                </td>
-                <td class="px-6 py-4"><div class="h-4 bg-gray-200 rounded w-24"></div></td>
-                <td class="px-6 py-4"><div class="h-5 bg-gray-200 rounded-full w-8"></div></td>
-                <td class="px-6 py-4"><div class="h-4 bg-gray-200 rounded w-6"></div></td>
-                <td class="px-6 py-4"><div class="h-2 bg-gray-200 rounded-full w-24"></div></td>
-                <td class="px-6 py-4"><div class="h-4 bg-gray-200 rounded w-20"></div></td>
-                <td class="px-6 py-4"><div class="h-5 w-5 bg-gray-200 rounded-md"></div></td>
-              </tr>
-            }
+          @for (_ of [1,2,3,4,5,6]; track _) {
+          <tr class="bg-white border-b animate-pulse">
+            <td class="px-6 py-4">
+              <div class="h-4 bg-gray-200 rounded w-3/4"></div>
+              <div class="h-3 bg-gray-200 rounded w-1/2 mt-2"></div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="h-4 bg-gray-200 rounded w-24"></div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="h-5 bg-gray-200 rounded-full w-8"></div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="h-4 bg-gray-200 rounded w-6"></div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="h-2 bg-gray-200 rounded-full w-24"></div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="h-4 bg-gray-200 rounded w-20"></div>
+            </td>
+            <td class="px-6 py-4">
+              <div class="h-5 w-5 bg-gray-200 rounded-md"></div>
+            </td>
+          </tr>
+          }
           } @else {
-            @for (account of accounts(); track account.id) {
-              <tr class="bg-white border-b hover:bg-gray-50 transition-colors">
-                <td class="px-6 py-4">
-                  <div class="font-medium text-gray-900">{{ account.name }}</div>
-                  <div class="text-xs text-gray-500">{{ account.employees | number }} employees • ${{ account.revenue }}M</div>
-                </td>
-                <td class="px-6 py-4">{{ account.industry }}</td>
-                <td class="px-6 py-4">
-                  <span class="px-2.5 py-1 text-xs font-semibold rounded-full" [class]="getTierClass(account.tier)">{{ account.tier }}</span>
-                </td>
-                <td class="px-6 py-4 font-semibold text-gray-800">{{ account.score }}</td>
-                <td class="px-6 py-4">
-                  <div class="w-24 bg-gray-200 rounded-full h-2">
-                    <div class="bg-blue-600 h-2 rounded-full" [style.width]="account.intent + '%'"></div>
-                  </div>
-                </td>
-                <td class="px-6 py-4">{{ account.country }}</td>
-                <td class="px-6 py-4 text-right">
-                  <a [routerLink]="['/abm/accounts', account.id]" class="text-gray-500 hover:text-indigo-600 p-2 rounded-md">
-                    <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
-                  </a>
-                </td>
-              </tr>
-            }
+          @for (account of accounts(); track account.id) {
+          <tr class="bg-white border-b hover:bg-gray-50 transition-colors">
+            <td class="px-6 py-4">
+              <div class="font-medium text-gray-900">{{ account.name }}</div>
+              <div class="text-xs text-gray-500">{{ account.employees | number }} employees • ${{ account.revenue }}M
+              </div>
+            </td>
+            <td class="px-6 py-4">{{ account.industry }}</td>
+            <td class="px-6 py-4">
+              <span class="px-2.5 py-1 text-xs font-semibold rounded-full" [class]="getTierClass(account.tier)">{{
+                account.tier }}</span>
+            </td>
+            <td class="px-6 py-4 font-semibold text-gray-800">{{ account.score }}</td>
+            <td class="px-6 py-4">
+              <div class="w-24 bg-gray-200 rounded-full h-2">
+                <div class="bg-blue-600 h-2 rounded-full" [style.width]="account.intent + '%'"></div>
+              </div>
+            </td>
+            <td class="px-6 py-4">{{ account.country }}</td>
+            <td class="px-6 py-4 text-right">
+              <a [routerLink]="['/abm/accounts', account.id]"
+                class="text-gray-500 hover:text-indigo-600 p-2 rounded-md">
+                <svg class="w-5 h-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                  stroke-width="1.5" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                </svg>
+              </a>
+            </td>
+          </tr>
+          }
           }
         </tbody>
       </table>

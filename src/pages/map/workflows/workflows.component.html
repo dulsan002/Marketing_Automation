@@ -1,5 +1,5 @@
 @if(showTemplateSelector()) {
-  <app-workflow-template-selector (select)="handleTemplateSelection($event)"></app-workflow-template-selector>
+<app-workflow-template-selector (select)="handleTemplateSelection($event)"></app-workflow-template-selector>
 }
 
 <div class="space-y-6">
@@ -7,114 +7,140 @@
   <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
     <div class="flex items-center space-x-4 w-full sm:w-auto">
       <div class="relative w-full sm:w-72">
-        <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+        <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg"
+          fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
         </svg>
-        <input 
-          type="text" 
-          placeholder="Search workflows..." 
-          (input)="onSearch($event)"
+        <input type="text" placeholder="Search workflows..." (input)="onSearch($event)"
           class="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
       </div>
-       <select (change)="onFilterChange($event)" class="py-2.5 px-4 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
-          <option value="all">All Status</option>
-          @for (status of statuses; track status) {
-            <option [value]="status" class="capitalize">{{ status }}</option>
-          }
-        </select>
+      <select (change)="onFilterChange($event)"
+        class="py-2.5 px-4 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        <option value="all">All Status</option>
+        @for (status of statuses; track status) {
+        <option [value]="status" class="capitalize">{{ status }}</option>
+        }
+      </select>
     </div>
-    <button (click)="showTemplateSelector.set(true)" class="w-full sm:w-auto flex justify-center px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition duration-200 items-center">
-      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+    <button (click)="showTemplateSelector.set(true)"
+      class="w-full sm:w-auto flex justify-center px-4 py-2 bg-black text-white rounded-lg font-semibold hover:bg-gray-800 transition duration-200 items-center">
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+      </svg>
       New Workflow
     </button>
   </div>
 
   <!-- Workflow cards -->
   @if (!isLoading() && filteredWorkflows().length > 0) {
-    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-      @for (workflow of filteredWorkflows(); track workflow.id) {
-        <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex flex-col justify-between hover:shadow-md hover:border-indigo-300 transition-all duration-200">
-          <div>
-            <div class="flex justify-between items-start gap-4">
-              <div class="flex items-start space-x-3 min-w-0">
-                  <div class="p-2 bg-teal-50 rounded-md shrink-0">
-                    <svg class="w-6 h-6 text-teal-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" /></svg>
-                  </div>
-                  <div class="min-w-0">
-                    <a [routerLink]="['/map/workflows/builder', workflow.id]" class="text-lg font-semibold text-gray-900 leading-tight hover:underline break-words">{{ workflow.name }}</a>
-                  </div>
-              </div>
-              <div class="relative flex items-center shrink-0">
-                <span class="px-2.5 py-1 text-xs font-medium rounded-full capitalize" [class]="getStatusClass(workflow.status)">
-                  {{ workflow.status }}
-                </span>
-                 <button (click)="toggleDropdown(workflow.id)" class="ml-2 text-gray-500 hover:text-gray-700 p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" /></svg>
-                  </button>
-                  @if (activeDropdown() === workflow.id) {
-                    <div class="origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
-                      <div class="py-1">
-                        <a [routerLink]="['/map/workflows/builder', workflow.id]" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Edit</a>
-                        <button (click)="deleteWorkflow(workflow.id)" class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">Delete</button>
-                      </div>
-                    </div>
-                  }
-              </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+    @for (workflow of filteredWorkflows(); track workflow.id) {
+    <div
+      class="bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex flex-col justify-between hover:shadow-md hover:border-indigo-300 transition-all duration-200">
+      <div>
+        <div class="flex justify-between items-start gap-4">
+          <div class="flex items-start space-x-3 min-w-0">
+            <div class="p-2 bg-teal-50 rounded-md shrink-0">
+              <svg class="w-6 h-6 text-teal-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                stroke-width="1.5" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+              </svg>
             </div>
-            <p class="text-sm text-gray-600 mt-2">{{ workflow.description }}</p>
-            <p class="text-xs text-gray-500 mt-2 font-mono">▷ Trigger: {{ workflow.trigger }}</p>
-          </div>
-
-          <div class="mt-6 border-t border-gray-200 pt-4">
-            <div class="flex justify-between items-center text-center">
-              <div>
-                <p class="text-xl font-bold text-gray-900">{{ workflow.stats.enrolled | number }}</p>
-                <p class="text-xs text-gray-500">Enrolled</p>
-              </div>
-              <div>
-                <p class="text-xl font-bold text-gray-900">{{ workflow.stats.sent | number }}</p>
-                <p class="text-xs text-gray-500">Sent</p>
-              </div>
-              <div>
-                <p class="text-xl font-bold text-gray-900">{{ workflow.stats.converted | number }}</p>
-                <p class="text-xs text-gray-500">Converted</p>
-              </div>
+            <div class="min-w-0">
+              <a [routerLink]="['/map/workflows/builder', workflow.id]"
+                class="text-lg font-semibold text-gray-900 leading-tight hover:underline break-words">{{ workflow.name
+                }}</a>
             </div>
           </div>
-          
-           <div class="mt-4 flex justify-between items-center text-sm">
-              <p class="text-gray-500">Modified {{ workflow.modified }}</p>
-              @if (workflow.status !== 'draft') {
-                <button (click)="toggleStatus(workflow); $event.preventDefault()" class="flex items-center font-semibold" [class.text-yellow-600]="workflow.status === 'active'" [class.text-green-600]="workflow.status === 'paused'">
-                  @if (workflow.status === 'active') {
-                    <svg class="w-5 h-5 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M5.75 3a.75.75 0 00-.75.75v12.5c0 .414.336.75.75.75h1.5a.75.75 0 00.75-.75V3.75A.75.75 0 007.25 3h-1.5zM12.75 3a.75.75 0 00-.75.75v12.5c0 .414.336.75.75.75h1.5a.75.75 0 00.75-.75V3.75a.75.75 0 00-.75-.75h-1.5z" /></svg>
-                    <span>Pause</span>
-                  } @else {
-                    <svg class="w-5 h-5 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" /></svg>
-                    <span>Resume</span>
-                  }
-                </button>
-              }
+          <div class="relative flex items-center shrink-0">
+            <span class="px-2.5 py-1 text-xs font-medium rounded-full capitalize"
+              [class]="getStatusClass(workflow.status)">
+              {{ workflow.status }}
+            </span>
+            <button (click)="toggleDropdown(workflow.id)"
+              class="ml-2 text-gray-500 hover:text-gray-700 p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+              <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+              </svg>
+            </button>
+            @if (activeDropdown() === workflow.id) {
+            <div
+              class="origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
+              <div class="py-1">
+                <a [routerLink]="['/map/workflows/builder', workflow.id]"
+                  class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Edit</a>
+                <button (click)="deleteWorkflow(workflow.id)"
+                  class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">Delete</button>
+              </div>
             </div>
-
-        </div>
-      }
-    </div>
-  } @else {
-    <div class="text-center py-16 border-2 border-dashed border-gray-300 rounded-lg">
-        <h3 class="text-lg font-medium text-gray-900">
-            @if(isLoading()) {
-                Loading Workflows...
-            } @else {
-                No Workflows Found
             }
-        </h3>
-        <p class="mt-1 text-sm text-gray-500">
-             @if(!isLoading()) {
-                No workflows match your current search and filter criteria.
-             }
-        </p>
+          </div>
+        </div>
+        <p class="text-sm text-gray-600 mt-2">{{ workflow.description }}</p>
+        <p class="text-xs text-gray-500 mt-2 font-mono">▷ Trigger: {{ workflow.trigger }}</p>
+      </div>
+
+      <div class="mt-6 border-t border-gray-200 pt-4">
+        <div class="flex justify-between items-center text-center">
+          <div>
+            <p class="text-xl font-bold text-gray-900">{{ workflow.stats.enrolled | number }}</p>
+            <p class="text-xs text-gray-500">Enrolled</p>
+          </div>
+          <div>
+            <p class="text-xl font-bold text-gray-900">{{ workflow.stats.sent | number }}</p>
+            <p class="text-xs text-gray-500">Sent</p>
+          </div>
+          <div>
+            <p class="text-xl font-bold text-gray-900">{{ workflow.stats.converted | number }}</p>
+            <p class="text-xs text-gray-500">Converted</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="mt-4 flex justify-between items-center text-sm">
+        <p class="text-gray-500">Modified {{ workflow.modified }}</p>
+        @if (workflow.status !== 'draft') {
+        <button (click)="toggleStatus(workflow); $event.preventDefault()" class="flex items-center font-semibold"
+          [class.text-yellow-600]="workflow.status === 'active'" [class.text-green-600]="workflow.status === 'paused'">
+          @if (workflow.status === 'active') {
+          <svg class="w-5 h-5 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path
+              d="M5.75 3a.75.75 0 00-.75.75v12.5c0 .414.336.75.75.75h1.5a.75.75 0 00.75-.75V3.75A.75.75 0 007.25 3h-1.5zM12.75 3a.75.75 0 00-.75.75v12.5c0 .414.336.75.75.75h1.5a.75.75 0 00.75-.75V3.75a.75.75 0 00-.75-.75h-1.5z" />
+          </svg>
+          <span>Pause</span>
+          } @else {
+          <svg class="w-5 h-5 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path
+              d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z" />
+          </svg>
+          <span>Resume</span>
+          }
+        </button>
+        }
+      </div>
+
     </div>
+    }
+  </div>
+  } @else {
+  <div class="text-center py-16 border-2 border-dashed border-gray-300 rounded-lg">
+    <h3 class="text-lg font-medium text-gray-900">
+      @if(isLoading()) {
+      Loading Workflows...
+      } @else {
+      No Workflows Found
+      }
+    </h3>
+    <p class="mt-1 text-sm text-gray-500">
+      @if(!isLoading()) {
+      No workflows match your current search and filter criteria.
+      }
+    </p>
+  </div>
   }
 
 </div>

@@ -1,9 +1,12 @@
-import { ChangeDetectionStrategy, Component, signal, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, inject, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
 import { Campaign } from '../../../types';
 import { CampaignDetailModalComponent } from './campaign-detail-modal.component';
 import { CampaignService } from '../../../services/campaign.service';
+
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
 
 /**
  * Manages the display and interaction of the main campaigns list.
@@ -13,19 +16,45 @@ import { CampaignService } from '../../../services/campaign.service';
  */
 @Component({
   selector: 'app-campaigns',
-  imports: [CommonModule, RouterModule, CampaignDetailModalComponent],
+  imports: [CommonModule, RouterModule, CampaignDetailModalComponent, MatButtonModule, MatIconModule],
   templateUrl: './campaigns.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CampaignsComponent {
   private campaignService = inject(CampaignService);
+  private router = inject(Router);
 
-  /** A read-only signal holding the list of all marketing campaigns. */
-  readonly campaigns = this.campaignService.getCampaigns();
+  /** A signal holding the list of all marketing campaigns. */
+  readonly campaigns = signal<Campaign[]>([]);
+
   /** Manages which campaign's action dropdown is currently visible. Null if none are open. */
   readonly activeDropdown = signal<string | null>(null);
   /** Holds the campaign data for the currently selected campaign to be shown in the detail modal. */
   readonly selectedCampaign = signal<Campaign | null>(null);
+
+  // Search and Filter signals
+  readonly searchTerm = signal('');
+  readonly statusFilter = signal<Campaign['status'] | 'all'>('all');
+
+  readonly filteredCampaigns = computed(() => {
+    const campaigns = this.campaigns();
+    const term = this.searchTerm().toLowerCase();
+    const status = this.statusFilter();
+
+    return campaigns.filter(campaign => {
+      const matchesSearch = campaign.name.toLowerCase().includes(term);
+      const matchesStatus = status === 'all' || campaign.status === status;
+      return matchesSearch && matchesStatus;
+    });
+  });
+
+  constructor() {
+    this.loadData();
+  }
+
+  private loadData() {
+    this.campaignService.getCampaigns().then(data => this.campaigns.set(data));
+  }
 
   /**
    * Determines the Tailwind CSS classes for a campaign's status badge.
@@ -38,7 +67,7 @@ export class CampaignsComponent {
       case 'active': return 'bg-green-100 text-green-800';
       case 'paused': return 'bg-yellow-100 text-yellow-800';
       case 'completed': return 'bg-blue-100 text-blue-800';
-      case 'draft': return 'bg-gray-100 text-gray-800';
+      case 'scheduled': return 'bg-purple-100 text-purple-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   }
@@ -66,24 +95,35 @@ export class CampaignsComponent {
    * @param campaign The campaign object to edit.
    */
   editCampaign(campaign: Campaign): void {
-    if (campaign.status === 'active' || campaign.status === 'completed') {
-      console.log('Cannot edit active or completed campaigns.');
-      this.activeDropdown.set(null);
-      return;
-    }
-    console.log('Editing campaign:', campaign);
-    // In a real app, you would navigate to an edit route, e.g.:
-    // this.router.navigate(['/map/campaigns', campaign.id, 'edit']);
-    this.activeDropdown.set(null); // Close dropdown
+    // Navigate to edit route
+    this.router.navigate(['/map/campaigns', campaign.id]);
+    this.activeDropdown.set(null);
   }
 
   /**
    * Deletes a campaign from the list via the campaign service.
    * @param campaignNameToDelete The name of the campaign to delete.
    */
-  deleteCampaign(campaignNameToDelete: string): void {
-    this.campaignService.deleteCampaign(campaignNameToDelete);
+  async deleteCampaign(campaignNameToDelete: string): Promise<void> {
+    await this.campaignService.deleteCampaign(campaignNameToDelete);
+    this.loadData(); // Reload list
     this.activeDropdown.set(null); // Close dropdown
+  }
+
+  /**
+   * Toggles the status of a campaign between active and paused, or reactivates completed ones.
+   * @param campaign The campaign to update.
+   */
+  /**
+   * Updates the status of a campaign.
+   * @param campaign The campaign to update.
+   * @param status The new status to set.
+   */
+  async updateStatus(campaign: Campaign, status: Campaign['status']): Promise<void> {
+    const updated = { ...campaign, status };
+    await this.campaignService.updateCampaign(updated);
+    this.loadData();
+    this.activeDropdown.set(null);
   }
 
   /**

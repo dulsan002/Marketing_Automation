@@ -20,8 +20,8 @@ import { EventFormComponent } from './pages/events/event-form/event-form.compone
 
 export const APP_ROUTES: Routes = [
   { path: '', redirectTo: '/map/analytics', pathMatch: 'full' },
-  { 
-    path: 'map/campaigns', 
+  {
+    path: 'map/campaigns',
     component: CampaignsComponent,
     data: { title: 'Campaigns', description: 'Manage your email and marketing campaigns.' }
   },
@@ -30,8 +30,13 @@ export const APP_ROUTES: Routes = [
     component: NewCampaignComponent,
     data: { title: 'Create New Campaign', description: 'Build your new campaign step-by-step.', fullScreen: true }
   },
-  { 
-    path: 'map/workflows', 
+  {
+    path: 'map/campaigns/:id',
+    component: NewCampaignComponent,
+    data: { title: 'Edit Campaign', description: 'Edit your campaign.', fullScreen: true }
+  },
+  {
+    path: 'map/workflows',
     component: WorkflowsComponent,
     data: { title: 'Workflows', description: 'Automation workflows for lead nurturing.' }
   },
@@ -40,8 +45,8 @@ export const APP_ROUTES: Routes = [
     component: WorkflowBuilderComponent,
     data: { title: 'Workflow Builder', description: 'Design an automation workflow.', fullScreen: true }
   },
-  { 
-    path: 'map/prospect-segments', 
+  {
+    path: 'map/prospect-segments',
     component: ProspectSegmentsComponent,
     data: { title: 'Segments', description: 'Create and manage audience segments for targeted campaigns' }
   },
@@ -55,45 +60,45 @@ export const APP_ROUTES: Routes = [
     component: SegmentEditorComponent,
     data: { title: 'Edit Segment', description: 'Edit an existing audience segment.', fullScreen: true }
   },
-  { 
-    path: 'map/lead-scoring', 
+  {
+    path: 'map/lead-scoring',
     component: LeadScoringComponent,
     data: { title: 'Lead Scoring', description: 'Configure and monitor lead scoring rules.' }
   },
-  { 
-    path: 'map/analytics', 
+  {
+    path: 'map/analytics',
     component: MapAnalyticsComponent,
     data: { title: 'MAP Analytic Report', description: 'Marketing automation performance metrics.' }
   },
   { path: 'abm', redirectTo: '/abm/analytics', pathMatch: 'full' },
-  { 
-    path: 'abm/accounts', 
+  {
+    path: 'abm/accounts',
     component: AccountsComponent,
     data: { title: 'Accounts', description: 'Manage target accounts.' }
   },
-   { 
-    path: 'abm/accounts/:id', 
+  {
+    path: 'abm/accounts/:id',
     component: Account360Component,
     data: { title: 'Account 360', description: 'A unified view of the target account.' }
   },
-  { 
-    path: 'abm/intent-signals', 
+  {
+    path: 'abm/intent-signals',
     component: IntentSignalsComponent,
     data: { title: 'Intent Signals', description: 'Monitor buying intent signals.' }
   },
-  { 
-    path: 'abm/buying-committee', 
+  {
+    path: 'abm/buying-committee',
     component: BuyingCommitteeComponent,
     data: { title: 'Buying Committee', description: 'Map out buying committees.' }
   },
-  { 
-    path: 'abm/analytics', 
+  {
+    path: 'abm/analytics',
     component: AbmAnalyticsComponent,
     data: { title: 'ABM Analytics', description: 'Account-Based Marketing performance.' }
   },
   { path: 'events', redirectTo: '/events/all', pathMatch: 'full' },
-  { 
-    path: 'events/all', 
+  {
+    path: 'events/all',
     component: AllEventsComponent,
     data: { title: 'All Events', description: 'Create and manage all your events and webinars.' }
   },
@@ -112,13 +117,13 @@ export const APP_ROUTES: Routes = [
     component: EventDetailComponent,
     data: { title: 'Event Details', description: 'Manage and review a specific event.' },
   },
-  { 
-    path: 'events/registrations', 
+  {
+    path: 'events/registrations',
     component: RegistrationsComponent,
     data: { title: 'Registrations', description: 'Track and manage all event registrations.' }
   },
-  { 
-    path: 'events/analytics', 
+  {
+    path: 'events/analytics',
     component: EventsAnalyticsComponent,
     data: { title: 'Event Analytics', description: 'Analyze event performance and ROI.' }
   },

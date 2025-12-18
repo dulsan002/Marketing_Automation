@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, signal, computed, inject, DestroyRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MOCK_SEGMENTS } from '../../../data/mock-data';
 import { WysiwygEditorComponent } from '../../../components/wysiwyg-editor/wysiwyg-editor.component';
 import { CampaignService } from '../../../services/campaign.service';
+import { AiService } from '../../../services/ai.service';
 import { Campaign } from '../../../types';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -20,12 +21,22 @@ type ScheduleType = 'immediate' | 'later';
 export class NewCampaignComponent {
   private fb = inject(FormBuilder);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
   private campaignService = inject(CampaignService);
+  private aiService = inject(AiService);
   private destroyRef = inject(DestroyRef);
 
+  readonly isGeneratingSubject = signal(false);
+  readonly aiSubjectSuggestions = signal<string[]>([]);
   readonly prospectSegments = signal(MOCK_SEGMENTS);
+
   readonly currentStep = signal(1);
-  
+
+  // Edit Mode
+  readonly campaignId = signal<string | null>(null);
+  readonly isEditMode = computed(() => this.campaignId() !== null);
+  readonly pageTitle = computed(() => this.isEditMode() ? 'Edit Campaign' : 'Create New Campaign');
+
   readonly steps = [
     { number: 1, name: 'Type' },
     { number: 2, name: 'Detail' },
@@ -46,7 +57,11 @@ export class NewCampaignComponent {
   readonly campaignType = signal<CampaignType | null>(null);
 
   // Forms
-  readonly detailsForm = this.fb.group({ name: ['', Validators.required], description: [''] });
+  readonly detailsForm = this.fb.group({
+    name: ['', Validators.required],
+    description: [''],
+    status: ['draft' as Campaign['status'], Validators.required]
+  });
   readonly contentForm = this.fb.group({ senderName: ['', Validators.required], senderEmail: ['', [Validators.required, Validators.email]], subject: ['', Validators.required], body: ['<p>Start writing your amazing email content here!</p>', Validators.required] });
   readonly smsContentForm = this.fb.group({ message: ['', [Validators.required, Validators.maxLength(160)]] });
   readonly socialContentForm = this.fb.group({ platform: ['LinkedIn', Validators.required], text: ['', Validators.required], imageUrl: [''] });
@@ -54,7 +69,7 @@ export class NewCampaignComponent {
   readonly offlineContentForm = this.fb.group({ title: ['', Validators.required], details: ['', Validators.required] });
   readonly audienceForm = this.fb.group({ segmentId: ['', Validators.required] });
   readonly scheduleForm = this.fb.group({ type: ['immediate' as ScheduleType, Validators.required], date: [''], time: [''] });
-  
+
   // Validity Signals
   private readonly detailsFormValid = signal(this.detailsForm.valid);
   private readonly contentFormValid = signal(this.contentForm.valid);
@@ -66,24 +81,24 @@ export class NewCampaignComponent {
   private readonly scheduleFormValid = signal(this.scheduleForm.valid);
 
   readonly isCurrentStepValid = computed(() => {
-    switch(this.currentStep()) {
+    switch (this.currentStep()) {
       case 1: return this.campaignType() !== null;
       case 2: return this.detailsFormValid();
-      case 3: 
-        switch(this.campaignType()) {
-            case 'Email': return this.contentFormValid();
-            case 'SMS': return this.smsContentFormValid();
-            case 'Social Post': return this.socialContentFormValid();
-            case 'In-app': return this.inAppContentFormValid();
-            case 'Offline': return this.offlineContentFormValid();
-            default: return false;
+      case 3:
+        switch (this.campaignType()) {
+          case 'Email': return this.contentFormValid();
+          case 'SMS': return this.smsContentFormValid();
+          case 'Social Post': return this.socialContentFormValid();
+          case 'In-app': return this.inAppContentFormValid();
+          case 'Offline': return this.offlineContentFormValid();
+          default: return false;
         }
       case 4: return this.audienceFormValid();
       case 5: return this.scheduleFormValid();
       default: return true;
     }
   });
-  
+
   readonly progress = computed(() => ((this.currentStep() - 1) / (this.steps.length - 1)) * 100);
 
   constructor() {
@@ -95,13 +110,87 @@ export class NewCampaignComponent {
     this.offlineContentForm.statusChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.offlineContentFormValid.set(this.offlineContentForm.valid));
     this.audienceForm.statusChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.audienceFormValid.set(this.audienceForm.valid));
     this.scheduleForm.statusChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.scheduleFormValid.set(this.scheduleForm.valid));
+
+    this.route.paramMap.subscribe(async params => {
+      const id = params.get('id');
+      if (id) {
+        this.campaignId.set(id);
+        const campaign = await this.campaignService.getCampaign(id);
+        if (campaign) {
+          this.patchForm(campaign);
+        }
+      }
+    });
+  }
+
+  private patchForm(campaign: Campaign) {
+    this.campaignType.set(campaign.type);
+
+    // Patch Details
+    this.detailsForm.patchValue({
+      name: campaign.name,
+      description: campaign.description,
+      status: campaign.status
+    });
+
+    // Patch Type-Specific Content
+    switch (campaign.type) {
+      case 'Email':
+        this.contentForm.patchValue({
+          senderName: campaign.senderName,
+          senderEmail: campaign.senderEmail,
+          subject: campaign.subject,
+          body: campaign.body
+        });
+        break;
+      case 'SMS':
+        this.smsContentForm.patchValue({ message: campaign.message });
+        break;
+      case 'Social Post':
+        this.socialContentForm.patchValue({
+          platform: campaign.platform,
+          text: campaign.text,
+          imageUrl: campaign.imageUrl
+        });
+        break;
+      case 'In-app':
+        this.inAppContentForm.patchValue({
+          headline: campaign.headline,
+          body: campaign.body // Note: In-app also uses 'body' in mock? or separate? I reused 'body' in type definition for convenience or specific field
+        });
+        // Note: type definition had `headline`. My type update had `headline`. `in-app` content form has `headline` and `body`.
+        // Wait, did I add `body` to in-app form in type?
+        // In Step 597/598: `Campaign` type has `body?: string`. `inAppContentForm` has `body`. OK.
+        break;
+      case 'Offline':
+        this.offlineContentForm.patchValue({
+          title: campaign.title,
+          details: campaign.details
+        });
+        break;
+    }
+
+    // Patch Audience
+    this.audienceForm.patchValue({ segmentId: campaign.segmentId });
+
+    // Patch Schedule
+    if (campaign.scheduleType) {
+      this.scheduleForm.patchValue({
+        type: campaign.scheduleType,
+        date: campaign.scheduleDate,
+        time: campaign.scheduleTime
+      });
+    }
+
+    // Jump to Details (Step 2) since Type is set
+    this.currentStep.set(2);
   }
 
   selectCampaignType(type: CampaignType) { this.campaignType.set(type); }
   nextStep(): void { if (this.currentStep() < this.steps.length) { this.currentStep.update(step => step + 1); } }
   prevStep(): void { if (this.currentStep() > 1) { this.currentStep.update(step => step - 1); } }
   cancel(): void { this.router.navigate(['/map/campaigns']); }
-  
+
   handleImageUpload(event: Event): void {
     const target = event.target as HTMLInputElement;
     if (target.files && target.files[0]) {
@@ -112,16 +201,73 @@ export class NewCampaignComponent {
     }
   }
 
+  generateAiSubjects(): void {
+    this.isGeneratingSubject.set(true);
+    const topic = this.contentForm.get('subject')?.value || 'New Product';
+    this.aiService.generateSubjectLines(topic).subscribe(suggestions => {
+      this.aiSubjectSuggestions.set(suggestions);
+      this.isGeneratingSubject.set(false);
+    });
+  }
+
+  useAiSubject(subject: string): void {
+    this.contentForm.patchValue({ subject });
+    this.aiSubjectSuggestions.set([]);
+  }
+
   finish(): void {
-    const newCampaign: Campaign = {
+    const formVals = {
+      ...this.detailsForm.value,
+      ...this.contentForm.value,
+      ...this.smsContentForm.value,
+      ...this.socialContentForm.value,
+      ...this.inAppContentForm.value,
+      ...this.offlineContentForm.value,
+      ...this.audienceForm.value,
+      ...this.scheduleForm.value
+    };
+
+    const campaignData: any = {
       name: this.detailsForm.value.name || 'Untitled Campaign',
       type: this.campaignType()!,
-      status: 'draft',
+      status: this.detailsForm.value.status || 'draft', // Use selected status
       sent: 0,
       openRate: 0,
       ctr: 0,
+      description: this.detailsForm.value.description,
+
+      // Merge all potential fields
+      senderName: this.contentForm.value.senderName,
+      senderEmail: this.contentForm.value.senderEmail,
+      subject: this.contentForm.value.subject,
+      body: this.contentForm.value.body || this.inAppContentForm.value.body,
+      message: this.smsContentForm.value.message,
+      platform: this.socialContentForm.value.platform,
+      text: this.socialContentForm.value.text,
+      imageUrl: this.socialContentForm.value.imageUrl,
+      headline: this.inAppContentForm.value.headline,
+      title: this.offlineContentForm.value.title,
+      details: this.offlineContentForm.value.details,
+      segmentId: this.audienceForm.value.segmentId,
+      scheduleType: this.scheduleForm.value.type,
+      scheduleDate: this.scheduleForm.value.date,
+      scheduleTime: this.scheduleForm.value.time
     };
-    this.campaignService.addCampaign(newCampaign);
-    this.router.navigate(['/map/campaigns']);
+
+    if (this.isEditMode()) {
+      // Preserve existing fields like stats
+      this.campaignService.getCampaign(this.campaignId()!).then(existing => {
+        if (existing) {
+          const updated = { ...existing, ...campaignData, id: this.campaignId()! };
+          this.campaignService.updateCampaign(updated).then(() => {
+            this.router.navigate(['/map/campaigns']);
+          });
+        }
+      });
+    } else {
+      this.campaignService.addCampaign(campaignData).then(() => {
+        this.router.navigate(['/map/campaigns']);
+      });
+    }
   }
 }

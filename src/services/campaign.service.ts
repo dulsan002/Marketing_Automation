@@ -8,17 +8,39 @@ import { MOCK_CAMPAIGNS } from '../data/mock-data';
 export class CampaignService {
   private campaignsSignal = signal<Campaign[]>(MOCK_CAMPAIGNS);
 
-  getCampaigns() {
-    return this.campaignsSignal.asReadonly();
+  private async simulate<T>(callback: () => T, delay = 200): Promise<T> {
+    return new Promise<T>(resolve => setTimeout(() => resolve(callback()), delay));
   }
 
-  addCampaign(campaign: Campaign) {
-    this.campaignsSignal.update(campaigns => [campaign, ...campaigns]);
+  getCampaigns(): Promise<Campaign[]> {
+    return this.simulate(() => [...this.campaignsSignal()]);
   }
 
-  deleteCampaign(campaignName: string) {
-    this.campaignsSignal.update(campaigns => 
-      campaigns.filter(c => c.name !== campaignName)
-    );
+  getCampaign(id: string): Promise<Campaign | undefined> {
+    return this.simulate(() => this.campaignsSignal().find(c => c.id === id));
+  }
+
+  addCampaign(campaign: Campaign): Promise<Campaign> {
+    return this.simulate(() => {
+      const newCampaign = { ...campaign, id: `cmp_${Date.now()}` };
+      this.campaignsSignal.update(campaigns => [newCampaign, ...campaigns]);
+      return newCampaign;
+    });
+  }
+
+  updateCampaign(campaign: Campaign): Promise<void> {
+    return this.simulate(() => {
+      this.campaignsSignal.update(campaigns =>
+        campaigns.map(c => c.id === campaign.id ? { ...c, ...campaign } : c)
+      );
+    });
+  }
+
+  deleteCampaign(campaignName: string): Promise<void> {
+    return this.simulate(() => {
+      this.campaignsSignal.update(campaigns =>
+        campaigns.filter(c => c.name !== campaignName)
+      );
+    });
   }
 }

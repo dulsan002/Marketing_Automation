@@ -46,7 +46,7 @@ export class Account360Component {
   goBack() {
     this.router.navigate(['/abm/accounts']);
   }
-  
+
   getTierClass(tier: 'T1' | 'T2' | 'T3'): string {
     switch (tier) {
       case 'T1': return 'bg-blue-100 text-blue-800';
@@ -64,6 +64,32 @@ export class Account360Component {
       case 'End-User': return `${base} bg-sky-100 text-sky-800`;
     }
   }
+
+  readonly committeeRoles: CommitteeRole[] = ['Decision Maker', 'Champion', 'Influencer', 'End-User'];
+  readonly influenceLevels: InfluenceLevel[] = ['High', 'Medium', 'Low'];
+
+  readonly committeeMatrix = computed(() => {
+    const acc = this.account();
+    if (!acc) return null;
+
+    // Initialize matrix
+    const matrix: Record<string, Record<string, any[]>> = {};
+    this.influenceLevels.forEach(level => {
+      matrix[level] = {};
+      this.committeeRoles.forEach(role => {
+        matrix[level][role] = [];
+      });
+    });
+
+    // Populate matrix
+    acc.buyingCommittee.forEach(member => {
+      if (matrix[member.influence] && matrix[member.influence][member.role]) {
+        matrix[member.influence][member.role].push(member);
+      }
+    });
+
+    return matrix;
+  });
 
   getInfluenceClass(level: InfluenceLevel): string {
     switch (level) {

@@ -17,8 +17,8 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 export class WysiwygEditorComponent implements ControlValueAccessor {
   @ViewChild('editor', { static: true }) editor!: ElementRef;
 
-  private onChange: (value: string) => void = () => {};
-  private onTouched: () => void = () => {};
+  onChange: (value: string) => void = () => { };
+  onTouched: () => void = () => { };
 
   writeValue(value: any): void {
     this.editor.nativeElement.innerHTML = value || '';

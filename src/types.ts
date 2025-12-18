@@ -2,12 +2,43 @@
  * Represents a single marketing campaign.
  */
 export interface Campaign {
+  id?: string;
   name: string;
   type: 'Email' | 'SMS' | 'Social Post' | 'In-app' | 'Offline';
-  status: 'draft' | 'active' | 'paused' | 'completed';
+  status: 'draft' | 'active' | 'paused' | 'completed' | 'scheduled';
   sent: number;
   openRate: number;
   ctr: number;
+
+  // Details
+  description?: string;
+  segmentId?: string;
+
+  // Content (Email)
+  senderName?: string;
+  senderEmail?: string;
+  subject?: string;
+  body?: string;
+
+  // Content (SMS)
+  message?: string;
+
+  // Content (Social)
+  platform?: string;
+  text?: string;
+  imageUrl?: string;
+
+  // Content (In-App)
+  headline?: string;
+
+  // Content (Offline)
+  title?: string;
+  details?: string;
+
+  // Schedule
+  scheduleType?: 'immediate' | 'later';
+  scheduleDate?: string;
+  scheduleTime?: string;
 }
 
 /**
@@ -18,7 +49,7 @@ export interface WorkflowEdge {
   source: string; // source node id
   target: string; // target node id
   /** Optional label for conditional branches (e.g., from an If/Then node). */
-  label?: 'YES' | 'NO';
+  label?: 'YES' | 'NO' | 'A' | 'B';
 }
 
 /**
@@ -26,7 +57,7 @@ export interface WorkflowEdge {
  */
 export interface Workflow {
   id: string;
-  name:string;
+  name: string;
   description: string;
   trigger: string;
   status: 'draft' | 'active' | 'paused';
@@ -87,9 +118,9 @@ export interface ProspectSegment {
  * Represents a sample contact for display purposes in the segment editor.
  */
 export interface SampleContact {
-    name: string;
-    email: string;
-    avatarInitial: string;
+  name: string;
+  email: string;
+  avatarInitial: string;
 }
 
 /**
@@ -108,13 +139,13 @@ export interface ScoringRule {
 export type NodeType = 'Trigger' | 'FlowControl' | 'Action' | 'End';
 
 /** The specific type of a workflow node, determining its function. */
-export type NodeSubType = 
+export type NodeSubType =
   // Triggers
   'Contact Created' | 'Joined Segment' | 'Left Segment' | 'Email Opened' | 'Form Submitted' | 'Email Clicked' | 'Page Visited' | 'Event Registered' | 'Event Attended' | 'CRM Field Updated' |
   // Flow Control
-  'If/Then Branch' | 'Wait / Delay' | 
+  'If/Then Branch' | 'Wait / Delay' | 'A/B Split Test' |
   // Actions
-  'Send Email' | 'Send SMS' | 'Send Push' | 'Add to Segment' | 'Notify Sales' | 
+  'Send Email' | 'Send SMS' | 'Send Push' | 'Add to Segment' | 'Notify Sales' |
   // End
   'End Workflow';
 
@@ -135,6 +166,7 @@ export interface WorkflowNode {
   subType: NodeSubType;
   settings: NodeSettings;
   position: { x: number; y: number };
+  isTrigger?: boolean;
 }
 
 /**
@@ -231,29 +263,29 @@ export interface AccountAnalytics {
  * Represents a key engagement metric for an account.
  */
 export interface EngagementStat {
-    metric: string;
-    value: number;
-    change: number; // percentage
+  metric: string;
+  value: number;
+  change: number; // percentage
 }
 
 /**
  * Represents a single recent activity performed by a contact at an account.
  */
 export interface RecentActivity {
-    date: string;
-    type: string;
-    description: string;
-    contact: string;
+  date: string;
+  type: string;
+  description: string;
+  contact: string;
 }
 
 /**
  * A comprehensive, detailed view of a single target account.
  */
 export interface Account360 extends Account {
-    intentScoreTrend: { date: string, score: number }[];
-    engagementSummary: EngagementStat[];
-    buyingCommittee: BuyingCommitteeMember[];
-    recentActivities: RecentActivity[];
+  intentScoreTrend: { date: string, score: number }[];
+  engagementSummary: EngagementStat[];
+  buyingCommittee: BuyingCommitteeMember[];
+  recentActivities: RecentActivity[];
 }
 
 // Events Module Types

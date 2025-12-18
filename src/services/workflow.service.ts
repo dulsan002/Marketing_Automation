@@ -22,7 +22,7 @@ export class WorkflowService {
       resolve();
     }, delay));
   }
-  
+
   private async b<T>(callback: () => T, delay = 100): Promise<T> {
     return new Promise<T>(resolve => setTimeout(() => {
       resolve(callback());
@@ -65,7 +65,7 @@ export class WorkflowService {
 
   deleteWorkflow(workflowId: string): Promise<void> {
     return this.a(() => {
-      this.workflowsSignal.update(workflows => 
+      this.workflowsSignal.update(workflows =>
         workflows.filter(w => w.id !== workflowId)
       );
     });
@@ -73,9 +73,9 @@ export class WorkflowService {
 
   updateWorkflowStatus(workflowId: string, status: Workflow['status']): Promise<void> {
     return this.a(() => {
-      this.workflowsSignal.update(workflows => 
-        workflows.map(w => 
-          w.id === workflowId ? { ...w, status } : w
+      this.workflowsSignal.update(workflows =>
+        workflows.map(w =>
+          w.id === workflowId ? { ...w, status, modified: new Date().toLocaleDateString() } : w
         )
       );
     });
@@ -83,44 +83,44 @@ export class WorkflowService {
 
   createNewWorkflow(): Promise<Workflow> {
     return this.b(() => {
-        const newWorkflow: Workflow = {
-            id: `wf_${Date.now()}`,
-            name: 'Untitled Workflow',
-            description: 'No description provided.',
-            trigger: 'Not configured',
-            status: 'draft',
-            stats: { enrolled: 0, sent: 0, converted: 0 },
-            modified: new Date().toLocaleDateString(),
-            nodes: [],
-            edges: [],
-        };
-        this.workflowsSignal.update(workflows => [newWorkflow, ...workflows]);
-        return deepClone(newWorkflow);
+      const newWorkflow: Workflow = {
+        id: `wf_${Date.now()}`,
+        name: 'Untitled Workflow',
+        description: 'No description provided.',
+        trigger: 'Not configured',
+        status: 'draft',
+        stats: { enrolled: 0, sent: 0, converted: 0 },
+        modified: new Date().toLocaleDateString(),
+        nodes: [],
+        edges: [],
+      };
+      this.workflowsSignal.update(workflows => [newWorkflow, ...workflows]);
+      return deepClone(newWorkflow);
     });
   }
 
   createWorkflowFromTemplate(templateId: string): Promise<Workflow> {
     return this.b(() => {
-        const template = this.templates().find(t => t.id === templateId);
-        if (!template) throw new Error('Template not found');
+      const template = this.templates().find(t => t.id === templateId);
+      if (!template) throw new Error('Template not found');
 
-        const newWorkflow: Workflow = {
-            id: `wf_${Date.now()}`,
-            ...deepClone(template.workflow),
-            status: 'draft',
-            stats: { enrolled: 0, sent: 0, converted: 0 },
-            modified: new Date().toLocaleDateString(),
-        };
-        this.workflowsSignal.update(workflows => [newWorkflow, ...workflows]);
-        return deepClone(newWorkflow);
+      const newWorkflow: Workflow = {
+        id: `wf_${Date.now()}`,
+        ...deepClone(template.workflow),
+        status: 'draft',
+        stats: { enrolled: 0, sent: 0, converted: 0 },
+        modified: new Date().toLocaleDateString(),
+      };
+      this.workflowsSignal.update(workflows => [newWorkflow, ...workflows]);
+      return deepClone(newWorkflow);
     });
   }
 
   private getTriggerText(triggerNode: WorkflowNode): string {
     let text: string = triggerNode.subType;
     if (triggerNode.subType.includes('Segment') && triggerNode.settings.segmentId) {
-        const verb = triggerNode.subType.startsWith('Joined') ? 'Joins' : 'Leaves';
-        text = `${verb} '${triggerNode.settings.segmentId}' segment`;
+      const verb = triggerNode.subType.startsWith('Joined') ? 'Joins' : 'Leaves';
+      text = `${verb} '${triggerNode.settings.segmentId}' segment`;
     }
     return text;
   }

@@ -1,8 +1,12 @@
-<aside class="w-64 bg-white text-gray-800 flex flex-col h-screen overflow-y-auto border-r border-gray-200 shrink-0">
+<aside
+  class="w-64 bg-white/70 backdrop-blur-xl supports-[backdrop-filter]:bg-white/60 border-r border-white/40 shadow-sm flex flex-col h-screen overflow-y-auto shrink-0 z-20">
   <!-- Logo -->
-  <div class="flex items-center justify-start p-4 h-20 border-b border-gray-200 shrink-0">
+  <div class="flex items-center justify-start p-4 h-20 border-b border-indigo-200/40 shrink-0">
     <div class="bg-indigo-600 p-2 rounded-lg">
-      <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+      <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+      </svg>
     </div>
     <div class="ml-3">
       <h1 class="text-xl font-bold text-gray-900">RevOps Cloud</h1>
@@ -15,57 +19,80 @@
     <!-- MAP Section -->
     <div routerLinkActiveGroup="active-section">
       <button (click)="toggle('map')" class="nav-section-toggle">
-        <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+        <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z">
+          </path>
+        </svg>
         <span class="flex-1 text-left">MAP</span>
-        <svg class="w-5 h-5 transition-transform duration-200" [class.rotate-180]="!mapOpen()" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+        <svg class="w-5 h-5 transition-transform duration-200" [class.rotate-180]="!mapOpen()"
+          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd"
+            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+            clip-rule="evenodd" />
         </svg>
       </button>
       @if (mapOpen()) {
-        <div class="mt-1 space-y-1 pl-5 ml-4 border-l-2 border-gray-200">
-          <a routerLink="/map/campaigns" routerLinkActive="active" class="nav-link">Campaigns</a>
-          <a routerLink="/map/workflows" routerLinkActive="active" class="nav-link">Workflows</a>
-          <a routerLink="/map/prospect-segments" routerLinkActive="active" class="nav-link">Prospect Segments</a>
-          <a routerLink="/map/lead-scoring" routerLinkActive="active" class="nav-link">Lead Scoring</a>
-          <a routerLink="/map/analytics" routerLinkActive="active" class="nav-link">Analytic Report</a>
-        </div>
+      <div class="mt-1 space-y-1 pl-5 ml-4 border-l-2 border-indigo-200/50">
+        <a routerLink="/map/campaigns" routerLinkActive="active" class="nav-link">Campaigns</a>
+        <a routerLink="/map/workflows" routerLinkActive="active" class="nav-link">Workflows</a>
+        <a routerLink="/map/prospect-segments" routerLinkActive="active" class="nav-link">Prospect Segments</a>
+        <a routerLink="/map/lead-scoring" routerLinkActive="active" class="nav-link">Lead Scoring</a>
+        <a routerLink="/map/analytics" routerLinkActive="active" class="nav-link">Analytic Report</a>
+      </div>
       }
     </div>
 
     <!-- ABM Section -->
     <div routerLinkActiveGroup="active-section">
       <button (click)="toggle('abm')" class="nav-section-toggle">
-        <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0v-4a2 2 0 012-2h6a2 2 0 012 2v4m-6 0h-2"></path></svg>
+        <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0v-4a2 2 0 012-2h6a2 2 0 012 2v4m-6 0h-2">
+          </path>
+        </svg>
         <span class="flex-1 text-left">ABM</span>
-        <svg class="w-5 h-5 transition-transform duration-200" [class.rotate-180]="!abmOpen()" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+        <svg class="w-5 h-5 transition-transform duration-200" [class.rotate-180]="!abmOpen()"
+          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd"
+            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+            clip-rule="evenodd" />
         </svg>
       </button>
       @if (abmOpen()) {
-        <div class="mt-1 space-y-1 pl-5 ml-4 border-l-2 border-gray-200">
-          <a routerLink="/abm/accounts" routerLinkActive="active" class="nav-link">Accounts</a>
-          <a routerLink="/abm/intent-signals" routerLinkActive="active" class="nav-link">Intent Signals</a>
-          <a routerLink="/abm/buying-committee" routerLinkActive="active" class="nav-link">Buying Committee</a>
-          <a routerLink="/abm/analytics" routerLinkActive="active" class="nav-link">Analytics</a>
-        </div>
+      <div class="mt-1 space-y-1 pl-5 ml-4 border-l-2 border-gray-200">
+        <a routerLink="/abm/accounts" routerLinkActive="active" class="nav-link">Accounts</a>
+        <a routerLink="/abm/intent-signals" routerLinkActive="active" class="nav-link">Intent Signals</a>
+        <a routerLink="/abm/buying-committee" routerLinkActive="active" class="nav-link">Buying Committee</a>
+        <a routerLink="/abm/analytics" routerLinkActive="active" class="nav-link">Analytics</a>
+      </div>
       }
     </div>
 
     <!-- Events Section -->
     <div routerLinkActiveGroup="active-section">
       <button (click)="toggle('events')" class="nav-section-toggle">
-        <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
+        <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+        </svg>
         <span class="flex-1 text-left">Events</span>
-        <svg class="w-5 h-5 transition-transform duration-200" [class.rotate-180]="!eventsOpen()" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-          <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
+        <svg class="w-5 h-5 transition-transform duration-200" [class.rotate-180]="!eventsOpen()"
+          xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd"
+            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+            clip-rule="evenodd" />
         </svg>
       </button>
       @if (eventsOpen()) {
-        <div class="mt-1 space-y-1 pl-5 ml-4 border-l-2 border-gray-200">
-          <a routerLink="/events/all" routerLinkActive="active" class="nav-link">All Events</a>
-          <a routerLink="/events/registrations" routerLinkActive="active" class="nav-link">Registrations</a>
-          <a routerLink="/events/analytics" routerLinkActive="active" class="nav-link">Analytics</a>
-        </div>
+      <div class="mt-1 space-y-1 pl-5 ml-4 border-l-2 border-gray-200">
+        <a routerLink="/events/all" routerLinkActive="active" class="nav-link">All Events</a>
+        <a routerLink="/events/registrations" routerLinkActive="active" class="nav-link">Registrations</a>
+        <a routerLink="/events/analytics" routerLinkActive="active" class="nav-link">Analytics</a>
+      </div>
       }
     </div>
   </nav>

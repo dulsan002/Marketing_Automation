@@ -31,11 +31,11 @@ export class SegmentEditorComponent {
   readonly sampleMatches = signal<SampleContact[]>(MOCK_SAMPLE_CONTACTS);
   /** A computed signal that returns true if the component is in edit mode. */
   readonly isEditMode = computed(() => this.segmentId() !== null);
-  
+
   /** The list of available fields for creating segment rules. */
-  readonly fields = [ 'Email', 'First Name', 'Last Name', 'Company', 'Job Title', 'Country', 'Created Date', 'Last Purchase Date', 'Total Spent', 'Order Count', 'Email Opened' ];
+  readonly fields = ['Email', 'First Name', 'Last Name', 'Company', 'Job Title', 'Country', 'Created Date', 'Last Purchase Date', 'Total Spent', 'Order Count', 'Email Opened'];
   /** The list of available operators for creating segment rules. */
-  readonly operators = [ 'equals', 'does not equal', 'contains', 'does not contain', 'starts with', 'ends with', 'is greater than', 'is less than', 'is set', 'is not set', 'in the last' ];
+  readonly operators = ['equals', 'does not equal', 'contains', 'does not contain', 'starts with', 'ends with', 'is greater than', 'is less than', 'is set', 'is not set', 'in the last'];
 
   /** The main reactive form for the segment editor. */
   segmentForm = this.fb.group({
@@ -46,11 +46,11 @@ export class SegmentEditorComponent {
 
   constructor() {
     // Check for an 'id' in the route parameters to determine if we are in edit mode.
-    this.route.paramMap.subscribe(params => {
+    this.route.paramMap.subscribe(async params => {
       const id = params.get('id');
       if (id) {
         this.segmentId.set(id);
-        const segment = this.segmentService.getSegment(id);
+        const segment = await this.segmentService.getSegment(id);
         if (segment) {
           this.patchForm(segment);
         }
@@ -164,8 +164,9 @@ export class SegmentEditorComponent {
       rulesCount: rulesCount,
       ruleGroups: formValue.ruleGroups as any,
     };
-    
-    this.segmentService.saveSegment(segmentData);
-    this.router.navigate(['/map/prospect-segments']);
+
+    this.segmentService.saveSegment(segmentData).then(() => {
+      this.router.navigate(['/map/prospect-segments']);
+    });
   }
 }

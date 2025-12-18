@@ -32,15 +32,21 @@ export class MapAnalyticsComponent {
   /** The currently selected date range for filtering analytics. */
   readonly dateRange = signal('30');
 
-  private allCampaigns = this.campaignService.getCampaigns();
+  private allCampaigns = signal<Campaign[]>([]);
+
+  constructor() {
+    this.campaignService.getCampaigns().then(campaigns => {
+      this.allCampaigns.set(campaigns);
+    });
+  }
   /** A computed signal that derives the top 5 performing campaigns based on Click-Through Rate (CTR). */
   readonly topCampaigns = computed(() => {
     return this.allCampaigns()
-        .filter(c => c.status === 'completed' || c.status === 'active')
-        .sort((a, b) => b.ctr - a.ctr)
-        .slice(0, 5);
+      .filter(c => c.status === 'completed' || c.status === 'active')
+      .sort((a, b) => b.ctr - a.ctr)
+      .slice(0, 5);
   });
-  
+
   /**
    * Updates the date range signal when the user changes the selection.
    * In a real application, this would trigger a refetch of analytics data.

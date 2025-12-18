@@ -37,12 +37,19 @@ export class BuyingCommitteeComponent {
     this.isLoading.set(false);
   }
 
+  readonly searchQuery = signal('');
+
   readonly committeesWithCalculatedInfluence = computed(() => {
     const allSignals = this.signals();
-    const allCommittees = this.committees();
+    let allCommittees = this.committees();
+    const query = this.searchQuery().toLowerCase();
+
+    if (query) {
+      allCommittees = allCommittees.filter(c => c.accountName.toLowerCase().includes(query));
+    }
 
     if (!allSignals.length || !allCommittees.length) {
-      return allCommittees.map(c => ({...c, members: c.members.map(m => ({...m, calculatedInfluence: m.influence}))}));
+      return allCommittees.map(c => ({ ...c, members: c.members.map(m => ({ ...m, calculatedInfluence: m.influence })) }));
     }
 
     const scoresByAccount = new Map<string, { totalScore: number; count: number }>();
@@ -81,7 +88,7 @@ export class BuyingCommitteeComponent {
     this.editingMember.set(member);
     this.isModalOpen.set(true);
   }
-  
+
   closeModal() {
     this.isModalOpen.set(false);
     this.editingMember.set(null);
@@ -100,7 +107,7 @@ export class BuyingCommitteeComponent {
     this.closeModal();
     this.loadData();
   }
-  
+
   async deleteMember(accountId: string, memberId: string) {
     await this.accountService.deleteCommitteeMember(accountId, memberId);
     this.loadData();

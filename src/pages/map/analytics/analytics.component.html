@@ -1,9 +1,18 @@
 <div class="space-y-8">
   <!-- Header -->
   <div class="flex justify-end items-center">
-    <div class="flex items-center space-x-2">
+    <div class="flex items-center space-x-2 no-print">
+      <button onclick="window.print()" title="Print Report"
+        class="p-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 bg-white shadow-sm transition-colors">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
+          </path>
+        </svg>
+      </button>
       <label for="date-range" class="text-sm font-medium text-gray-600">Date Range:</label>
-      <select id="date-range" (change)="onDateRangeChange($event)" class="py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 text-sm">
+      <select id="date-range" (change)="onDateRangeChange($event)"
+        class="py-2 px-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-indigo-500 text-sm">
         <option value="30">Last 30 days</option>
         <option value="60">Last 60 days</option>
         <option value="90">Last 90 days</option>
@@ -18,69 +27,122 @@
       <div>
         <p class="text-sm font-medium text-gray-500">Emails Sent</p>
         <p class="text-3xl font-bold text-gray-900 mt-2">{{ kpis().emailsSent.value | number }}</p>
-        <div class="flex items-center text-xs mt-1" [class.text-green-600]="kpis().emailsSent.change > 0" [class.text-red-600]="kpis().emailsSent.change < 0">
+        <div class="flex items-center text-xs mt-1" [class.text-green-600]="kpis().emailsSent.change > 0"
+          [class.text-red-600]="kpis().emailsSent.change < 0">
           @if(kpis().emailsSent.change > 0) {
-            <svg class="w-4 h-4 mr-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 17a.75.75 0 01-.75-.75V5.612L5.03 9.83a.75.75 0 01-1.06-1.06l5.25-5.25a.75.75 0 011.06 0l5.25 5.25a.75.75 0 11-1.06 1.06L10.75 5.612V16.25A.75.75 0 0110 17z" clip-rule="evenodd" /></svg>
-            <span>+{{ kpis().emailsSent.change | number:'1.1-1' }}%</span>
+          <svg class="w-4 h-4 mr-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd"
+              d="M10 17a.75.75 0 01-.75-.75V5.612L5.03 9.83a.75.75 0 01-1.06-1.06l5.25-5.25a.75.75 0 011.06 0l5.25 5.25a.75.75 0 11-1.06 1.06L10.75 5.612V16.25A.75.75 0 0110 17z"
+              clip-rule="evenodd" />
+          </svg>
+          <span>+{{ kpis().emailsSent.change | number:'1.1-1' }}%</span>
           } @else {
-            <svg class="w-4 h-4 mr-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a.75.75 0 01.75.75v10.638l4.22-4.22a.75.75 0 111.06 1.06l-5.25 5.25a.75.75 0 01-1.06 0l-5.25-5.25a.75.75 0 111.06-1.06l4.22 4.22V3.75A.75.75 0 0110 3z" clip-rule="evenodd" /></svg>
-            <span>{{ kpis().emailsSent.change | number:'1.1-1' }}%</span>
+          <svg class="w-4 h-4 mr-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd"
+              d="M10 3a.75.75 0 01.75.75v10.638l4.22-4.22a.75.75 0 111.06 1.06l-5.25 5.25a.75.75 0 01-1.06 0l-5.25-5.25a.75.75 0 111.06-1.06l4.22 4.22V3.75A.75.75 0 0110 3z"
+              clip-rule="evenodd" />
+          </svg>
+          <span>{{ kpis().emailsSent.change | number:'1.1-1' }}%</span>
           }
           <span class="text-gray-500 ml-1"> vs prev. period</span>
         </div>
       </div>
-      <div class="p-3 bg-blue-100 rounded-lg"><svg class="w-6 h-6 text-blue-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" /></svg></div>
+      <div class="p-3 bg-blue-100 rounded-lg"><svg class="w-6 h-6 text-blue-600" xmlns="http://www.w3.org/2000/svg"
+          fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+        </svg></div>
     </div>
     <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex items-start justify-between">
       <div>
         <p class="text-sm font-medium text-gray-500">Total Opens</p>
         <p class="text-3xl font-bold text-gray-900 mt-2">{{ kpis().totalOpens.value | number }}</p>
-         <div class="flex items-center text-xs mt-1" [class.text-green-600]="kpis().totalOpens.change > 0" [class.text-red-600]="kpis().totalOpens.change < 0">
+        <div class="flex items-center text-xs mt-1" [class.text-green-600]="kpis().totalOpens.change > 0"
+          [class.text-red-600]="kpis().totalOpens.change < 0">
           @if(kpis().totalOpens.change > 0) {
-            <svg class="w-4 h-4 mr-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 17a.75.75 0 01-.75-.75V5.612L5.03 9.83a.75.75 0 01-1.06-1.06l5.25-5.25a.75.75 0 011.06 0l5.25 5.25a.75.75 0 11-1.06 1.06L10.75 5.612V16.25A.75.75 0 0110 17z" clip-rule="evenodd" /></svg>
-            <span>+{{ kpis().totalOpens.change | number:'1.1-1' }}%</span>
+          <svg class="w-4 h-4 mr-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd"
+              d="M10 17a.75.75 0 01-.75-.75V5.612L5.03 9.83a.75.75 0 01-1.06-1.06l5.25-5.25a.75.75 0 011.06 0l5.25 5.25a.75.75 0 11-1.06 1.06L10.75 5.612V16.25A.75.75 0 0110 17z"
+              clip-rule="evenodd" />
+          </svg>
+          <span>+{{ kpis().totalOpens.change | number:'1.1-1' }}%</span>
           } @else {
-            <svg class="w-4 h-4 mr-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a.75.75 0 01.75.75v10.638l4.22-4.22a.75.75 0 111.06 1.06l-5.25 5.25a.75.75 0 01-1.06 0l-5.25-5.25a.75.75 0 111.06-1.06l4.22 4.22V3.75A.75.75 0 0110 3z" clip-rule="evenodd" /></svg>
-            <span>{{ kpis().totalOpens.change | number:'1.1-1' }}%</span>
+          <svg class="w-4 h-4 mr-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd"
+              d="M10 3a.75.75 0 01.75.75v10.638l4.22-4.22a.75.75 0 111.06 1.06l-5.25 5.25a.75.75 0 01-1.06 0l-5.25-5.25a.75.75 0 111.06-1.06l4.22 4.22V3.75A.75.75 0 0110 3z"
+              clip-rule="evenodd" />
+          </svg>
+          <span>{{ kpis().totalOpens.change | number:'1.1-1' }}%</span>
           }
           <span class="text-gray-500 ml-1"> vs prev. period</span>
         </div>
       </div>
-      <div class="p-3 bg-purple-100 rounded-lg"><svg class="w-6 h-6 text-purple-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" /><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /></svg></div>
+      <div class="p-3 bg-purple-100 rounded-lg"><svg class="w-6 h-6 text-purple-600" xmlns="http://www.w3.org/2000/svg"
+          fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M2.036 12.322a1.012 1.012 0 010-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178z" />
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg></div>
     </div>
     <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex items-start justify-between">
       <div>
         <p class="text-sm font-medium text-gray-500">Total Clicks</p>
         <p class="text-3xl font-bold text-gray-900 mt-2">{{ kpis().totalClicks.value | number }}</p>
-         <div class="flex items-center text-xs mt-1" [class.text-green-600]="kpis().totalClicks.change > 0" [class.text-red-600]="kpis().totalClicks.change < 0">
+        <div class="flex items-center text-xs mt-1" [class.text-green-600]="kpis().totalClicks.change > 0"
+          [class.text-red-600]="kpis().totalClicks.change < 0">
           @if(kpis().totalClicks.change > 0) {
-            <svg class="w-4 h-4 mr-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 17a.75.75 0 01-.75-.75V5.612L5.03 9.83a.75.75 0 01-1.06-1.06l5.25-5.25a.75.75 0 011.06 0l5.25 5.25a.75.75 0 11-1.06 1.06L10.75 5.612V16.25A.75.75 0 0110 17z" clip-rule="evenodd" /></svg>
-            <span>+{{ kpis().totalClicks.change | number:'1.1-1' }}%</span>
+          <svg class="w-4 h-4 mr-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd"
+              d="M10 17a.75.75 0 01-.75-.75V5.612L5.03 9.83a.75.75 0 01-1.06-1.06l5.25-5.25a.75.75 0 011.06 0l5.25 5.25a.75.75 0 11-1.06 1.06L10.75 5.612V16.25A.75.75 0 0110 17z"
+              clip-rule="evenodd" />
+          </svg>
+          <span>+{{ kpis().totalClicks.change | number:'1.1-1' }}%</span>
           } @else {
-            <svg class="w-4 h-4 mr-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a.75.75 0 01.75.75v10.638l4.22-4.22a.75.75 0 111.06 1.06l-5.25 5.25a.75.75 0 01-1.06 0l-5.25-5.25a.75.75 0 111.06-1.06l4.22 4.22V3.75A.75.75 0 0110 3z" clip-rule="evenodd" /></svg>
-            <span>{{ kpis().totalClicks.change | number:'1.1-1' }}%</span>
+          <svg class="w-4 h-4 mr-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd"
+              d="M10 3a.75.75 0 01.75.75v10.638l4.22-4.22a.75.75 0 111.06 1.06l-5.25 5.25a.75.75 0 01-1.06 0l-5.25-5.25a.75.75 0 111.06-1.06l4.22 4.22V3.75A.75.75 0 0110 3z"
+              clip-rule="evenodd" />
+          </svg>
+          <span>{{ kpis().totalClicks.change | number:'1.1-1' }}%</span>
           }
           <span class="text-gray-500 ml-1"> vs prev. period</span>
         </div>
       </div>
-      <div class="p-3 bg-teal-100 rounded-lg"><svg class="w-6 h-6 text-teal-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zM12 2.25a8.25 8.25 0 00-8.25 8.25c0 1.913.666 3.69 1.855 5.042a8.25 8.25 0 0012.79 0A8.25 8.25 0 0012 2.25z" /></svg></div>
+      <div class="p-3 bg-teal-100 rounded-lg"><svg class="w-6 h-6 text-teal-600" xmlns="http://www.w3.org/2000/svg"
+          fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M15.042 21.672L13.684 16.6m0 0l-2.51 2.225.569-9.47 5.227 7.917-3.286-.672zM12 2.25a8.25 8.25 0 00-8.25 8.25c0 1.913.666 3.69 1.855 5.042a8.25 8.25 0 0012.79 0A8.25 8.25 0 0012 2.25z" />
+        </svg></div>
     </div>
     <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex items-start justify-between">
       <div>
         <p class="text-sm font-medium text-gray-500">Engagements</p>
         <p class="text-3xl font-bold text-gray-900 mt-2">{{ kpis().engagements.value | number }}</p>
-         <div class="flex items-center text-xs mt-1" [class.text-green-600]="kpis().engagements.change > 0" [class.text-red-600]="kpis().engagements.change < 0">
+        <div class="flex items-center text-xs mt-1" [class.text-green-600]="kpis().engagements.change > 0"
+          [class.text-red-600]="kpis().engagements.change < 0">
           @if(kpis().engagements.change > 0) {
-            <svg class="w-4 h-4 mr-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 17a.75.75 0 01-.75-.75V5.612L5.03 9.83a.75.75 0 01-1.06-1.06l5.25-5.25a.75.75 0 011.06 0l5.25 5.25a.75.75 0 11-1.06 1.06L10.75 5.612V16.25A.75.75 0 0110 17z" clip-rule="evenodd" /></svg>
-            <span>+{{ kpis().engagements.change | number:'1.1-1' }}%</span>
+          <svg class="w-4 h-4 mr-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd"
+              d="M10 17a.75.75 0 01-.75-.75V5.612L5.03 9.83a.75.75 0 01-1.06-1.06l5.25-5.25a.75.75 0 011.06 0l5.25 5.25a.75.75 0 11-1.06 1.06L10.75 5.612V16.25A.75.75 0 0110 17z"
+              clip-rule="evenodd" />
+          </svg>
+          <span>+{{ kpis().engagements.change | number:'1.1-1' }}%</span>
           } @else {
-            <svg class="w-4 h-4 mr-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a.75.75 0 01.75.75v10.638l4.22-4.22a.75.75 0 111.06 1.06l-5.25 5.25a.75.75 0 01-1.06 0l-5.25-5.25a.75.75 0 111.06-1.06l4.22 4.22V3.75A.75.75 0 0110 3z" clip-rule="evenodd" /></svg>
-            <span>{{ kpis().engagements.change | number:'1.1-1' }}%</span>
+          <svg class="w-4 h-4 mr-0.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd"
+              d="M10 3a.75.75 0 01.75.75v10.638l4.22-4.22a.75.75 0 111.06 1.06l-5.25 5.25a.75.75 0 01-1.06 0l-5.25-5.25a.75.75 0 111.06-1.06l4.22 4.22V3.75A.75.75 0 0110 3z"
+              clip-rule="evenodd" />
+          </svg>
+          <span>{{ kpis().engagements.change | number:'1.1-1' }}%</span>
           }
           <span class="text-gray-500 ml-1"> vs prev. period</span>
         </div>
       </div>
-      <div class="p-3 bg-orange-100 rounded-lg"><svg class="w-6 h-6 text-orange-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m-7.5-2.928A3 3 0 017.5 15.25m0-4.01a3 3 0 013-3m0 0a3 3 0 013 3m0 0a3 3 0 01-3 3m0 0a3 3 0 01-3-3m2.25 6H12m-2.25-6l-2.25-2.25" /></svg></div>
+      <div class="p-3 bg-orange-100 rounded-lg"><svg class="w-6 h-6 text-orange-600" xmlns="http://www.w3.org/2000/svg"
+          fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m-7.5-2.928A3 3 0 017.5 15.25m0-4.01a3 3 0 013-3m0 0a3 3 0 013 3m0 0a3 3 0 01-3 3m0 0a3 3 0 01-3-3m2.25 6H12m-2.25-6l-2.25-2.25" />
+        </svg></div>
     </div>
   </div>
 
@@ -116,12 +178,12 @@
           </thead>
           <tbody>
             @for(campaign of topCampaigns(); track campaign.name) {
-              <tr class="border-b hover:bg-gray-50">
-                <td class="px-4 py-3 font-medium text-gray-900">{{ campaign.name }}</td>
-                <td class="px-4 py-3 text-right">{{ campaign.sent | number }}</td>
-                <td class="px-4 py-3 text-right">{{ campaign.openRate | number:'1.1-1' }}%</td>
-                <td class="px-4 py-3 text-right font-semibold text-indigo-600">{{ campaign.ctr | number:'1.1-1' }}%</td>
-              </tr>
+            <tr class="border-b hover:bg-gray-50">
+              <td class="px-4 py-3 font-medium text-gray-900">{{ campaign.name }}</td>
+              <td class="px-4 py-3 text-right">{{ campaign.sent | number }}</td>
+              <td class="px-4 py-3 text-right">{{ campaign.openRate | number:'1.1-1' }}%</td>
+              <td class="px-4 py-3 text-right font-semibold text-indigo-600">{{ campaign.ctr | number:'1.1-1' }}%</td>
+            </tr>
             }
           </tbody>
         </table>

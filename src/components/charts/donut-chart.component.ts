@@ -6,8 +6,10 @@ import * as d3 from 'd3';
   selector: 'app-donut-chart',
   imports: [CommonModule],
   template: `
-    <div #chartContainer class="w-full h-full relative"></div>
-    <div #tooltip class="absolute bg-gray-900 text-white text-xs px-3 py-1.5 rounded-lg shadow-lg opacity-0 pointer-events-none transition-opacity duration-200"></div>
+    <div class="relative w-full h-full">
+      <div #chartContainer class="w-full h-full"></div>
+      <div #tooltip class="absolute bg-gray-900 text-white text-xs px-3 py-1.5 rounded-lg shadow-lg opacity-0 pointer-events-none transition-opacity duration-200 z-10" style="white-space: nowrap;"></div>
+    </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -41,7 +43,7 @@ export class DonutChartComponent implements AfterViewInit {
     if (!container) return;
 
     d3.select(container).select('svg').remove();
-    
+
     const tooltipDiv = d3.select(this.tooltip()?.nativeElement);
 
     this.svg = d3.select(container)
@@ -64,14 +66,14 @@ export class DonutChartComponent implements AfterViewInit {
       .attr('fill', (d: any) => d.data.color)
       .attr('stroke', 'white')
       .style('stroke-width', '3px')
-      .on('mouseover', function(event: MouseEvent, d: any) {
+      .on('mouseover', function (event: MouseEvent, d: any) {
         d3.select(this).transition().duration(200).attr('transform', 'scale(1.05)');
         tooltipDiv.style('opacity', 1)
-                  .html(`<b>${d.data.range}</b><br/>${d.data.count} Leads`)
-                  .style('left', (event.pageX - container.getBoundingClientRect().left + 15) + 'px')
-                  .style('top', (event.pageY - container.getBoundingClientRect().top - 30) + 'px');
+          .html(`<b>${d.data.range}</b><br/>${d.data.count} Leads`)
+          .style('left', (event.pageX - container.getBoundingClientRect().left + 15) + 'px')
+          .style('top', (event.pageY - container.getBoundingClientRect().top - 30) + 'px');
       })
-      .on('mouseout', function() {
+      .on('mouseout', function () {
         d3.select(this).transition().duration(200).attr('transform', 'scale(1)');
         tooltipDiv.style('opacity', 0);
       })
@@ -84,37 +86,37 @@ export class DonutChartComponent implements AfterViewInit {
 
     // Add labels to slices
     this.svg.selectAll('text.slice-label')
-        .data(data_ready)
-        .join('text')
-        .attr('class', 'slice-label')
-        .text((d: any) => d.data.count)
-        .attr('transform', (d: any) => `translate(${arc.centroid(d)})`)
-        .style('text-anchor', 'middle')
-        .style('font-size', '14px')
-        .style('font-weight', 'bold')
-        .style('fill', 'white')
-        .style('pointer-events', 'none')
-        .style('opacity', 0)
-        .transition()
-        .delay(1000)
-        .duration(500)
-        .style('opacity', 1);
+      .data(data_ready)
+      .join('text')
+      .attr('class', 'slice-label')
+      .text((d: any) => d.data.count)
+      .attr('transform', (d: any) => `translate(${arc.centroid(d)})`)
+      .style('text-anchor', 'middle')
+      .style('font-size', '14px')
+      .style('font-weight', 'bold')
+      .style('fill', 'white')
+      .style('pointer-events', 'none')
+      .style('opacity', 0)
+      .transition()
+      .delay(1000)
+      .duration(500)
+      .style('opacity', 1);
 
     // Add central text
     const total = d3.sum(data, d => d.count);
     this.svg.append('text')
-        .attr('text-anchor', 'middle')
-        .attr('dy', '-0.3em')
-        .style('font-size', '14px')
-        .style('fill', '#6b7280') // text-gray-500
-        .text('Total Leads');
+      .attr('text-anchor', 'middle')
+      .attr('dy', '-0.3em')
+      .style('font-size', '14px')
+      .style('fill', '#6b7280') // text-gray-500
+      .text('Total Leads');
 
     this.svg.append('text')
-        .attr('text-anchor', 'middle')
-        .attr('dy', '1.0em')
-        .style('font-size', '28px')
-        .style('font-weight', 'bold')
-        .style('fill', '#111827') // text-gray-900
-        .text(total);
+      .attr('text-anchor', 'middle')
+      .attr('dy', '1.0em')
+      .style('font-size', '28px')
+      .style('font-weight', 'bold')
+      .style('fill', '#111827') // text-gray-900
+      .text(total);
   }
 }

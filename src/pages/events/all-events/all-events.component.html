@@ -2,21 +2,27 @@
   <!-- Header with actions and filters -->
   <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
     <div class="flex items-center space-x-4 w-full sm:w-auto">
-      <select (change)="statusFilter.set($event.target.value)" class="py-2 px-4 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      <select (change)="statusFilter.set($event.target.value)"
+        class="py-2 px-4 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
         <option value="all">All Statuses</option>
         @for(status of eventStatuses; track status) {
-          <option [value]="status" class="capitalize">{{ status }}</option>
+        <option [value]="status" class="capitalize">{{ status }}</option>
         }
       </select>
-      <select (change)="typeFilter.set($event.target.value)" class="py-2 px-4 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+      <select (change)="typeFilter.set($event.target.value)"
+        class="py-2 px-4 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
         <option value="all">All Types</option>
         @for(type of eventTypes; track type) {
-          <option [value]="type" class="capitalize">{{ type }}</option>
+        <option [value]="type" class="capitalize">{{ type }}</option>
         }
       </select>
     </div>
-    <a routerLink="/events/new" class="w-full sm:w-auto flex justify-center px-4 py-2 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition duration-200 items-center">
-      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path></svg>
+    <a routerLink="/events/new"
+      class="w-full sm:w-auto flex justify-center px-4 py-2 bg-black text-white rounded-lg font-semibold hover:bg-gray-800 transition duration-200 items-center">
+      <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+      </svg>
       New Event
     </a>
   </div>
@@ -24,32 +30,46 @@
   <!-- Event Cards Grid -->
   <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
     @for (event of filteredEvents(); track event.id) {
-      <div class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex flex-col justify-between hover:shadow-lg hover:border-indigo-300 transition-all duration-300">
-        <div>
-          <div class="flex justify-between items-start">
-            <span class="px-2.5 py-1 text-xs font-semibold rounded-full capitalize" [class]="getStatusClass(event.status)">{{ event.status }}</span>
-            <span class="px-2.5 py-1 text-xs font-semibold rounded-full capitalize" [class]="getTypeClass(event.type)">{{ event.type }}</span>
-          </div>
-          <a [routerLink]="['/events/view', event.id]" class="block mt-4">
-            <h3 class="text-lg font-bold text-gray-900 leading-tight hover:underline">{{ event.name }}</h3>
-          </a>
-          <p class="text-sm text-gray-600 mt-2">Speaker: {{ event.speaker }}</p>
+    <div
+      class="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex flex-col justify-between hover:shadow-lg hover:border-indigo-300 transition-all duration-300">
+      <div>
+        <div class="flex justify-between items-start">
+          <span class="px-2.5 py-1 text-xs font-semibold rounded-full capitalize"
+            [class]="getStatusClass(event.status)">{{ event.status }}</span>
+          <span class="px-2.5 py-1 text-xs font-semibold rounded-full capitalize" [class]="getTypeClass(event.type)">{{
+            event.type }}</span>
         </div>
-        <div class="mt-6 pt-4 border-t border-gray-100 flex justify-between items-center text-sm text-gray-600">
-          <div class="flex items-center">
-            <svg class="w-4 h-4 mr-1.5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
-            <span>{{ event.date | date: 'MMM d' }}</span>
-          </div>
-          <div class="flex items-center">
-            <svg class="w-4 h-4 mr-1.5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-            <span>{{ event.duration }}m</span>
-          </div>
-          <div class="flex items-center">
-            <svg class="w-4 h-4 mr-1.5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.653-.124-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.653.124-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg>
-            <span>{{ event.registrations | number }}</span>
-          </div>
+        <a [routerLink]="['/events/view', event.id]" class="block mt-4">
+          <h3 class="text-lg font-bold text-gray-900 leading-tight hover:underline">{{ event.name }}</h3>
+        </a>
+        <p class="text-sm text-gray-600 mt-2">Speaker: {{ event.speaker }}</p>
+      </div>
+      <div class="mt-6 pt-4 border-t border-gray-100 flex justify-between items-center text-sm text-gray-600">
+        <div class="flex items-center">
+          <svg class="w-4 h-4 mr-1.5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          <span>{{ event.date | date: 'MMM d' }}</span>
+        </div>
+        <div class="flex items-center">
+          <svg class="w-4 h-4 mr-1.5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <span>{{ event.duration }}m</span>
+        </div>
+        <div class="flex items-center">
+          <svg class="w-4 h-4 mr-1.5 text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+            stroke-width="2" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.653-.124-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.653.124-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+          </svg>
+          <span>{{ event.registrations | number }}</span>
         </div>
       </div>
+    </div>
     }
   </div>
 </div>
