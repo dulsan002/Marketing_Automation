@@ -6,21 +6,23 @@
     <nav class="mt-8">
       <ol class="relative border-l border-gray-200">
         @for(step of steps; track step.number) {
-          <li class="mb-10 ml-6 cursor-pointer" (click)="goToStep(step.number)">
-            <span class="absolute flex items-center justify-center w-8 h-8 rounded-full -left-4 ring-4 ring-white"
-                  [class.bg-indigo-600]="currentStep() >= step.number"
-                  [class.text-white]="currentStep() >= step.number"
-                  [class.bg-gray-200]="currentStep() < step.number"
-                  [class.text-gray-600]="currentStep() < step.number">
-              @if(currentStep() > step.number) {
-                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.052-.143z"/></svg>
-              } @else {
-                <span class="font-bold">{{ step.number }}</span>
-              }
-            </span>
-            <h3 class="font-medium leading-tight" [class.text-indigo-700]="currentStep() === step.number" [class.text-gray-900]="currentStep() !== step.number">{{ step.name }}</h3>
-            <p class="text-sm text-gray-500">{{ step.description }}</p>
-          </li>
+        <li class="mb-10 ml-6 cursor-pointer" (click)="goToStep(step.number)">
+          <span class="absolute flex items-center justify-center w-8 h-8 rounded-full -left-4 ring-4 ring-white"
+            [class.bg-indigo-600]="currentStep() >= step.number" [class.text-white]="currentStep() >= step.number"
+            [class.bg-gray-200]="currentStep() < step.number" [class.text-gray-600]="currentStep() < step.number">
+            @if(currentStep() > step.number) {
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                d="M16.704 4.153a.75.75 0 01.143 1.052l-8 10.5a.75.75 0 01-1.127.075l-4.5-4.5a.75.75 0 011.06-1.06l3.894 3.893 7.48-9.817a.75.75 0 011.052-.143z" />
+            </svg>
+            } @else {
+            <span class="font-bold">{{ step.number }}</span>
+            }
+          </span>
+          <h3 class="font-medium leading-tight" [class.text-indigo-700]="currentStep() === step.number"
+            [class.text-gray-900]="currentStep() !== step.number">{{ step.name }}</h3>
+          <p class="text-sm text-gray-500">{{ step.description }}</p>
+        </li>
         }
       </ol>
     </nav>
@@ -31,117 +33,146 @@
     <form [formGroup]="eventForm" class="flex flex-col flex-grow">
       <div>
         @switch(currentStep()) {
-          @case(1) {
-            <div formGroupName="basics">
-              <h3 class="text-xl font-semibold text-gray-800">Event Basics</h3>
-              <p class="text-sm text-gray-500 mt-1">First, choose the type of event you want to create and give it a name.</p>
-              
-              <div class="mt-6">
-                <label class="block text-sm font-medium text-gray-700 mb-2">Event Type *</label>
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                  @for(type of eventTypesWithDetails; track type.id) {
-                    <div (click)="selectEventType(type.id)"
-                         class="p-4 border-2 rounded-lg cursor-pointer flex flex-col items-center justify-center text-center transition-all"
-                         [class.border-indigo-500]="eventForm.get('basics.type')!.value === type.id"
-                         [class.bg-indigo-50]="eventForm.get('basics.type')!.value === type.id"
-                         [class.border-gray-200]="eventForm.get('basics.type')!.value !== type.id"
-                         [class.hover:border-gray-300]="eventForm.get('basics.type')!.value !== type.id">
-                      <svg class="w-8 h-8 mb-2 text-gray-500" [class.text-indigo-600]="eventForm.get('basics.type')!.value === type.id" fill="none" stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" [innerHTML]="type.icon"></svg>
-                      <h4 class="font-semibold text-sm">{{ type.title }}</h4>
-                    </div>
-                  }
-                </div>
-              </div>
+        @case(1) {
+        <div formGroupName="basics">
+          <h3 class="text-xl font-semibold text-gray-800">Event Basics</h3>
+          <p class="text-sm text-gray-500 mt-1">First, choose the type of event you want to create and give it a name.
+          </p>
 
-              <div class="mt-6 space-y-4 max-w-xl">
-                <div>
-                  <label for="name" class="block text-sm font-medium text-gray-700">Event Name *</label>
-                  <input type="text" id="name" formControlName="name" class="form-input" placeholder="e.g., Q3 Product Launch Webinar">
-                </div>
-                <div>
-                  <label for="speaker" class="block text-sm font-medium text-gray-700">Speaker / Host *</label>
-                  <input type="text" id="speaker" formControlName="speaker" class="form-input" placeholder="e.g., Jane Doe">
-                </div>
+          <div class="mt-6">
+            <label class="block text-sm font-medium text-gray-700 mb-2">Event Type *</label>
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              @for(type of eventTypesWithDetails; track type.id) {
+              <div (click)="selectEventType(type.id)"
+                class="p-4 border-2 rounded-lg cursor-pointer flex flex-col items-center justify-center text-center transition-all"
+                [class.border-indigo-500]="eventForm.get('basics.type')!.value === type.id"
+                [class.bg-indigo-50]="eventForm.get('basics.type')!.value === type.id"
+                [class.border-gray-200]="eventForm.get('basics.type')!.value !== type.id"
+                [class.hover:border-gray-300]="eventForm.get('basics.type')!.value !== type.id">
+                <svg class="w-8 h-8 mb-2 text-gray-500"
+                  [class.text-indigo-600]="eventForm.get('basics.type')!.value === type.id" fill="none"
+                  stroke-width="1.5" stroke="currentColor" viewBox="0 0 24 24" [innerHTML]="type.icon"></svg>
+                <h4 class="font-semibold text-sm">{{ type.title }}</h4>
+              </div>
+              }
+            </div>
+          </div>
+
+          <div class="mt-6 space-y-4 max-w-xl">
+            <div>
+              <label for="name" class="block text-sm font-medium text-gray-700">Event Name *</label>
+              <input type="text" id="name" formControlName="name" class="form-input"
+                placeholder="e.g., Q3 Product Launch Webinar">
+            </div>
+            <div>
+              <label for="speaker" class="block text-sm font-medium text-gray-700">Speaker / Host *</label>
+              <input type="text" id="speaker" formControlName="speaker" class="form-input" placeholder="e.g., Jane Doe">
+            </div>
+            <div>
+              <label for="venue" class="block text-sm font-medium text-gray-700">Venue / Meeting Link *</label>
+              <input type="text" id="venue" formControlName="venue" class="form-input"
+                placeholder="Zoom Link or Physical Address">
+            </div>
+          </div>
+        </div>
+        }
+        @case(2) {
+        <div formGroupName="schedule">
+          <h3 class="text-xl font-semibold text-gray-800">Schedule</h3>
+          <p class="text-sm text-gray-500 mt-1">Set the date, time, and duration for your event.</p>
+          <div class="mt-6 space-y-4 max-w-md">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label for="date" class="block text-sm font-medium text-gray-700">Date *</label>
+                <input type="date" id="date" formControlName="date" class="form-input">
+              </div>
+              <div>
+                <label for="time" class="block text-sm font-medium text-gray-700">Time *</label>
+                <input type="time" id="time" formControlName="time" class="form-input">
               </div>
             </div>
-          }
-          @case(2) { 
-            <div formGroupName="schedule">
-              <h3 class="text-xl font-semibold text-gray-800">Schedule</h3>
-              <p class="text-sm text-gray-500 mt-1">Set the date, time, and duration for your event.</p>
-              <div class="mt-6 space-y-4 max-w-md">
-                <div class="grid grid-cols-2 gap-4">
-                  <div>
-                    <label for="date" class="block text-sm font-medium text-gray-700">Date *</label>
-                    <input type="date" id="date" formControlName="date" class="form-input">
-                  </div>
-                  <div>
-                    <label for="time" class="block text-sm font-medium text-gray-700">Time *</label>
-                    <input type="time" id="time" formControlName="time" class="form-input">
-                  </div>
-                </div>
-                <div>
-                  <label for="duration" class="block text-sm font-medium text-gray-700">Duration (in minutes) *</label>
-                  <input type="number" id="duration" formControlName="duration" class="form-input">
-                </div>
-              </div>
-            </div> 
-          }
-          @case(3) { 
-            <div formGroupName="settings">
-              <h3 class="text-xl font-semibold text-gray-800">Registration Settings</h3>
-              <p class="text-sm text-gray-500 mt-1">Configure who can register and what information to collect.</p>
-              <div class="mt-6 space-y-6 max-w-lg">
-                <div>
-                  <label for="capacity" class="block text-sm font-medium text-gray-700">Capacity *</label>
-                  <input type="number" id="capacity" formControlName="capacity" class="form-input">
-                </div>
-                <div class="p-4 border border-gray-200 rounded-lg bg-gray-50/50 space-y-4">
-                  <div class="flex items-center justify-between">
-                    <label for="requiresApproval" class="font-medium text-gray-800 text-sm">Require registration approval</label>
-                    <div class="relative inline-block w-10 align-middle select-none">
-                      <input type="checkbox" id="requiresApproval" formControlName="requiresApproval" class="toggle-checkbox"/>
-                      <label for="requiresApproval" class="toggle-label"></label>
-                    </div>
-                  </div>
-                  <fieldset class="border-t border-gray-200 pt-4">
-                    <legend class="text-sm font-medium text-gray-800">Collect Information on Form:</legend>
-                    <div class="mt-3 space-y-3">
-                      <div class="flex items-center justify-between">
-                         <label for="collectCompany" class="text-sm text-gray-600">Company Name</label>
-                         <div class="relative inline-block w-10 align-middle select-none">
-                            <input type="checkbox" id="collectCompany" formControlName="collectCompany" class="toggle-checkbox"/>
-                            <label for="collectCompany" class="toggle-label"></label>
-                         </div>
-                      </div>
-                       <div class="flex items-center justify-between">
-                         <label for="collectJobTitle" class="text-sm text-gray-600">Job Title</label>
-                          <div class="relative inline-block w-10 align-middle select-none">
-                            <input type="checkbox" id="collectJobTitle" formControlName="collectJobTitle" class="toggle-checkbox"/>
-                            <label for="collectJobTitle" class="toggle-label"></label>
-                         </div>
-                      </div>
-                    </div>
-                  </fieldset>
-                </div>
-              </div>
-            </div> 
-          }
-          @case(4) { 
             <div>
-              <h3 class="text-xl font-semibold text-center text-gray-800">Review Your Event</h3>
-              <p class="text-sm text-gray-500 mt-1 text-center">Final check before saving your event.</p>
-              <div class="mt-6 p-6 bg-gray-50 rounded-xl border border-gray-200 max-w-2xl mx-auto">
-                <dl class="grid grid-cols-2 gap-x-6 gap-y-6">
-                  <div class="col-span-2"><dt class="text-sm font-medium text-gray-500">Event Name</dt><dd class="text-gray-900 font-semibold text-lg">{{ eventForm.value.basics?.name }}</dd></div>
-                  <div><dt class="text-sm font-medium text-gray-500">Event Type</dt><dd class="text-gray-900 capitalize">{{ eventForm.value.basics?.type }}</dd></div>
-                  <div><dt class="text-sm font-medium text-gray-500">Speaker</dt><dd class="text-gray-900">{{ eventForm.value.basics?.speaker }}</dd></div>
-                  <div><dt class="text-sm font-medium text-gray-500">Date & Time</dt><dd class="text-gray-900">{{ eventForm.value.schedule?.date | date:'fullDate' }} at {{ eventForm.value.schedule?.time }}</dd></div>
-                   <div><dt class="text-sm font-medium text-gray-500">Duration</dt><dd class="text-gray-900">{{ eventForm.value.schedule?.duration }} minutes</dd></div>
-                </dl>
+              <label for="duration" class="block text-sm font-medium text-gray-700">Duration (in minutes) *</label>
+              <input type="number" id="duration" formControlName="duration" class="form-input">
+            </div>
+          </div>
+        </div>
+        }
+        @case(3) {
+        <div formGroupName="settings">
+          <h3 class="text-xl font-semibold text-gray-800">Registration Settings</h3>
+          <p class="text-sm text-gray-500 mt-1">Configure who can register and what information to collect.</p>
+          <div class="mt-6 space-y-6 max-w-lg">
+            <div>
+              <label for="capacity" class="block text-sm font-medium text-gray-700">Capacity *</label>
+              <input type="number" id="capacity" formControlName="capacity" class="form-input">
+            </div>
+            <div class="p-4 border border-gray-200 rounded-lg bg-gray-50/50 space-y-4">
+              <div class="flex items-center justify-between">
+                <label for="requiresApproval" class="font-medium text-gray-800 text-sm">Require registration
+                  approval</label>
+                <div class="relative inline-block w-10 align-middle select-none">
+                  <input type="checkbox" id="requiresApproval" formControlName="requiresApproval"
+                    class="toggle-checkbox" />
+                  <label for="requiresApproval" class="toggle-label"></label>
+                </div>
               </div>
-            </div> 
-          }
+              <fieldset class="border-t border-gray-200 pt-4">
+                <legend class="text-sm font-medium text-gray-800">Collect Information on Form:</legend>
+                <div class="mt-3 space-y-3">
+                  <div class="flex items-center justify-between">
+                    <label for="collectCompany" class="text-sm text-gray-600">Company Name</label>
+                    <div class="relative inline-block w-10 align-middle select-none">
+                      <input type="checkbox" id="collectCompany" formControlName="collectCompany"
+                        class="toggle-checkbox" />
+                      <label for="collectCompany" class="toggle-label"></label>
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-between">
+                    <label for="collectJobTitle" class="text-sm text-gray-600">Job Title</label>
+                    <div class="relative inline-block w-10 align-middle select-none">
+                      <input type="checkbox" id="collectJobTitle" formControlName="collectJobTitle"
+                        class="toggle-checkbox" />
+                      <label for="collectJobTitle" class="toggle-label"></label>
+                    </div>
+                  </div>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+        }
+        @case(4) {
+        <div>
+          <h3 class="text-xl font-semibold text-center text-gray-800">Review Your Event</h3>
+          <p class="text-sm text-gray-500 mt-1 text-center">Final check before saving your event.</p>
+          <div class="mt-6 p-6 bg-gray-50 rounded-xl border border-gray-200 max-w-2xl mx-auto">
+            <dl class="grid grid-cols-2 gap-x-6 gap-y-6">
+              <div class="col-span-2">
+                <dt class="text-sm font-medium text-gray-500">Event Name</dt>
+                <dd class="text-gray-900 font-semibold text-lg">{{ eventForm.value.basics?.name }}</dd>
+              </div>
+              <div>
+                <dt class="text-sm font-medium text-gray-500">Event Type</dt>
+                <dd class="text-gray-900 capitalize">{{ eventForm.value.basics?.type }}</dd>
+              </div>
+              <div>
+                <dt class="text-sm font-medium text-gray-500">Speaker</dt>
+                <dd class="text-gray-900">{{ eventForm.value.basics?.speaker }}</dd>
+              </div>
+              <div>
+                <dt class="text-sm font-medium text-gray-500">Date & Time</dt>
+                <dd class="text-gray-900">{{ eventForm.value.schedule?.date | date:'fullDate' }} at {{
+                  eventForm.value.schedule?.time }}</dd>
+              </div>
+              <div>
+                <dt class="text-sm font-medium text-gray-500">Duration</dt>
+                <dd class="text-gray-900">{{ eventForm.value.schedule?.duration }} minutes</dd>
+              </div>
+            </dl>
+          </div>
+        </div>
+        }
         }
       </div>
 
@@ -149,18 +180,20 @@
       <div class="mt-auto pt-8 border-t border-gray-200 flex justify-between items-center">
         <button (click)="cancel()" class="text-sm font-semibold text-gray-600 hover:text-gray-900">Cancel</button>
         <div class="flex items-center space-x-4">
-          <button type="button" (click)="prevStep()" [class.invisible]="currentStep() === 1" class="rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
-              Back
+          <button type="button" (click)="prevStep()" [class.invisible]="currentStep() === 1"
+            class="rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50">
+            Back
           </button>
-          @if(currentStep() < steps.length) {
-            <button type="button" (click)="nextStep()" [disabled]="!isStepValid()" class="rounded-lg bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed">
-                Next
+          @if(currentStep() < steps.length) { <button type="button" (click)="nextStep()" [disabled]="!isStepValid()"
+            class="rounded-lg bg-indigo-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed">
+            Next
             </button>
-          } @else {
-            <button (click)="saveEvent()" [disabled]="!eventForm.valid" class="rounded-lg bg-green-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-green-700 disabled:opacity-50">
+            } @else {
+            <button (click)="saveEvent()" [disabled]="!eventForm.valid"
+              class="rounded-lg bg-green-600 px-5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-green-700 disabled:opacity-50">
               {{ isEditMode() ? 'Save Changes' : 'Publish Event' }}
             </button>
-          }
+            }
         </div>
       </div>
     </form>

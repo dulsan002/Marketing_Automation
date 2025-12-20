@@ -15,7 +15,8 @@ const getContacts = async (req, res, next) => {
     try {
         const tenantId = req.context.tenantId;
         if (!tenantId) return res.status(401).json({ status: 'error', message: 'Tenant context missing' });
-        const contacts = await contactService.getContacts(tenantId);
+        const { search } = req.query;
+        const contacts = await contactService.getContacts(tenantId, search);
         res.status(200).json({ status: 'success', data: contacts });
     } catch (error) {
         next(error);

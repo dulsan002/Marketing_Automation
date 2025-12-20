@@ -20,7 +20,7 @@ export class AllEventsComponent {
   readonly statusFilter = signal<'all' | EventStatus>('all');
   readonly typeFilter = signal<'all' | EventType>('all');
 
-  readonly eventStatuses: EventStatus[] = ['upcoming', 'live', 'completed'];
+  readonly eventStatuses: EventStatus[] = ['scheduled', 'active', 'finished'];
   readonly eventTypes: EventType[] = ['webinar', 'conference', 'meetup', 'workshop'];
 
   constructor() {
@@ -50,9 +50,10 @@ export class AllEventsComponent {
 
   getStatusClass(status: EventStatus) {
     switch (status) {
-      case 'upcoming': return 'bg-sky-100 text-sky-800';
-      case 'live': return 'bg-green-100 text-green-800 animate-pulse';
-      case 'completed': return 'bg-gray-200 text-gray-800';
+      case 'scheduled': return 'bg-sky-100 text-sky-800';
+      case 'active': return 'bg-green-100 text-green-800 animate-pulse';
+      case 'finished': return 'bg-gray-200 text-gray-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
   }
 
@@ -62,6 +63,7 @@ export class AllEventsComponent {
       case 'conference': return 'bg-purple-100 text-purple-800';
       case 'meetup': return 'bg-orange-100 text-orange-800';
       case 'workshop': return 'bg-teal-100 text-teal-800';
+      default: return 'bg-gray-100 text-gray-800';
     }
   }
 }

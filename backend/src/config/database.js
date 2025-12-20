@@ -1,7 +1,7 @@
 const { Sequelize } = require('sequelize');
 const path = require('path');
 
-const dbPath = path.resolve(__dirname, '../../database_new.sqlite');
+const dbPath = path.join(__dirname, '../../database_new.sqlite');
 
 const sequelize = new Sequelize({
     dialect: 'sqlite',

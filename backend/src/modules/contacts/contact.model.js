@@ -27,6 +27,14 @@ const Contact = sequelize.define('Contact', {
         type: DataTypes.STRING,
         allowNull: true
     },
+    company: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    jobTitle: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
     score: {
         type: DataTypes.INTEGER,
         defaultValue: 0

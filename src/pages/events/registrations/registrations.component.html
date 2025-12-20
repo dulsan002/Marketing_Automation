@@ -52,6 +52,7 @@
           <tr>
             <th scope="col" class="px-6 py-4 font-semibold">Registrant</th>
             <th scope="col" class="px-6 py-4 font-semibold">Company</th>
+            <th scope="col" class="px-6 py-4 font-semibold">Job Title</th>
             <th scope="col" class="px-6 py-4 font-semibold">Event</th>
             <th scope="col" class="px-6 py-4 font-semibold">Status</th>
             <th scope="col" class="px-6 py-4 font-semibold">Registered</th>
@@ -66,6 +67,7 @@
               <div class="text-xs text-gray-500">{{ reg.registrant.email }}</div>
             </td>
             <td class="px-6 py-4">{{ reg.company }}</td>
+            <td class="px-6 py-4 text-gray-600">{{ reg.jobTitle || '-' }}</td>
             <td class="px-6 py-4 font-medium text-gray-800">{{ reg.eventName }}</td>
             <td class="px-6 py-4">
               <div class="relative inline-block">

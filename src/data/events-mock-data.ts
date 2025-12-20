@@ -1,12 +1,12 @@
 import { Event, Registration, EventAnalytics } from '../types';
 
 export const MOCK_EVENTS: Event[] = [
-  { id: 'evt_1', name: 'Cloud Migration Best Practices', type: 'webinar', status: 'upcoming', speaker: 'David Kim', date: '2025-01-14T14:00:00Z', duration: 35, registrations: 112, attendees: 0 },
-  { id: 'evt_2', name: 'AI in Enterprise: What You Need to Know', type: 'meetup', status: 'live', speaker: 'Dr. Sarah Chen', date: '2024-11-20T10:00:00Z', duration: 76, registrations: 500, attendees: 350 },
-  { id: 'evt_3', name: 'Digital Transformation Masterclass', type: 'webinar', status: 'completed', speaker: 'Michael Roberts', date: '2024-12-04T09:00:00Z', duration: 88, registrations: 827, attendees: 512 },
-  { id: 'evt_4', name: 'Security Summit 2024', type: 'workshop', status: 'live', speaker: 'Alex Rivera', date: '2025-01-31T09:00:00Z', duration: 179, registrations: 758, attendees: 620 },
-  { id: 'evt_5', name: 'RevOps Excellence Workshop', type: 'conference', status: 'completed', speaker: 'David Kim', date: '2025-02-06T11:00:00Z', duration: 87, registrations: 363, attendees: 250 },
-  { id: 'evt_6', name: 'Data Analytics Deep Dive', type: 'conference', status: 'completed', speaker: 'Jennifer Walsh', date: '2025-01-07T13:00:00Z', duration: 121, registrations: 556, attendees: 398 },
+  { id: 'evt_1', name: 'Cloud Migration Best Practices', type: 'webinar', status: 'scheduled', speaker: 'David Kim', date: '2025-01-14T14:00:00Z', duration: 35, registrations: 112, attendees: 0, capacity: 500 },
+  { id: 'evt_2', name: 'AI in Enterprise: What You Need to Know', type: 'meetup', status: 'active', speaker: 'Dr. Sarah Chen', date: '2024-11-20T10:00:00Z', duration: 76, registrations: 500, attendees: 350, capacity: 500 },
+  { id: 'evt_3', name: 'Digital Transformation Masterclass', type: 'webinar', status: 'finished', speaker: 'Michael Roberts', date: '2024-12-04T09:00:00Z', duration: 88, registrations: 827, attendees: 512, capacity: 1000 },
+  { id: 'evt_4', name: 'Security Summit 2024', type: 'workshop', status: 'active', speaker: 'Alex Rivera', date: '2025-01-31T09:00:00Z', duration: 179, registrations: 758, attendees: 620, capacity: 800 },
+  { id: 'evt_5', name: 'RevOps Excellence Workshop', type: 'conference', status: 'finished', speaker: 'David Kim', date: '2025-02-06T11:00:00Z', duration: 87, registrations: 363, attendees: 250, capacity: 400 },
+  { id: 'evt_6', name: 'Data Analytics Deep Dive', type: 'conference', status: 'finished', speaker: 'Jennifer Walsh', date: '2025-01-07T13:00:00Z', duration: 121, registrations: 556, attendees: 398, capacity: 600 },
 ];
 
 export const MOCK_REGISTRATIONS: Registration[] = [

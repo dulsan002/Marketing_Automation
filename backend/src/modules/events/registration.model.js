@@ -10,13 +10,19 @@ const Registration = sequelize.define('Registration', {
         primaryKey: true
     },
     status: {
-        type: DataTypes.ENUM('Registered', 'Attended', 'Cancelled', 'NoShow'),
-        defaultValue: 'Registered'
+        type: DataTypes.ENUM('Registered', 'Attended', 'Cancelled', 'NoShow', 'Pending'),
+        defaultValue: 'Pending'
     },
     checkInTime: {
         type: DataTypes.DATE,
         allowNull: true
-    }
+    },
+    // Snapshot Attributes
+    firstName: { type: DataTypes.STRING, allowNull: true },
+    lastName: { type: DataTypes.STRING, allowNull: true },
+    email: { type: DataTypes.STRING, allowNull: true },
+    company: { type: DataTypes.STRING, allowNull: true },
+    jobTitle: { type: DataTypes.STRING, allowNull: true }
 }, {
     timestamps: true,
     indexes: [

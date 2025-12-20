@@ -306,7 +306,7 @@ export interface Account360 extends Account {
 /** The category of an event. */
 export type EventType = 'webinar' | 'conference' | 'meetup' | 'workshop';
 /** The current status of an event. */
-export type EventStatus = 'upcoming' | 'live' | 'completed';
+export type EventStatus = 'scheduled' | 'active' | 'finished';
 /** The status of a person's registration for an event. */
 export type RegistrationStatus = 'confirmed' | 'pending' | 'cancelled';
 /** The attendance status of a registrant for an event. */
@@ -323,8 +323,12 @@ export interface Event {
   speaker: string;
   date: string; // ISO string for simplicity
   duration: number; // in minutes
+  venue?: string;
+  capacity: number; // Added capacity
   registrations: number;
   attendees: number;
+  collectCompany?: boolean;
+  collectJobTitle?: boolean;
 }
 
 /**
@@ -337,6 +341,7 @@ export interface Registration {
     email: string;
   };
   company: string;
+  jobTitle?: string; // Added field
   eventId: string;
   eventName: string;
   status: RegistrationStatus;
@@ -356,4 +361,17 @@ export interface EventAnalytics {
     registrations: number;
     attendees: number;
   }[];
+}
+
+/**
+ * Represents a contact in the system.
+ */
+export interface Contact {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  company?: string;
+  jobTitle?: string;
+  // Add other fields as needed
 }

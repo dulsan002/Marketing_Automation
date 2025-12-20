@@ -12,8 +12,12 @@ const Event = sequelize.define('Event', {
         type: DataTypes.STRING,
         allowNull: false
     },
+    venue: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
     type: {
-        type: DataTypes.ENUM('Webinar', 'Conference', 'Workshop'),
+        type: DataTypes.ENUM('Webinar', 'Conference', 'Workshop', 'Meetup'),
         defaultValue: 'Webinar'
     },
     status: {
@@ -39,6 +43,22 @@ const Event = sequelize.define('Event', {
     description: {
         type: DataTypes.TEXT,
         allowNull: true
+    },
+    speaker: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    duration: {
+        type: DataTypes.INTEGER, // in minutes
+        defaultValue: 60
+    },
+    collectCompany: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true
+    },
+    collectJobTitle: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
     }
 }, {
     timestamps: true

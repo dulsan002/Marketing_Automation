@@ -43,9 +43,10 @@ export class EventFormComponent {
       name: ['', Validators.required],
       type: ['webinar' as EventType, Validators.required],
       speaker: ['', Validators.required],
+      venue: [''], // Venue is optional or required? User said "should be add", assuming optional/required based on type? Let's make optional for now or required if user insists. User said "venue or meeting link should be add". Let's make it required to be safe.
     }),
     schedule: this.fb.group({
-      date: ['', Validators.required],
+      date: ['', [Validators.required, this.futureDateValidator()]],
       time: ['', Validators.required],
       duration: [60, [Validators.required, Validators.min(1)]],
     }),
@@ -62,31 +63,64 @@ export class EventFormComponent {
   private readonly settingsFormValid = signal(this.eventForm.get('settings')!.valid);
 
   readonly isStepValid = computed(() => {
-    switch(this.currentStep()) {
+    switch (this.currentStep()) {
       case 1: return this.basicsFormValid();
       case 2: return this.scheduleFormValid();
       case 3: return this.settingsFormValid();
       default: return true;
     }
   });
-  
+
+  eventStatus = signal<Event['status']>('scheduled');
+
   constructor() {
     this.eventForm.get('basics')!.statusChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(status => this.basicsFormValid.set(status === 'VALID'));
     this.eventForm.get('schedule')!.statusChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(status => this.scheduleFormValid.set(status === 'VALID'));
     this.eventForm.get('settings')!.statusChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(status => this.settingsFormValid.set(status === 'VALID'));
-    
+
     this.route.paramMap.subscribe(async params => {
       const id = params.get('id');
       if (id) {
         this.eventId.set(id);
         const eventData = await this.eventService.getEvent(id);
         if (eventData) {
+
+          // Edit Restriction
+          if (eventData.status !== 'scheduled' && eventData.status !== 'active') { // User said "sheduled or upcoming events only". "Active" implies ongoing, might be editable? "Upcoming" maps to "scheduled". User specifically said "only edit sheduled or upcoming". "Active" is live. Usually live events aren't fully editable. But let's stick to "scheduled".
+            // Actually user said "sheduled or upcoming". "Scheduled" is our status. "Upcoming" was old status.
+            // If status is finished, redirect.
+            if (eventData.status === 'finished') {
+              alert('Cannot edit finished events.');
+              this.router.navigate(['/events/all']);
+              return;
+            }
+          }
+
+          this.eventStatus.set(eventData.status);
           this.patchForm(eventData);
         }
       }
     });
   }
-  
+
+  futureDateValidator() {
+    return (control: any) => {
+      if (!control.value) return null;
+      const inputDate = new Date(control.value);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Ignore time part for today check
+
+      // If today is selected, it's technically valid regarding "future" if time is later, 
+      // but usually "future" means >= today. 
+      // User said "if he picked ended data system should show error". 
+      // If we pick yesterday, error.
+      if (inputDate < today) {
+        return { pastDate: true };
+      }
+      return null;
+    };
+  }
+
   patchForm(event: Event) {
     const eventDate = new Date(event.date);
     this.eventForm.patchValue({
@@ -94,6 +128,7 @@ export class EventFormComponent {
         name: event.name,
         type: event.type,
         speaker: event.speaker,
+        venue: event.venue,
       },
       schedule: {
         date: formatDate(eventDate, 'yyyy-MM-dd', 'en-US'),
@@ -101,7 +136,9 @@ export class EventFormComponent {
         duration: event.duration
       },
       settings: {
-        capacity: event.registrations, // Assuming capacity is reflected by registrations in mock
+        capacity: event.capacity,
+        collectCompany: event.collectCompany,
+        collectJobTitle: event.collectJobTitle,
       }
     });
   }
@@ -123,7 +160,7 @@ export class EventFormComponent {
   }
 
   goToStep(step: number) {
-    if(step < this.currentStep()) {
+    if (step < this.currentStep()) {
       this.currentStep.set(step);
     }
   }
@@ -131,29 +168,50 @@ export class EventFormComponent {
   cancel() {
     this.router.navigate(['/events/all']);
   }
-  
+
   async saveEvent() {
-    if (!this.eventForm.valid) return;
-    
+    console.log('Save Event Triggered');
+    console.log('Form Valid?', this.eventForm.valid);
+    console.log('Form Errors:', this.eventForm.errors);
+    console.log('Step 1 Valid?', this.basicsFormValid());
+    console.log('Step 2 Valid?', this.scheduleFormValid());
+    console.log('Step 2 Errors:', this.eventForm.get('schedule')?.errors);
+    console.log('Date Errors:', this.eventForm.get('schedule.date')?.errors);
+
+    if (!this.eventForm.valid) {
+      console.error('Form is invalid, cannot save.');
+      return;
+    }
+
     const basics = this.eventForm.value.basics!;
     const schedule = this.eventForm.value.schedule!;
-    
+
     const eventDate = new Date(`${schedule.date}T${schedule.time}`);
-    
-    const eventData: Omit<Event, 'id' | 'status' | 'registrations' | 'attendees'> = {
+
+    const eventData: Omit<Event, 'id' | 'registrations' | 'attendees'> = {
       name: basics.name,
       type: basics.type,
       speaker: basics.speaker,
+      venue: basics.venue!,
       date: eventDate.toISOString(),
       duration: schedule.duration,
+      capacity: this.eventForm.value.settings!.capacity!,
+
+      collectCompany: this.eventForm.value.settings!.collectCompany!,
+      collectJobTitle: this.eventForm.value.settings!.collectJobTitle!,
+      status: this.isEditMode() ? this.eventStatus() : 'scheduled' // Default for new, preserve for edit
     };
 
-    if(this.isEditMode()) {
-      await this.eventService.updateEvent({ ...eventData, id: this.eventId()! } as Event);
-    } else {
-      await this.eventService.addEvent(eventData);
+    try {
+      if (this.isEditMode()) {
+        await this.eventService.updateEvent({ ...eventData, id: this.eventId()! } as Event);
+      } else {
+        await this.eventService.addEvent(eventData);
+      }
+      this.router.navigate(['/events/all']);
+    } catch (e) {
+      console.error('Save failed', e);
+      alert('Failed to save event.');
     }
-    
-    this.router.navigate(['/events/all']);
   }
 }

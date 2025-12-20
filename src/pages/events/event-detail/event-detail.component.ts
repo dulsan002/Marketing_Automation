@@ -6,9 +6,11 @@ import { Event, Registration, EventStatus, EventType, RegistrationStatus, Attend
 
 type EventDetailTab = 'overview' | 'registrations' | 'attendance' | 'analytics' | 'automation';
 
+import { ManualRegistrationModalComponent } from '../event-forms/manual-registration-modal.component';
+
 @Component({
   selector: 'app-event-detail',
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ManualRegistrationModalComponent],
   templateUrl: './event-detail.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -21,6 +23,7 @@ export class EventDetailComponent {
   readonly registrations = signal<Registration[]>([]);
   readonly isLoading = signal(true);
   readonly activeTab = signal<EventDetailTab>('overview');
+  readonly showRegisterModal = signal(false);
 
   constructor() {
     this.loadEventData();
@@ -35,7 +38,7 @@ export class EventDetailComponent {
     }
     const [eventData, allRegistrations] = await Promise.all([
       this.eventService.getEvent(eventId),
-      this.eventService.getRegistrations()
+      this.eventService.getRegistrations(eventId)
     ]);
 
     if (!eventData) {
@@ -59,12 +62,12 @@ export class EventDetailComponent {
   // UI Helper methods
   getStatusClass(status: EventStatus) {
     switch (status) {
-      case 'upcoming': return 'bg-sky-100 text-sky-800';
-      case 'live': return 'bg-green-100 text-green-800 animate-pulse';
-      case 'completed': return 'bg-gray-200 text-gray-800';
+      case 'scheduled': return 'bg-sky-100 text-sky-800';
+      case 'active': return 'bg-green-100 text-green-800 animate-pulse';
+      case 'finished': return 'bg-gray-200 text-gray-800';
     }
   }
-  
+
   getRegistrationStatusClass(status: RegistrationStatus): string {
     switch (status) {
       case 'confirmed': return 'bg-green-100 text-green-800';
@@ -72,12 +75,21 @@ export class EventDetailComponent {
       case 'cancelled': return 'bg-red-100 text-red-800';
     }
   }
-  
+
   getAttendanceStatusClass(status: AttendanceStatus): string {
-    switch(status) {
-        case 'attended': return 'bg-green-100 text-green-800';
-        case 'no-show': return 'bg-red-100 text-red-800';
-        case 'partial': return 'bg-yellow-100 text-yellow-800';
+    switch (status) {
+      case 'attended': return 'bg-green-100 text-green-800';
+      case 'no-show': return 'bg-red-100 text-red-800';
+      case 'partial': return 'bg-yellow-100 text-yellow-800';
     }
+  }
+
+  openRegisterModal() {
+    this.showRegisterModal.set(true);
+  }
+
+  closeRegisterModal() {
+    this.showRegisterModal.set(false);
+    this.loadEventData(); // Refresh data
   }
 }

@@ -22,6 +22,9 @@ import { BuyingCommitteeComponent } from './pages/abm/buying-committee/buying-co
 import { AllEventsComponent } from './pages/events/all-events/all-events.component';
 import { EventDetailComponent } from './pages/events/event-detail/event-detail.component';
 import { EventsAnalyticsComponent } from './pages/events/analytics/analytics.component';
+import { EventFormComponent } from './pages/events/event-form/event-form.component';
+import { EventFormsComponent } from './pages/events/event-forms/event-forms.component';
+import { RegistrationsComponent } from './pages/events/registrations/registrations.component';
 
 export const APP_ROUTES: Routes = [
   // Auth
@@ -130,6 +133,30 @@ export const APP_ROUTES: Routes = [
     component: AllEventsComponent,
     canActivate: [authGuard],
     data: { title: 'All Events' }
+  },
+  {
+    path: 'events/forms',
+    component: EventFormsComponent,
+    canActivate: [authGuard],
+    data: { title: 'Registration Forms' }
+  },
+  {
+    path: 'events/registrations',
+    component: RegistrationsComponent,
+    canActivate: [authGuard],
+    data: { title: 'Registrations' }
+  },
+  {
+    path: 'events/new',
+    component: EventFormComponent,
+    canActivate: [authGuard],
+    data: { title: 'Create Event' }
+  },
+  {
+    path: 'events/edit/:id',
+    component: EventFormComponent,
+    canActivate: [authGuard],
+    data: { title: 'Edit Event' }
   },
   {
     path: 'events/event/:id',

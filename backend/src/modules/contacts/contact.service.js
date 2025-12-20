@@ -2,14 +2,27 @@ const Contact = require('./contact.model');
 
 const eventBus = require('../../common/event_bus');
 
+const { Op } = require('sequelize');
+
 const createContact = async (data) => {
     const contact = await Contact.create(data);
     eventBus.emit('contact.created', { tenantId: data.TenantId, contactId: contact.id });
     return contact;
 };
 
-const getContacts = async (tenantId) => {
-    return await Contact.findAll({ where: { TenantId: tenantId } });
+const getContacts = async (tenantId, search = '') => {
+    const where = { TenantId: tenantId };
+
+    if (search) {
+        where[Op.or] = [
+            { firstName: { [Op.like]: `%${search}%` } },
+            { lastName: { [Op.like]: `%${search}%` } },
+            { email: { [Op.like]: `%${search}%` } },
+            { company: { [Op.like]: `%${search}%` } }
+        ];
+    }
+
+    return await Contact.findAll({ where });
 };
 
 const getContactById = async (id, tenantId) => {

@@ -39,7 +39,7 @@
           <span class="px-2.5 py-1 text-xs font-semibold rounded-full capitalize" [class]="getTypeClass(event.type)">{{
             event.type }}</span>
         </div>
-        <a [routerLink]="['/events/view', event.id]" class="block mt-4">
+        <a [routerLink]="['/events/event', event.id]" class="block mt-4">
           <h3 class="text-lg font-bold text-gray-900 leading-tight hover:underline">{{ event.name }}</h3>
         </a>
         <p class="text-sm text-gray-600 mt-2">Speaker: {{ event.speaker }}</p>
