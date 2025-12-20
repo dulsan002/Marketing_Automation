@@ -57,25 +57,27 @@
       <div class="flex justify-between items-start">
         <div>
           <h3 class="text-lg font-bold text-slate-900 leading-tight">{{ signal.accountName }}</h3>
-          <p class="text-sm text-slate-500 mt-1">{{ signal.solutionCategory }}</p>
+          <p class="text-sm text-slate-500 mt-1">{{ signal.industry || signal.solutionCategory }}</p>
         </div>
         <!-- Trend - No Background per image -->
-        <div class="flex items-center text-sm font-semibold transition-transform duration-300 group-hover:scale-105"
-          [class]="getTrendClass(signal.trend)">
+        <div [class]="getTrendClass(signal.trend)">
           @if (signal.trend === 'Rising') {
-          <svg class="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd"
               d="M10 17a.75.75 0 01-.75-.75V5.612L5.03 9.83a.75.75 0 01-1.06-1.06l5.25-5.25a.75.75 0 011.06 0l5.25 5.25a.75.75 0 11-1.06 1.06L10.75 5.612V16.25A.75.75 0 0110 17z"
               clip-rule="evenodd" />
           </svg>
           } @else if (signal.trend === 'Declining') {
-          <svg class="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+          <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd"
               d="M10 3a.75.75 0 01.75.75v10.638l4.22-4.22a.75.75 0 111.06 1.06l-5.25 5.25a.75.75 0 01-1.06 0l-5.25-5.25a.75.75 0 111.06-1.06l4.22 4.22V3.75A.75.75 0 0110 3z"
               clip-rule="evenodd" />
           </svg>
           } @else {
-          <span class="mr-1 text-slate-400">—</span>
+          <svg class="w-3.5 h-3.5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h12.5a.75.75 0 110 1.5H3.75A.75.75 0 013 10z"
+              clip-rule="evenodd" />
+          </svg>
           }
           {{ signal.trend }}
         </div>
@@ -84,7 +86,7 @@
       <!-- Score -->
       <div class="mt-8 mb-6">
         <span class="text-5xl font-bold text-slate-900 tracking-tighter">{{ signal.score }}</span>
-        <span class="text-base text-slate-500 ml-2 font-medium">intent score</span>
+        <span class="text-base text-slate-500 ml-2 font-medium">Intent Signal</span>
       </div>
 
       <!-- Tags -->

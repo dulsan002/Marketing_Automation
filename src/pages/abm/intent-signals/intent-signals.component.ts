@@ -47,10 +47,12 @@ export class IntentSignalsComponent {
   }
 
   getTrendClass(trend: IntentTrend): string {
+    const base = 'flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium border';
     switch (trend) {
-      case 'Rising': return 'text-emerald-600';
-      case 'Declining': return 'text-amber-600';
-      case 'Stable': return 'text-slate-400';
+      case 'Rising': return `${base} bg-emerald-50 text-emerald-700 border-emerald-100 ring-1 ring-emerald-600/10`;
+      case 'Declining': return `${base} bg-rose-50 text-rose-700 border-rose-100 ring-1 ring-rose-600/10`;
+      case 'Stable': return `${base} bg-slate-50 text-slate-600 border-slate-100 ring-1 ring-slate-600/10`;
+      default: return `${base} bg-gray-50 text-gray-600 border-gray-100`;
     }
   }
 

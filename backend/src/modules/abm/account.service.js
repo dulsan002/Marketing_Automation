@@ -18,9 +18,10 @@ const createAccount = async (data) => {
 
     // Auto-create Intent Signal
     try {
+        // Create "System" signal
         const occurredAt = new Date();
         const dedupeKey = crypto.createHash('sha256')
-            .update(`${data.TenantId}systemnew_accountsystem${occurredAt.toISOString().slice(0, 16)}`)
+            .update(`${data.TenantId}${account.id}systemnew_accountsystem${occurredAt.toISOString().slice(0, 16)}`)
             .digest('hex');
 
         await IntentSignal.create({
@@ -32,12 +33,39 @@ const createAccount = async (data) => {
             occurredAt: occurredAt
         });
 
+        // FIXED: Create signals for manually selected sources so they persist
+        if (data.intentSources && Array.isArray(data.intentSources)) {
+            console.log('Processing Manual Intent Sources:', data.intentSources);
+            for (const source of data.intentSources) {
+                if (source === 'System') continue; // Already created
+
+                const sourceKey = crypto.createHash('sha256')
+                    .update(`${data.TenantId}${account.id}${source}manual_init${occurredAt.toISOString()}`)
+                    .digest('hex');
+
+                try {
+                    await IntentSignal.create({
+                        tenantId: data.TenantId,
+                        accountId: account.id,
+                        source: source,
+                        activityType: 'manual_selection',
+                        dedupeKey: sourceKey,
+                        occurredAt: occurredAt
+                    });
+                    console.log('Created Manual Signal:', source);
+                } catch (signalErr) {
+                    console.error('Failed to create manual signal for ' + source, signalErr);
+                }
+            }
+        }
+
         // Ensure account is immediately updated. For new account, score is 0.
         // We still call this to init trend/signals if needed.
         await updateAccountIntentData(account.id, data.TenantId);
     } catch (e) {
+        console.error('CRITICAL: Failed to create initial Intent Signals', e);
         if (e.name !== 'SequelizeUniqueConstraintError') {
-            console.error('Failed to create initial Intent Signal', e);
+            // throw e; // don't throw to allow account creation
         }
     }
 
@@ -164,8 +192,8 @@ const updateAccountIntentData = async (accountId, tenantId) => {
 
     // 3. Determine Trend
     let trend = 'Stable';
-    if (currentCount > previousSignalCount) trend = 'Increasing';
-    else if (currentCount < previousSignalCount) trend = 'Decreasing';
+    if (currentCount > previousSignalCount) trend = 'Rising';
+    else if (currentCount < previousSignalCount) trend = 'Declining';
 
     // 4. Extract Distinct Sources
     const sources = [...new Set(currentSignals.map(s => s.source))];
@@ -186,8 +214,7 @@ const getGlobalIntentSignals = async (tenantId) => {
     const accounts = await Account.findAll({
         where: {
             TenantId: tenantId,
-            intentScore: { [require('sequelize').Op.gt]: 0 }, // Only show accounts with > 0 intent
-            tier: { [require('sequelize').Op.in]: ['Tier 1', 'Tier 2'] } // Only show T1/T2
+            tier: { [require('sequelize').Op.in]: ['Tier 1', 'Tier 2'] } // Show all T1/T2 regardless of score
         },
         order: [['intentScore', 'DESC']]
     });

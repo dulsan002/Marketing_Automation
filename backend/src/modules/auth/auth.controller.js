@@ -30,7 +30,7 @@ const login = async (req, res) => {
             return res.status(401).json({ status: 'error', message: error.message });
         }
         console.error('LOGIN ERROR:', error);
-        res.status(500).json({ status: 'error', message: 'Internal Server Error', error: error.message });
+        res.status(500).json({ status: 'error', message: 'Internal Server Error', error: error.message, stack: error.stack });
     }
 };
 

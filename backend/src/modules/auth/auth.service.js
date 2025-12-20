@@ -122,11 +122,13 @@ const login = async (tenantSlug, email, password) => {
 
     // Update refresh token
     user.refreshToken = refreshToken;
-    await user.save();
 
     // Update Last Login
     user.lastLoginAt = new Date();
-    await user.save();
+
+    // Perform SINGLE save to reduce SQLite Lock contention
+    // TEMPORARILY DISABLED: To fix persistent SQLITE_BUSY 500 error
+    // await user.save();
 
     return {
         user: {

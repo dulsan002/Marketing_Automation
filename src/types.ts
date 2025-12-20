@@ -221,6 +221,7 @@ export interface IntentSignal {
   score: number;
   trend: IntentTrend;
   sources: IntentSource[];
+  industry?: string;
 }
 
 /** The role a contact plays within a buying committee. */

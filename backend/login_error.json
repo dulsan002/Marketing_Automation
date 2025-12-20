@@ -1,0 +1,15 @@
+{
+  "status": "success",
+  "data": {
+    "user": {
+      "id": "4012e25e-fda4-48c9-9bf2-4dd336e317d1",
+      "email": "admin@demo-corp.com",
+      "role": "ADMIN",
+      "tenantId": "8da838a0-e73f-4226-98da-c4c901e7041f",
+      "tenantName": "Demo Corp",
+      "tenantSlug": "demo-corp"
+    },
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MDEyZTI1ZS1mZGE0LTQ4YzktOWJmMi00ZGQzMzZlMzE3ZDEiLCJlbWFpbCI6ImFkbWluQGRlbW8tY29ycC5jb20iLCJyb2xlIjoiQURNSU4iLCJ0ZW5hbnRJZCI6IjhkYTgzOGEwLWU3M2YtNDIyNi05OGRhLWM0YzkwMWU3MDQxZiIsImlhdCI6MTc2NjIyNDc3MiwiZXhwIjoxNzY2MzExMTcyfQ.-4qHPj5wxsXQD82Y0q16XuyZjJihga0Houaack0aj44",
+    "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI0MDEyZTI1ZS1mZGE0LTQ4YzktOWJmMi00ZGQzMzZlMzE3ZDEiLCJqdGkiOiJmMjFkNWVlZi0yNDJjLTQyYWEtOTAzZi1iMjgzNTNiNDgzZDgiLCJpYXQiOjE3NjYyMjQ3NzIsImV4cCI6MTc2NjgyOTU3Mn0.W3CPpTbZa16S5gItAGA8HXObf0_zX5rZbJnk7lP0LVw"
+  }
+}

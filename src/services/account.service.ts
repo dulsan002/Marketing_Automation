@@ -178,10 +178,12 @@ export class AccountService {
       return res.data.map((d: any) => ({
         accountId: d.accountId,
         accountName: d.accountName || d.Account?.name || 'Unknown',
-        solutionCategory: 'N/A', // GAP: Missing in Backend
-        score: d.weight,
-        trend: 'Stable', // GAP
-        sources: [d.source] as any
+        solutionCategory: d.solutionCategory || 'Technology', // Fixed mapping
+        industry: d.solutionCategory || 'Technology', // Added property
+        score: d.score || 0, // Fixed: was d.weight
+        // Normalize legacy backend values
+        trend: (d.trend === 'Increasing' ? 'Rising' : d.trend === 'Decreasing' ? 'Declining' : d.trend) || 'Stable',
+        sources: d.sources || [] // Fixed: was [d.source]
       }));
     } catch (e) {
       console.error('Failed to load intent signals', e);
@@ -194,7 +196,8 @@ export class AccountService {
       name: accountData.name,
       domain: accountData.domain,
       industry: accountData.industry,
-      tier: accountData.tier,
+      // Map 'T1' -> 'Tier 1' for backend
+      tier: accountData.tier === 'T1' ? 'Tier 1' : accountData.tier === 'T2' ? 'Tier 2' : 'Tier 3',
       employees: accountData.employees,
       revenue: accountData.revenue,
       intentSources: accountData.intentSources || []
@@ -214,12 +217,14 @@ export class AccountService {
       owner: 'Unassigned',
       employees: d.employees || 0,
       revenue: d.revenue ? Number(d.revenue) : 0,
-      tier: d.tier,
+      // Map Backend 'Tier 1' -> 'T1' for frontend state
+      tier: (d.tier === 'Tier 1' ? 'T1' : d.tier === 'Tier 2' ? 'T2' : 'T3') as any,
       score: d.score || 0,
       intent: 0,
       status: 'Active',
       nextAction: 'None',
-      updated: d.updatedAt
+      updated: d.updatedAt,
+      intentSources: d.intentSources || []
     };
   }
 
