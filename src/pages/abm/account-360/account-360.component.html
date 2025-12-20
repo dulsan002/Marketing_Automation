@@ -25,7 +25,7 @@
         </div>
         <div class="text-center">
           <p class="text-sm text-gray-500">Intent</p>
-          <p class="text-2xl font-bold text-blue-600">{{ acc.intent }}</p>
+          <p class="text-2xl font-bold text-blue-600">{{ acc.intent }}%</p>
         </div>
       </div>
     </div>
@@ -176,10 +176,12 @@
       <tbody>
         @for(activity of acc.recentActivities; track $index) {
         <tr class="bg-white border-b hover:bg-gray-50">
-          <td class="px-6 py-4">{{ activity.date }}</td>
-          <td class="px-6 py-4">{{ activity.type }}</td>
-          <td class="px-6 py-4 font-medium text-gray-800">{{ activity.description }}</td>
-          <td class="px-6 py-4">{{ activity.contact }}</td>
+          <td class="px-6 py-4">{{ activity.date | date:'mediumDate' }}</td>
+          <td class="px-6 py-4">
+            <span class="px-2 py-1 text-xs rounded-full bg-gray-100 text-gray-800">{{ activity.type }}</span>
+          </td>
+          <td class="px-6 py-4 font-medium text-gray-800">{{ activity.description || 'No description available' }}</td>
+          <td class="px-6 py-4 text-gray-600">{{ activity.contact || 'System' }}</td>
         </tr>
         }
       </tbody>

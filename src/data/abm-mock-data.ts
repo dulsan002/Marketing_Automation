@@ -19,17 +19,17 @@ export const MOCK_INTENT_SIGNALS: IntentSignal[] = [
 ];
 
 export const MOCK_BUYING_COMMITTEES: BuyingCommittee[] = [
-  { 
-    accountId: 'acc_1', 
-    accountName: 'Vertex Analytics', 
+  {
+    accountId: 'acc_1',
+    accountName: 'Vertex Analytics',
     members: [
       { id: 'mem_9', name: 'John Doe', role: 'Decision Maker', title: 'VP of Operations', email: 'john.doe@vertex.com', influence: 'High' },
       { id: 'mem_10', name: 'Jane Smith', role: 'Influencer', title: 'Senior Analyst', email: 'jane.smith@vertex.com', influence: 'Medium' },
     ]
   },
-  { 
-    accountId: 'acc_5', 
-    accountName: 'Global Dynamics', 
+  {
+    accountId: 'acc_5',
+    accountName: 'Global Dynamics',
     members: [
       { id: 'mem_1', name: 'Daniel Rodriguez', role: 'Decision Maker', title: 'Content Marketing Manager', email: 'daniel.rodriguez@globaldynamics4.com', influence: 'High' },
       { id: 'mem_2', name: 'Joseph Taylor', role: 'Influencer', title: 'Customer Success Manager', email: 'joseph.taylor@globaldynamics4.com', influence: 'Medium' },
@@ -51,9 +51,18 @@ export const MOCK_BUYING_COMMITTEES: BuyingCommittee[] = [
 
 export const MOCK_ACCOUNT_ANALYTICS: AccountAnalytics = {
   totalAccounts: 40,
+  activeAccounts: 40,
+  signalsBySource: [
+    { source: 'LinkedIn', count: 45 },
+    { source: 'Website', count: 32 },
+    { source: 'G2', count: 18 },
+    { source: 'Email', count: 25 },
+    { source: 'Bombora', count: 12 }
+  ],
+  pipelineValue: 1250,
   t1Accounts: 12,
   avgIntentScore: 50,
-  intentSignals: 50,
+  intentSignals: 125,
   accountTiers: [
     { tier: 'T1', count: 12 },
     { tier: 'T2', count: 18 },
@@ -68,24 +77,24 @@ export const MOCK_ACCOUNT_ANALYTICS: AccountAnalytics = {
 };
 
 export const MOCK_ACCOUNT_360_DATA: Account360[] = MOCK_ACCOUNTS.map(account => ({
-    ...account,
-    intentScoreTrend: [
-        { date: 'Jan', score: Math.max(0, account.intent - 20) },
-        { date: 'Feb', score: Math.max(0, account.intent - 10) },
-        { date: 'Mar', score: Math.max(0, account.intent - 15) },
-        { date: 'Apr', score: Math.max(0, account.intent + 5) },
-        { date: 'May', score: account.intent },
-    ],
-    engagementSummary: [
-        { metric: 'Marketing Emails', value: 12, change: 15 },
-        { metric: 'Sales Emails', value: 8, change: -5 },
-        { metric: 'Page Views', value: 45, change: 30 },
-        { metric: 'Form Fills', value: 2, change: 100 },
-    ],
-    buyingCommittee: MOCK_BUYING_COMMITTEES.find(c => c.accountId === account.id)?.members || [],
-    recentActivities: [
-        { date: '2024-05-20', type: 'Email', description: 'Opened "Q2 Webinar" email', contact: 'Daniel Rodriguez' },
-        { date: '2024-05-18', type: 'Website', description: 'Visited Pricing Page', contact: 'Ashley Perez' },
-        { date: '2024-05-15', type: 'Form', description: 'Downloaded "ABM Guide"', contact: 'Daniel Rodriguez' },
-    ]
+  ...account,
+  intentScoreTrend: [
+    { date: 'Jan', score: Math.max(0, account.intent - 20) },
+    { date: 'Feb', score: Math.max(0, account.intent - 10) },
+    { date: 'Mar', score: Math.max(0, account.intent - 15) },
+    { date: 'Apr', score: Math.max(0, account.intent + 5) },
+    { date: 'May', score: account.intent },
+  ],
+  engagementSummary: [
+    { metric: 'Marketing Emails', value: 12, change: 15 },
+    { metric: 'Sales Emails', value: 8, change: -5 },
+    { metric: 'Page Views', value: 45, change: 30 },
+    { metric: 'Form Fills', value: 2, change: 100 },
+  ],
+  buyingCommittee: MOCK_BUYING_COMMITTEES.find(c => c.accountId === account.id)?.members || [],
+  recentActivities: [
+    { date: '2024-05-20', type: 'Email', description: 'Opened "Q2 Webinar" email', contact: 'Daniel Rodriguez' },
+    { date: '2024-05-18', type: 'Website', description: 'Visited Pricing Page', contact: 'Ashley Perez' },
+    { date: '2024-05-15', type: 'Form', description: 'Downloaded "ABM Guide"', contact: 'Daniel Rodriguez' },
+  ]
 }));

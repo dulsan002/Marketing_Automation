@@ -1,0 +1,1 @@
+FAILED: {"status":404,"body":"<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<title>Error</title>\n</head>\n<body>\n<pre>Cannot POST /api/campaigns</pre>\n</body>\n</html>\n","url":"http://localhost:3000/api/campaigns?tenantId=t-dev-01"}

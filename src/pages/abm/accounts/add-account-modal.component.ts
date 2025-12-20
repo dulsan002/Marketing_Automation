@@ -7,7 +7,7 @@ import { Account } from '../../../types';
   selector: 'app-add-account-modal',
   imports: [CommonModule, ReactiveFormsModule],
   template: `
-    <div class="fixed inset-0 bg-black bg-opacity-60 z-40 transition-opacity" (click)="closeModal()"></div>
+      <div class="fixed inset-0 bg-black bg-opacity-60 z-40 transition-opacity" (click)="closeModal()"></div>
     <div class="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col animate-fade-in-up">
         
@@ -20,9 +20,15 @@ import { Account } from '../../../types';
 
         <form [formGroup]="accountForm" (ngSubmit)="onSave()" class="flex-grow overflow-y-auto">
           <div class="p-6 space-y-4">
-              <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Account Name *</label>
-                  <input type="text" formControlName="name" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3" placeholder="e.g., Acme Corporation">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div class="col-span-1 md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Account Name *</label>
+                    <input type="text" formControlName="name" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3" placeholder="e.g., Acme Corporation">
+                  </div>
+                  <div class="col-span-1 md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Company Domain</label>
+                    <input type="text" formControlName="domain" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3" placeholder="e.g., acme.com">
+                  </div>
               </div>
               <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -52,6 +58,33 @@ import { Account } from '../../../types';
                   <option value="T3">Tier 3</option>
                 </select>
               </div>
+
+              <!-- Intent Sources Selection -->
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Manual Intent Sources (Optional)</label>
+                <div class="flex flex-wrap gap-3">
+                  <label class="inline-flex items-center space-x-2 cursor-pointer">
+                    <input type="checkbox" [checked]="hasSource('Bombora')" (change)="toggleSource('Bombora')" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                    <span class="text-sm text-gray-700">Bombora</span>
+                  </label>
+                  <label class="inline-flex items-center space-x-2 cursor-pointer">
+                    <input type="checkbox" [checked]="hasSource('G2')" (change)="toggleSource('G2')" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                    <span class="text-sm text-gray-700">G2</span>
+                  </label>
+                  <label class="inline-flex items-center space-x-2 cursor-pointer">
+                    <input type="checkbox" [checked]="hasSource('TrustRadius')" (change)="toggleSource('TrustRadius')" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                    <span class="text-sm text-gray-700">TrustRadius</span>
+                  </label>
+                  <label class="inline-flex items-center space-x-2 cursor-pointer">
+                    <input type="checkbox" [checked]="hasSource('LinkedIn')" (change)="toggleSource('LinkedIn')" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                    <span class="text-sm text-gray-700">LinkedIn</span>
+                  </label>
+                  <label class="inline-flex items-center space-x-2 cursor-pointer">
+                    <input type="checkbox" [checked]="hasSource('Website')" (change)="toggleSource('Website')" class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500">
+                    <span class="text-sm text-gray-700">Website</span>
+                  </label>
+                </div>
+              </div>
           </div>
 
           <div class="p-4 bg-gray-50 border-t border-gray-200 flex justify-end gap-3">
@@ -80,8 +113,11 @@ export class AddAccountModalComponent {
   save = output<Omit<Account, 'id' | 'score' | 'intent'>>();
   close = output<void>();
 
+  selectedSources = new Set<string>();
+
   accountForm = this.fb.group({
     name: ['', Validators.required],
+    domain: [''],
     industry: [''],
     country: [''],
     employees: [null, [Validators.min(1)]],
@@ -89,13 +125,29 @@ export class AddAccountModalComponent {
     tier: ['T2' as Account['tier'], Validators.required],
   });
 
+  hasSource(source: string): boolean {
+    return this.selectedSources.has(source);
+  }
+
+  toggleSource(source: string) {
+    if (this.selectedSources.has(source)) {
+      this.selectedSources.delete(source);
+    } else {
+      this.selectedSources.add(source);
+    }
+  }
+
   closeModal(): void {
     this.close.emit();
   }
 
   onSave(): void {
     if (this.accountForm.valid) {
-      this.save.emit(this.accountForm.value as Omit<Account, 'id' | 'score' | 'intent'>);
+      const formValue = this.accountForm.value;
+      this.save.emit({
+        ...formValue,
+        intentSources: Array.from(this.selectedSources)
+      } as Omit<Account, 'id' | 'score' | 'intent'>);
     }
   }
 }

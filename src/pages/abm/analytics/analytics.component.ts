@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AccountService } from '../../../services/account.service';
 import { AccountAnalytics } from '../../../types';
+import { BarChartComponent } from '../../../components/charts/bar-chart.component';
 import { PieChartComponent } from '../../../components/charts/pie-chart.component';
 
 /**
@@ -11,13 +12,13 @@ import { PieChartComponent } from '../../../components/charts/pie-chart.componen
  */
 @Component({
   selector: 'app-abm-analytics',
-  imports: [CommonModule, RouterModule, PieChartComponent],
+  imports: [CommonModule, RouterModule, PieChartComponent, BarChartComponent],
   templateUrl: './analytics.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AbmAnalyticsComponent {
   private accountService = inject(AccountService);
-  
+
   /** Signal holding the main analytics data object for the ABM module. */
   readonly analytics = signal<AccountAnalytics | null>(null);
   /** Indicates whether the component is currently fetching analytics data. */
@@ -25,11 +26,12 @@ export class AbmAnalyticsComponent {
 
   /** Signal holding the formatted data ready for the pie chart component. */
   readonly tierChartData = signal<{ name: string; value: number; color: string }[]>([]);
+  readonly sourceChartData = signal<{ name: string; value: number; color: string }[]>([]);
 
   constructor() {
     this.loadAnalytics();
   }
-  
+
   /**
    * Fetches the ABM analytics data from the service and prepares it for visualization.
    */
@@ -47,13 +49,21 @@ export class AbmAnalyticsComponent {
    * @param data The raw analytics data from the service.
    */
   prepareChartData(data: AccountAnalytics) {
-    const colorMap = { 'T1': '#3b82f6', 'T2': '#8b5cf6', 'T3': '#f97316' };
+    const colorMap: any = { 'T1': '#3b82f6', 'T2': '#8b5cf6', 'T3': '#f97316' };
     const chartData = data.accountTiers.map(tier => ({
       name: tier.tier,
       value: tier.count,
       color: colorMap[tier.tier]
     }));
     this.tierChartData.set(chartData);
+
+    const sourceColors = ['#6366f1', '#ec4899', '#14b8a6', '#f59e0b', '#8b5cf6'];
+    const barData = (data.signalsBySource || []).map((s, i) => ({
+      name: s.source,
+      value: s.count,
+      color: sourceColors[i % sourceColors.length]
+    }));
+    this.sourceChartData.set(barData);
   }
 
   /**

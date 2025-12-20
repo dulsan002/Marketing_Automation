@@ -194,6 +194,16 @@ export interface Account {
   score: number;
   intent: number; // 0-100
   country: string;
+
+  // UI Fields (Optional or defaults)
+  domain?: string;
+  size?: string; // String representation (e.g. 100-500)
+  region?: string;
+  owner?: string;
+  status?: string;
+  nextAction?: string;
+  updated?: string;
+  intentSources?: string[];
 }
 
 /** The trend direction of an account's buying intent. */
@@ -243,10 +253,13 @@ export interface BuyingCommittee {
  * A summary of analytics for the Account-Based Marketing module.
  */
 export interface AccountAnalytics {
-  totalAccounts: number;
-  t1Accounts: number;
+  totalAccounts: number; // Keeping for compatibility, though we might use activeAccounts
+  activeAccounts: number;
+  t1Accounts: number; // compatibility
   avgIntentScore: number;
   intentSignals: number;
+  signalsBySource: { source: string, count: number }[];
+  pipelineValue: number;
   accountTiers: { tier: 'T1' | 'T2' | 'T3', count: number }[];
   topAccounts: {
     rank: number;

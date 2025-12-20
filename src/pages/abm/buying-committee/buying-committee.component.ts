@@ -54,6 +54,8 @@ export class BuyingCommitteeComponent {
 
     const scoresByAccount = new Map<string, { totalScore: number; count: number }>();
     for (const signal of allSignals) {
+      // Signals might not have accountId directly if global, but our service maps it.
+      // Assuming signal.accountId is present and valid.
       const existing = scoresByAccount.get(signal.accountId) || { totalScore: 0, count: 0 };
       existing.totalScore += signal.score;
       existing.count++;
@@ -68,16 +70,19 @@ export class BuyingCommitteeComponent {
     return allCommittees.map(committee => ({
       ...committee,
       members: committee.members.map(member => {
-        const avgScore = avgScoresByAccount.get(committee.accountId) || 0;
-        let calculatedInfluence: InfluenceLevel;
-        if (avgScore > 75) {
-          calculatedInfluence = 'High';
-        } else if (avgScore > 50) {
-          calculatedInfluence = 'Medium';
-        } else {
-          calculatedInfluence = 'Low';
-        }
-        return { ...member, calculatedInfluence };
+        // Logic Adjustment:
+        // Individual influence is primary.
+        // We boost it if the account shows high intent (avgScore > 75).
+        // e.g., if Influence is 'Low' but Intent is 'High', maybe we flag it?
+        // Or for now, we just respect the individual influence as the truth,
+        // effectively ignoring the "override" unless we want a "Dynamic Influence".
+        // The previous logic completely overwrote it based on Account Score which was wrong.
+
+        // Let's keep the original member influence as the calculated influence for now,
+        // or effectively "boost" it?
+        // Better: Return the member's influence, but maybe add a flag?
+        // For this "fix", let's just use the MEMBER'S influence.
+        return { ...member, calculatedInfluence: member.influence };
       })
     }));
   });
@@ -99,13 +104,19 @@ export class BuyingCommitteeComponent {
     const accountId = this.selectedAccountId();
     if (!accountId) return;
 
-    if (this.editingMember()) {
-      await this.accountService.updateCommitteeMember(accountId, member);
-    } else {
-      await this.accountService.addCommitteeMember(accountId, member);
+    try {
+      if (this.editingMember()) {
+        await this.accountService.updateCommitteeMember(accountId, member);
+      } else {
+        await this.accountService.addCommitteeMember(accountId, member);
+      }
+      this.closeModal();
+      this.loadData();
+    } catch (e: any) {
+      // Show cleaner error message
+      const msg = e.error?.message || e.message || 'Unknown error';
+      alert(`Error: ${msg}`);
     }
-    this.closeModal();
-    this.loadData();
   }
 
   async deleteMember(accountId: string, memberId: string) {

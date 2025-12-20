@@ -3,14 +3,34 @@
   <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
     <div class="flex items-center space-x-2 w-full sm:w-auto">
       <div class="relative w-full sm:w-72">
-        <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" /></svg>
-        <input type="text" placeholder="Search accounts..." (input)="onSearch($event)" class="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+        <svg class="w-5 h-5 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" xmlns="http://www.w3.org/2000/svg"
+          fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+        </svg>
+        <input type="text" placeholder="Search accounts..." (input)="onSearch($event)"
+          class="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
       </div>
       <div class="flex items-center bg-gray-100 rounded-lg p-1">
-        <button (click)="setFilter('All')" [class.bg-white]="trendFilter() === 'All'" [class.shadow-sm]="trendFilter() === 'All'" class="px-3 py-1 text-sm font-semibold rounded-md transition-colors" [class.text-gray-700]="trendFilter() === 'All'" [class.text-gray-500]="trendFilter() !== 'All'">All</button>
-        <button (click)="setFilter('Rising')" [class.bg-white]="trendFilter() === 'Rising'" [class.shadow-sm]="trendFilter() === 'Rising'" class="px-3 py-1 text-sm font-semibold rounded-md transition-colors" [class.text-gray-700]="trendFilter() === 'Rising'" [class.text-gray-500]="trendFilter() !== 'Rising'">Rising</button>
-        <button (click)="setFilter('Declining')" [class.bg-white]="trendFilter() === 'Declining'" [class.shadow-sm]="trendFilter() === 'Declining'" class="px-3 py-1 text-sm font-semibold rounded-md transition-colors" [class.text-gray-700]="trendFilter() === 'Declining'" [class.text-gray-500]="trendFilter() !== 'Declining'">Declining</button>
-        <button (click)="setFilter('Stable')" [class.bg-white]="trendFilter() === 'Stable'" [class.shadow-sm]="trendFilter() === 'Stable'" class="px-3 py-1 text-sm font-semibold rounded-md transition-colors" [class.text-gray-700]="trendFilter() === 'Stable'" [class.text-gray-500]="trendFilter() !== 'Stable'">Stable</button>
+        <button (click)="setFilter('All')" [class.bg-white]="trendFilter() === 'All'"
+          [class.shadow-sm]="trendFilter() === 'All'"
+          class="px-3 py-1 text-sm font-semibold rounded-md transition-colors"
+          [class.text-gray-700]="trendFilter() === 'All'" [class.text-gray-500]="trendFilter() !== 'All'">All</button>
+        <button (click)="setFilter('Rising')" [class.bg-white]="trendFilter() === 'Rising'"
+          [class.shadow-sm]="trendFilter() === 'Rising'"
+          class="px-3 py-1 text-sm font-semibold rounded-md transition-colors"
+          [class.text-gray-700]="trendFilter() === 'Rising'"
+          [class.text-gray-500]="trendFilter() !== 'Rising'">Rising</button>
+        <button (click)="setFilter('Declining')" [class.bg-white]="trendFilter() === 'Declining'"
+          [class.shadow-sm]="trendFilter() === 'Declining'"
+          class="px-3 py-1 text-sm font-semibold rounded-md transition-colors"
+          [class.text-gray-700]="trendFilter() === 'Declining'"
+          [class.text-gray-500]="trendFilter() !== 'Declining'">Declining</button>
+        <button (click)="setFilter('Stable')" [class.bg-white]="trendFilter() === 'Stable'"
+          [class.shadow-sm]="trendFilter() === 'Stable'"
+          class="px-3 py-1 text-sm font-semibold rounded-md transition-colors"
+          [class.text-gray-700]="trendFilter() === 'Stable'"
+          [class.text-gray-500]="trendFilter() !== 'Stable'">Stable</button>
       </div>
     </div>
   </div>
@@ -18,49 +38,63 @@
   <!-- Intent Signal Cards -->
   <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
     @if (isLoading()) {
-      @for (_ of [1,2,3,4,5,6]; track _) {
-        <div class="bg-white p-5 rounded-lg shadow-sm border border-gray-200 animate-pulse">
-          <div class="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
-          <div class="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
-          <div class="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
-          <div class="flex gap-2">
-            <div class="h-5 bg-gray-200 rounded-full w-16"></div>
-            <div class="h-5 bg-gray-200 rounded-full w-20"></div>
-          </div>
-        </div>
-      }
+    @for (_ of [1,2,3,4,5,6]; track _) {
+    <div class="bg-white p-5 rounded-lg shadow-sm border border-gray-200 animate-pulse">
+      <div class="h-5 bg-gray-200 rounded w-3/4 mb-2"></div>
+      <div class="h-4 bg-gray-200 rounded w-1/2 mb-4"></div>
+      <div class="h-8 bg-gray-200 rounded w-1/4 mb-4"></div>
+      <div class="flex gap-2">
+        <div class="h-5 bg-gray-200 rounded-full w-16"></div>
+        <div class="h-5 bg-gray-200 rounded-full w-20"></div>
+      </div>
+    </div>
+    }
     } @else {
-      @for (signal of filteredSignals(); track signal.accountId + signal.solutionCategory) {
-        <div class="bg-white p-5 rounded-lg shadow-sm border border-gray-200 flex flex-col justify-between hover:shadow-md hover:border-indigo-300 transition-all duration-200">
-          <div>
-            <div class="flex justify-between items-start">
-              <div>
-                <h3 class="font-semibold text-gray-900">{{ signal.accountName }}</h3>
-                <p class="text-sm text-gray-500">{{ signal.solutionCategory }}</p>
-              </div>
-              <div class="flex items-center text-sm font-semibold" [class]="getTrendClass(signal.trend)">
-                @if (signal.trend === 'Rising') {
-                  <svg class="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 17a.75.75 0 01-.75-.75V5.612L5.03 9.83a.75.75 0 01-1.06-1.06l5.25-5.25a.75.75 0 011.06 0l5.25 5.25a.75.75 0 11-1.06 1.06L10.75 5.612V16.25A.75.75 0 0110 17z" clip-rule="evenodd" /></svg>
-                } @else if (signal.trend === 'Declining') {
-                  <svg class="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a.75.75 0 01.75.75v10.638l4.22-4.22a.75.75 0 111.06 1.06l-5.25 5.25a.75.75 0 01-1.06 0l-5.25-5.25a.75.75 0 111.06-1.06l4.22 4.22V3.75A.75.75 0 0110 3z" clip-rule="evenodd" /></svg>
-                } @else {
-                  <span class="mr-1">—</span>
-                }
-                {{ signal.trend }}
-              </div>
-            </div>
-            <div class="mt-4">
-              <span class="text-3xl font-bold text-gray-800">{{ signal.score }}</span>
-              <span class="text-sm text-gray-500 ml-1">intent score</span>
-            </div>
-          </div>
-          <div class="mt-5 flex flex-wrap gap-2">
-            @for (source of signal.sources; track source) {
-              <span [class]="getSourceClass(source)">{{ source }}</span>
-            }
-          </div>
+    @for (signal of filteredSignals(); track signal.accountId + signal.solutionCategory) {
+    <div
+      class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 flex flex-col justify-between hover:shadow-md hover:border-indigo-200 transition-all duration-300 relative overflow-hidden group">
+      <!-- Top Row -->
+      <div class="flex justify-between items-start">
+        <div>
+          <h3 class="text-lg font-bold text-slate-900 leading-tight">{{ signal.accountName }}</h3>
+          <p class="text-sm text-slate-500 mt-1">{{ signal.solutionCategory }}</p>
         </div>
-      }
+        <!-- Trend - No Background per image -->
+        <div class="flex items-center text-sm font-semibold transition-transform duration-300 group-hover:scale-105"
+          [class]="getTrendClass(signal.trend)">
+          @if (signal.trend === 'Rising') {
+          <svg class="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd"
+              d="M10 17a.75.75 0 01-.75-.75V5.612L5.03 9.83a.75.75 0 01-1.06-1.06l5.25-5.25a.75.75 0 011.06 0l5.25 5.25a.75.75 0 11-1.06 1.06L10.75 5.612V16.25A.75.75 0 0110 17z"
+              clip-rule="evenodd" />
+          </svg>
+          } @else if (signal.trend === 'Declining') {
+          <svg class="w-4 h-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd"
+              d="M10 3a.75.75 0 01.75.75v10.638l4.22-4.22a.75.75 0 111.06 1.06l-5.25 5.25a.75.75 0 01-1.06 0l-5.25-5.25a.75.75 0 111.06-1.06l4.22 4.22V3.75A.75.75 0 0110 3z"
+              clip-rule="evenodd" />
+          </svg>
+          } @else {
+          <span class="mr-1 text-slate-400">—</span>
+          }
+          {{ signal.trend }}
+        </div>
+      </div>
+
+      <!-- Score -->
+      <div class="mt-8 mb-6">
+        <span class="text-5xl font-bold text-slate-900 tracking-tighter">{{ signal.score }}</span>
+        <span class="text-base text-slate-500 ml-2 font-medium">intent score</span>
+      </div>
+
+      <!-- Tags -->
+      <div class="flex flex-wrap gap-2">
+        @for (source of signal.sources; track source) {
+        <span [class]="getSourceClass(source)">{{ source }}</span>
+        }
+      </div>
+    </div>
+    }
     }
   </div>
 </div>

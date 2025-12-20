@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, output, input, OnInit, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, output, input, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { BuyingCommitteeMember, CommitteeRole, InfluenceLevel } from '../../../types';
@@ -18,33 +18,37 @@ import { BuyingCommitteeMember, CommitteeRole, InfluenceLevel } from '../../../t
           </button>
         </div>
 
-        <form [formGroup]="memberForm" (ngSubmit)="onSave()" class="flex-grow overflow-y-auto">
+          <form [formGroup]="memberForm" (ngSubmit)="onSave()" class="flex-grow overflow-y-auto">
           <div class="p-6 space-y-4">
               <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
-                  <input type="text" formControlName="name" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3">
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                  <input type="text" formControlName="name" 
+                         [class.bg-gray-100]="!!member()"
+                         [readonly]="!!member()"
+                         class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3">
               </div>
                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Title *</label>
-                  <input type="text" formControlName="title" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3">
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Title</label>
+                  <input type="text" formControlName="title" 
+                         [class.bg-gray-100]="!!member()"
+                         [readonly]="!!member()"
+                         class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3">
               </div>
                <div>
-                  <label class="block text-sm font-medium text-gray-700 mb-1">Email *</label>
-                  <input type="email" formControlName="email" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3">
+                  <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                  <input type="email" formControlName="email" 
+                         [class.bg-gray-100]="!!member()"
+                         [readonly]="!!member()"
+                         class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3">
               </div>
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="grid grid-cols-1 gap-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
                     <select formControlName="role" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3">
                         @for(role of roles; track role) { <option [value]="role">{{ role }}</option> }
                     </select>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Influence Level</label>
-                     <select formControlName="influence" class="w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-3">
-                        @for(level of influenceLevels; track level) { <option [value]="level">{{ level }}</option> }
-                    </select>
-                </div>
+                <!-- Influence is calculated automatically -->
               </div>
           </div>
 
@@ -70,12 +74,12 @@ import { BuyingCommitteeMember, CommitteeRole, InfluenceLevel } from '../../../t
   `],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AddEditMemberModalComponent implements OnInit {
+export class AddEditMemberModalComponent {
   private fb = inject(FormBuilder);
   member = input<BuyingCommitteeMember | null>(null);
   save = output<any>();
   close = output<void>();
-  
+
   roles: CommitteeRole[] = ['Decision Maker', 'Influencer', 'Champion', 'End-User'];
   influenceLevels: InfluenceLevel[] = ['High', 'Medium', 'Low'];
 
@@ -85,13 +89,28 @@ export class AddEditMemberModalComponent implements OnInit {
     title: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     role: ['Influencer' as CommitteeRole, Validators.required],
-    influence: ['Medium' as InfluenceLevel, Validators.required],
   });
 
-  ngOnInit() {
-    if (this.member()) {
-      this.memberForm.patchValue(this.member() as any);
-    }
+  constructor() {
+    effect(() => {
+      const m = this.member();
+      if (m) {
+        this.memberForm.patchValue({
+          id: m.id,
+          name: m.name,
+          title: m.title || '',
+          email: m.email,
+          role: m.role
+        });
+      } else {
+        this.memberForm.reset({
+          role: 'Influencer' as CommitteeRole,
+          name: '',
+          title: '',
+          email: ''
+        });
+      }
+    });
   }
 
   closeModal(): void {

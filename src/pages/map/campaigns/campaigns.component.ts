@@ -74,10 +74,11 @@ export class CampaignsComponent {
 
   /**
    * Toggles the visibility of the action dropdown menu for a specific campaign.
-   * @param campaignName The name of the campaign whose dropdown should be toggled.
+   * @param campaignId The id of the campaign whose dropdown should be toggled.
    */
-  toggleDropdown(campaignName: string): void {
-    this.activeDropdown.update(current => current === campaignName ? null : campaignName);
+  toggleDropdown(campaignId: string | undefined): void {
+    if (!campaignId) return;
+    this.activeDropdown.update(current => current === campaignId ? null : campaignId);
   }
 
   /**
@@ -96,16 +97,18 @@ export class CampaignsComponent {
    */
   editCampaign(campaign: Campaign): void {
     // Navigate to edit route
+    if (!campaign.id) return;
     this.router.navigate(['/map/campaigns', campaign.id]);
     this.activeDropdown.set(null);
   }
 
   /**
    * Deletes a campaign from the list via the campaign service.
-   * @param campaignNameToDelete The name of the campaign to delete.
+   * @param campaignId The id of the campaign to delete.
    */
-  async deleteCampaign(campaignNameToDelete: string): Promise<void> {
-    await this.campaignService.deleteCampaign(campaignNameToDelete);
+  async deleteCampaign(campaignId: string | undefined): Promise<void> {
+    if (!campaignId) return;
+    await this.campaignService.deleteCampaign(campaignId);
     this.loadData(); // Reload list
     this.activeDropdown.set(null); // Close dropdown
   }

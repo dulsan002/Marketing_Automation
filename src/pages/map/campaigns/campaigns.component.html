@@ -25,7 +25,8 @@
         <option value="scheduled">Scheduled</option>
       </select>
     </div>
-    <a routerLink="/map/campaigns/new" mat-flat-button color="primary">
+    <a routerLink="/map/campaigns/new" mat-flat-button class="flex items-center gap-2"
+      style="background-color: black !important; color: white !important; border-radius: 8px !important;">
       <mat-icon>add</mat-icon>
       New Campaign
     </a>
@@ -62,7 +63,7 @@
             <td class="px-6 py-4 text-right">{{ campaign.ctr }}%</td>
             <td class="px-6 py-4 text-right">
               <div class="relative inline-block text-left">
-                <button (click)="toggleDropdown(campaign.name)"
+                <button (click)="toggleDropdown(campaign.id!)"
                   class="text-gray-500 hover:text-gray-700 p-1 rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                   <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                     <path
@@ -71,7 +72,7 @@
                   </svg>
                 </button>
 
-                @if (activeDropdown() === campaign.name) {
+                @if (activeDropdown() === campaign.id) {
                 <div
                   class="origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none z-10">
                   <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="menu-button">
@@ -87,6 +88,8 @@
                       </svg>
                       View
                     </button>
+                    <!-- Edit Button -->
+                    @if (campaign.status === 'draft' || campaign.status === 'paused') {
                     <button (click)="editCampaign(campaign)"
                       class="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       role="menuitem">
@@ -97,6 +100,7 @@
                       </svg>
                       Edit
                     </button>
+                    }
 
                     @if (campaign.status === 'active' || campaign.status === 'scheduled') {
                     <button (click)="updateStatus(campaign, 'paused')"
@@ -108,7 +112,7 @@
                       </svg>
                       Pause
                     </button>
-                    } @else {
+                    } @else if (campaign.status !== 'completed') {
                     <button (click)="updateStatus(campaign, 'active')"
                       class="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       role="menuitem">
@@ -123,18 +127,9 @@
                     </button>
                     }
 
+                    <!-- Archive/Delete Button -->
                     @if (campaign.status !== 'completed') {
-                    <button (click)="updateStatus(campaign, 'completed')"
-                      class="flex items-center w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                      role="menuitem">
-                      <svg class="w-4 h-4 mr-3 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                          d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                      </svg>
-                      Mark Completed
-                    </button>
-                    }
-                    <button (click)="deleteCampaign(campaign.name)"
+                    <button (click)="deleteCampaign(campaign.id!)"
                       class="flex items-center w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50"
                       role="menuitem">
                       <svg class="w-4 h-4 mr-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
@@ -142,8 +137,9 @@
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                           d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                       </svg>
-                      Delete
+                      {{ campaign.status === 'draft' ? 'Delete' : 'Archive' }}
                     </button>
+                    }
                   </div>
                 </div>
                 }

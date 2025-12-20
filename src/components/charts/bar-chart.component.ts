@@ -1,119 +1,83 @@
-import { ChangeDetectionStrategy, Component, ElementRef, input, AfterViewInit, viewChild, effect, SimpleChanges, OnChanges } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, input, AfterViewInit, viewChild, effect } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import * as d3 from 'd3';
 
 @Component({
   selector: 'app-bar-chart',
-  template: `<div #chartContainer class="w-full h-full"></div>`,
+  imports: [CommonModule],
+  template: `
+    <div #chartContainer class="w-full h-full relative"></div>
+  `,
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class BarChartComponent implements AfterViewInit, OnChanges {
-  data = input<any[]>([]);
+export class BarChartComponent implements AfterViewInit {
+  data = input<{ name: string; value: number; color?: string }[]>([]);
   chartContainer = viewChild<ElementRef>('chartContainer');
-  
-  private svg: any;
 
   constructor() {
     effect(() => {
-        if (this.chartContainer()?.nativeElement && this.data() && this.data().length > 0) {
-            this.createChart();
-        }
+      if (this.chartContainer()?.nativeElement && this.data().length > 0) {
+        this.createChart(this.data());
+      }
     });
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-      if (changes['data'] && this.svg) {
-          this.createChart();
-      }
-  }
-
   ngAfterViewInit(): void {
-    if (this.data()) {
-      this.createChart();
+    if (this.data().length > 0) {
+      this.createChart(this.data());
     }
   }
 
-  private createChart(): void {
-    const element = this.chartContainer()?.nativeElement;
-    if (!element) return;
-    const data = this.data();
-    if (!data || data.length === 0) return;
+  private createChart(data: any[]): void {
+    const container = this.chartContainer()?.nativeElement;
+    if (!container) return;
 
-    d3.select(element).select('svg').remove();
-    
-    const keys = Object.keys(data[0]).filter(key => key !== 'name' && key !== 'color');
-    const groupKey = 'name';
+    d3.select(container).select('svg').remove();
 
-    const margin = { top: 20, right: 20, bottom: 40, left: 50 };
-    const width = element.clientWidth - margin.left - margin.right;
-    const height = element.clientHeight - margin.top - margin.bottom;
+    const margin = { top: 20, right: 20, bottom: 40, left: 40 };
+    const width = container.offsetWidth - margin.left - margin.right;
+    const height = container.offsetHeight - margin.top - margin.bottom;
 
-    this.svg = d3.select(element).append('svg')
-      .attr('width', width + margin.left + margin.right)
-      .attr('height', height + margin.top + margin.bottom)
+    const svg = d3.select(container)
+      .append('svg')
+      .attr('width', '100%')
+      .attr('height', '100%')
+      .attr('viewBox', `0 0 ${container.offsetWidth} ${container.offsetHeight}`)
       .append('g')
       .attr('transform', `translate(${margin.left},${margin.top})`);
 
-    const x0 = d3.scaleBand()
-      .domain(data.map(d => d[groupKey]))
-      .rangeRound([0, width])
-      .paddingInner(0.2);
+    // X axis
+    const x = d3.scaleBand()
+      .range([0, width])
+      .domain(data.map(d => d.name))
+      .padding(0.2);
 
-    const x1 = d3.scaleBand()
-      .domain(keys)
-      .rangeRound([0, x0.bandwidth()])
-      .padding(0.05);
-
-    const yMax = d3.max(data, d => d3.max(keys, key => d[key])) || 0;
-    const y = d3.scaleLinear()
-      .domain([0, yMax * 1.1]).nice()
-      .rangeRound([height, 0]);
-
-    const color = d3.scaleOrdinal()
-      .domain(keys)
-      .range(['#8B5CF6', '#22C55E']); // Purple & Green
-
-    this.svg.append('g')
-      .selectAll('g')
-      .data(data)
-      .join('g')
-        .attr('transform', d => `translate(${x0(d[groupKey])},0)`)
-      .selectAll('rect')
-      .data(d => keys.map(key => ({key, value: d[key]})))
-      .join('rect')
-        .attr('x', d => x1(d.key) as number)
-        .attr('y', d => y(d.value))
-        .attr('width', x1.bandwidth())
-        .attr('height', d => height - y(d.value))
-        .attr('fill', d => color(d.key) as string);
-
-    this.svg.append('g')
-      .attr('class', 'x-axis')
+    svg.append('g')
       .attr('transform', `translate(0,${height})`)
-      .call(d3.axisBottom(x0).tickSizeOuter(0));
-      
-    this.svg.append('g')
-      .attr('class', 'y-axis')
-      .call(d3.axisLeft(y).ticks(5));
+      .call(d3.axisBottom(x))
+      .selectAll('text')
+      .style('text-anchor', 'end')
+      .attr('dx', '-.8em')
+      .attr('dy', '.15em')
+      .attr('transform', 'rotate(-45)');
 
-    const legend = this.svg.append('g')
-      .attr('font-family', 'sans-serif')
-      .attr('font-size', 10)
-      .attr('text-anchor', 'end')
-      .selectAll('g')
-      .data(keys.slice().reverse())
-      .join('g')
-        .attr('transform', (d, i) => `translate(0,${i * 20})`);
+    // Y axis
+    const y = d3.scaleLinear()
+      .domain([0, d3.max(data, (d: any) => d.value) || 0])
+      .range([height, 0]);
 
-    legend.append('rect')
-        .attr('x', width - 19)
-        .attr('width', 19)
-        .attr('height', 19)
-        .attr('fill', color as any);
+    svg.append('g')
+      .call(d3.axisLeft(y));
 
-    legend.append('text')
-        .attr('x', width - 24)
-        .attr('y', 9.5)
-        .attr('dy', '0.32em')
-        .text(d => d);
+    // Bars
+    svg.selectAll('mybar')
+      .data(data)
+      .join('rect')
+      .attr('x', (d: any) => x(d.name)!)
+      .attr('y', (d: any) => y(d.value))
+      .attr('width', x.bandwidth())
+      .attr('height', (d: any) => height - y(d.value))
+      .attr('fill', (d: any) => d.color || '#3b82f6')
+      .attr('rx', 4); // rounded corners
   }
 }

@@ -45,15 +45,15 @@ export class IntentSignalsComponent {
   setFilter(filter: 'All' | IntentTrend) {
     this.trendFilter.set(filter);
   }
-  
+
   getTrendClass(trend: IntentTrend): string {
     switch (trend) {
-      case 'Rising': return 'text-green-600';
-      case 'Declining': return 'text-red-600';
-      case 'Stable': return 'text-gray-600';
+      case 'Rising': return 'text-emerald-600';
+      case 'Declining': return 'text-amber-600';
+      case 'Stable': return 'text-slate-400';
     }
   }
-  
+
   getSourceClass(source: string): string {
     const base = 'px-2 py-0.5 text-xs font-medium rounded-full';
     switch (source) {
