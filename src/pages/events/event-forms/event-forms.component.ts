@@ -6,19 +6,14 @@ import { Event } from '../../../types';
 import { ManualRegistrationModalComponent } from './manual-registration-modal.component';
 
 @Component({
-    selector: 'app-event-forms',
-    standalone: true,
-    imports: [CommonModule, RouterModule, ManualRegistrationModalComponent],
-    changeDetection: ChangeDetectionStrategy.OnPush,
-    template: `
+  selector: 'app-event-forms',
+  standalone: true,
+  imports: [CommonModule, RouterModule, ManualRegistrationModalComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  template: `
     <div class="space-y-8 animate-fade-in-up">
       <!-- Header -->
-      <div class="flex justify-between items-center">
-        <div>
-          <h1 class="text-3xl font-bold text-gray-900 tracking-tight">Event Forms & Badges</h1>
-          <p class="text-gray-500 mt-2">Manage manual registrations and print participant badges for upcoming events.</p>
-        </div>
-      </div>
+      <!-- Header Removed to duplicate heading -->
 
       <!-- Events Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -83,27 +78,27 @@ import { ManualRegistrationModalComponent } from './manual-registration-modal.co
   `
 })
 export class EventFormsComponent {
-    private eventService = inject(EventService);
+  private eventService = inject(EventService);
 
-    // Only show upcoming/scheduled/active events
-    readonly scheduledEvents = signal<Event[]>([]);
-    readonly selectedEvent = signal<Event | null>(null);
+  // Only show upcoming/scheduled/active events
+  readonly scheduledEvents = signal<Event[]>([]);
+  readonly selectedEvent = signal<Event | null>(null);
 
-    constructor() {
-        this.loadEvents();
-    }
+  constructor() {
+    this.loadEvents();
+  }
 
-    async loadEvents() {
-        const allEvents = await this.eventService.getEvents();
-        // Filter for scheduled or active (not finished)
-        this.scheduledEvents.set(allEvents.filter(e => e.status !== 'finished'));
-    }
+  async loadEvents() {
+    const allEvents = await this.eventService.getEvents();
+    // Filter for scheduled or active (not finished)
+    this.scheduledEvents.set(allEvents.filter(e => e.status !== 'finished'));
+  }
 
-    openModal(event: Event) {
-        this.selectedEvent.set(event);
-    }
+  openModal(event: Event) {
+    this.selectedEvent.set(event);
+  }
 
-    closeModal() {
-        this.selectedEvent.set(null);
-    }
+  closeModal() {
+    this.selectedEvent.set(null);
+  }
 }

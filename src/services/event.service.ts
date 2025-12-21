@@ -27,8 +27,9 @@ export class EventService {
       const res = await firstValueFrom(this.http.get<{ status: string, data: any[] }>(this.apiUrl));
       return res.data.map((e: any) => this.mapBackendEventToFrontend(e));
     } catch (e) {
-      console.warn('Event API unavailable', e);
-      return this.simulate(() => deepClone(this.events()));
+      console.error('Event API unavailable', e);
+      // Fallback disabled by request
+      return [];
     }
   }
 
@@ -37,7 +38,8 @@ export class EventService {
       const res = await firstValueFrom(this.http.get<{ status: string, data: any }>(`${this.apiUrl}/${id}`));
       return this.mapBackendEventToFrontend(res.data);
     } catch (e) {
-      return this.simulate(() => deepClone(this.events().find(e => e.id === id)));
+      console.error('Event API unavailable for id ' + id, e);
+      return undefined;
     }
   }
 
@@ -192,7 +194,7 @@ export class EventService {
           jobTitle: r.jobTitle || r.Contact?.jobTitle || '',
           eventId: r.EventId,
           eventName: r.Event?.name || 'Unknown',
-          status: r.status === 'Registered' ? 'confirmed' : r.status.toLowerCase(),
+          status: r.status,
           registeredDate: r.createdAt
         }));
       } catch (e) {
@@ -202,7 +204,7 @@ export class EventService {
     }
 
     try {
-      const res = await firstValueFrom(this.http.get<{ status: string, data: any[] }>(`${this.apiUrl}/${eventId}/registrants`));
+      const res = await firstValueFrom(this.http.get<{ status: string, data: any[] }>(`${this.apiUrl}/${eventId}/registrations`));
       return res.data.map((r: any) => ({
         id: r.id,
         registrant: {
@@ -213,7 +215,7 @@ export class EventService {
         jobTitle: r.jobTitle || r.Contact?.jobTitle || '',
         eventId: r.EventId,
         eventName: 'Unknown',
-        status: r.status === 'Registered' ? 'confirmed' : r.status.toLowerCase(),
+        status: r.status,
         registeredDate: r.createdAt
       }));
     } catch (e) {
@@ -256,33 +258,44 @@ export class EventService {
   // Alias for legacy/modal support
   async addRegistration(data: Omit<Registration, 'id' | 'status' | 'registeredDate'> & { firstName?: string, lastName?: string, email?: string, company?: string, jobTitle?: string, status?: string }): Promise<void> {
     // Adapter to match registerManual signature if needed, or if data structure differs
+    const fullName = data.registrant?.name || '';
+    const nameParts = fullName.trim().split(' ');
+    const firstName = data.firstName || nameParts[0] || '';
+    const lastName = data.lastName || nameParts.slice(1).join(' ') || '';
+
     const manualData = {
       eventId: data.eventId,
-      firstName: data.firstName || data.registrant.name.split(' ')[0],
-      lastName: data.lastName || data.registrant.name.split(' ').slice(1).join(' '),
-      email: data.email || data.registrant.email,
+      firstName: firstName,
+      lastName: lastName,
+      email: data.registrant?.email || data.email || '',
       company: data.company || '',
       jobTitle: data.jobTitle || '',
-      status: data.status || 'confirmed'
+      status: data.status || 'Registered'
     };
     return this.registerManual(manualData);
   }
 
-  async updateRegistrationStatus(registrationId: string, newStatus: RegistrationStatus): Promise<void> {
-    // Find registration to get event ID (or pass it in args if we refactor, but for now we search local cache or store)
-    // Optimization: Pass eventId from component. But standard interface here only asked for regId + status.
-    // Getting event Id from cache.
-    const reg = this.registrations().find(r => r.id === registrationId);
-    if (!reg) {
-      console.error('Cannot update status for unknown registration', registrationId);
-      return;
+  async updateRegistrationStatus(registrationId: string, newStatus: RegistrationStatus, eventId?: string, options?: { banReason?: string, adminName?: string, adminEmail?: string, unbanReason?: string, isUnban?: boolean }): Promise<void> {
+    // Optimization: If eventId is provided, used it directly.
+    // Otherwise fallback to looking up in local cache (which might be stale).
+
+    let targetEventId = eventId;
+
+    if (!targetEventId) {
+      const reg = this.registrations().find(r => r.id === registrationId);
+      if (!reg) {
+        console.error('Cannot update status for unknown registration', registrationId);
+        // We can't proceed without eventId because API route needs it: /api/events/:eventId/registrations/:regId
+        return;
+      }
+      targetEventId = reg.eventId;
     }
 
     try {
-      await firstValueFrom(this.http.put(`${this.apiUrl}/${reg.eventId}/registrations/${registrationId}`, { status: newStatus }));
+      await firstValueFrom(this.http.put(`${this.apiUrl}/${targetEventId}/registrations/${registrationId}`, { status: newStatus, ...options }));
 
       // Update local state
-      this.registrations.update(regs => regs.map(r => r.id === registrationId ? { ...r, status: newStatus } : r));
+      this.registrations.update(regs => regs.map(r => r.id === registrationId ? { ...r, status: newStatus, ...options } : r));
     } catch (e) {
       console.error('Failed to update registration status', e);
       throw e;

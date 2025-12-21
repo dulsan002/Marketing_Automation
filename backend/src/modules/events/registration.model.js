@@ -9,13 +9,17 @@ const Registration = sequelize.define('Registration', {
         defaultValue: DataTypes.UUIDV4,
         primaryKey: true
     },
-    status: {
-        type: DataTypes.ENUM('Registered', 'Attended', 'Cancelled', 'NoShow', 'Pending'),
-        defaultValue: 'Pending'
-    },
     checkInTime: {
         type: DataTypes.DATE,
         allowNull: true
+    },
+    banReason: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
+    status: {
+        type: DataTypes.ENUM('Registered', 'Confirmed', 'Attended', 'Cancelled', 'NoShow', 'Pending', 'Banned'),
+        defaultValue: 'Pending'
     },
     // Snapshot Attributes
     firstName: { type: DataTypes.STRING, allowNull: true },

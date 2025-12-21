@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, inject, computed } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { EventService } from '../../../services/event.service';
@@ -24,6 +24,16 @@ export class EventDetailComponent {
   readonly isLoading = signal(true);
   readonly activeTab = signal<EventDetailTab>('overview');
   readonly showRegisterModal = signal(false);
+
+  // Computed Stats
+  readonly stats = computed(() => {
+    const regs = this.registrations();
+    return {
+      total: regs.length,
+      confirmed: regs.filter(r => r.status === 'Confirmed' || r.status === 'Attended').length,
+      checkedIn: regs.filter(r => r.status === 'Attended').length
+    };
+  });
 
   constructor() {
     this.loadEventData();
@@ -70,9 +80,12 @@ export class EventDetailComponent {
 
   getRegistrationStatusClass(status: RegistrationStatus): string {
     switch (status) {
-      case 'confirmed': return 'bg-green-100 text-green-800';
-      case 'pending': return 'bg-yellow-100 text-yellow-800';
-      case 'cancelled': return 'bg-red-100 text-red-800';
+      case 'Registered': return 'bg-green-100 text-green-800';
+      case 'Pending': return 'bg-yellow-100 text-yellow-800';
+      case 'Cancelled': return 'bg-red-100 text-red-800';
+      case 'Attended': return 'bg-blue-100 text-blue-800';
+      case 'NoShow': return 'bg-gray-100 text-gray-800';
+      case 'Banned': return 'bg-gray-800 text-white';
     }
   }
 

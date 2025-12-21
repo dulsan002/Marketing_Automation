@@ -10,12 +10,12 @@ export const MOCK_EVENTS: Event[] = [
 ];
 
 export const MOCK_REGISTRATIONS: Registration[] = [
-  { id: 'reg_1', registrant: { name: 'Jennifer Clark', email: 'jennifer.clark@summitpartners6.com' }, company: 'Summit Partners 6', eventId: 'evt_1', eventName: 'Cloud Migration Best Practices', status: 'confirmed', registeredDate: '2025-10-12T10:00:00Z' },
-  { id: 'reg_2', registrant: { name: 'Nicole White', email: 'nicole.white@matrixcorp3.com' }, company: 'Matrix Corp 3', eventId: 'evt_2', eventName: 'AI in Enterprise: What You Need to Know', status: 'confirmed', registeredDate: '2025-10-12T11:00:00Z' },
-  { id: 'reg_3', registrant: { name: 'Christopher Martinez', email: 'christopher.martinez@ciphertech25.com' }, company: 'Cipher Tech 25', eventId: 'evt_3', eventName: 'Digital Transformation Masterclass', status: 'confirmed', registeredDate: '2025-10-12T12:00:00Z' },
-  { id: 'reg_4', registrant: { name: 'Robert Gonzalez', email: 'robert.gonzalez@globaldynamics8.com' }, company: 'Global Dynamics 8', eventId: 'evt_4', eventName: 'Security Summit 2024', status: 'pending', registeredDate: '2025-10-13T13:00:00Z' },
-  { id: 'reg_5', registrant: { name: 'Emily Martinez', email: 'emily.martinez@stellartech5.com' }, company: 'Stellar Tech 5', eventId: 'evt_5', eventName: 'RevOps Excellence Workshop', status: 'cancelled', registeredDate: '2025-10-16T14:00:00Z' },
-  { id: 'reg_6', registrant: { name: 'Matthew Harris', email: 'matthew.harris@globaldynamics34.com' }, company: 'Global Dynamics 34', eventId: 'evt_6', eventName: 'Data Analytics Deep Dive', status: 'confirmed', registeredDate: '2025-10-16T15:00:00Z' },
+  { id: 'reg_1', registrant: { name: 'Jennifer Clark', email: 'jennifer.clark@summitpartners6.com' }, company: 'Summit Partners 6', eventId: 'evt_1', eventName: 'Cloud Migration Best Practices', status: 'Registered', registeredDate: '2025-10-12T10:00:00Z' },
+  { id: 'reg_2', registrant: { name: 'Nicole White', email: 'nicole.white@matrixcorp3.com' }, company: 'Matrix Corp 3', eventId: 'evt_2', eventName: 'AI in Enterprise: What You Need to Know', status: 'Registered', registeredDate: '2025-10-12T11:00:00Z' },
+  { id: 'reg_3', registrant: { name: 'Christopher Martinez', email: 'christopher.martinez@ciphertech25.com' }, company: 'Cipher Tech 25', eventId: 'evt_3', eventName: 'Digital Transformation Masterclass', status: 'Registered', registeredDate: '2025-10-12T12:00:00Z' },
+  { id: 'reg_4', registrant: { name: 'Robert Gonzalez', email: 'robert.gonzalez@globaldynamics8.com' }, company: 'Global Dynamics 8', eventId: 'evt_4', eventName: 'Security Summit 2024', status: 'Pending', registeredDate: '2025-10-13T13:00:00Z' },
+  { id: 'reg_5', registrant: { name: 'Emily Martinez', email: 'emily.martinez@stellartech5.com' }, company: 'Stellar Tech 5', eventId: 'evt_5', eventName: 'RevOps Excellence Workshop', status: 'Cancelled', registeredDate: '2025-10-16T14:00:00Z' },
+  { id: 'reg_6', registrant: { name: 'Matthew Harris', email: 'matthew.harris@globaldynamics34.com' }, company: 'Global Dynamics 34', eventId: 'evt_6', eventName: 'Data Analytics Deep Dive', status: 'Registered', registeredDate: '2025-10-16T15:00:00Z' },
 ];
 
 export const MOCK_EVENT_ANALYTICS: EventAnalytics = {

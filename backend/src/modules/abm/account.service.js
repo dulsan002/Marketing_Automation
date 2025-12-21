@@ -154,6 +154,7 @@ const processActivity = async (tenantId, contactId, accountId, activityType, sou
 
     } catch (e) {
         if (e.name === 'SequelizeUniqueConstraintError') {
+            console.warn(`[ABM] Duplicate Intent Signal ignored (Deduplication active). Key: ${dedupeKey}`);
             return;
         }
         console.error('Error processing activity', e);
@@ -214,7 +215,7 @@ const getGlobalIntentSignals = async (tenantId) => {
     const accounts = await Account.findAll({
         where: {
             TenantId: tenantId,
-            tier: { [require('sequelize').Op.in]: ['Tier 1', 'Tier 2'] } // Show all T1/T2 regardless of score
+            tier: { [require('sequelize').Op.in]: ['Tier 1', 'Tier 2', 'Tier 3'] } // Show all tiers so new registrations (Tier 3) appear
         },
         order: [['intentScore', 'DESC']]
     });

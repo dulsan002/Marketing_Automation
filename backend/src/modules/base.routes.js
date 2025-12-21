@@ -7,7 +7,8 @@ router.post('/tenants', baseController.createTenant);
 router.get('/tenants', baseController.getAllTenants);
 
 // Contact Routes
-router.post('/contacts', baseController.createContact);
-router.get('/contacts', baseController.getContacts);
+// Contact Routes - Moved to contact.routes.js
+// router.post('/contacts', baseController.createContact);
+// router.get('/contacts', baseController.getContacts);
 
 module.exports = router;

@@ -79,7 +79,7 @@
       </div>
       <div>
         <p class="text-sm font-medium text-gray-500">Registrants</p>
-        <p class="text-2xl font-bold text-gray-900">{{ ev.registrations }}</p>
+        <p class="text-2xl font-bold text-gray-900">{{ stats().total }}</p>
       </div>
     </div>
     <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4">
@@ -91,7 +91,7 @@
       </div>
       <div>
         <p class="text-sm font-medium text-gray-500">Confirmed</p>
-        <p class="text-2xl font-bold text-gray-900">{{ ev.attendees }}</p>
+        <p class="text-2xl font-bold text-gray-900">{{ stats().confirmed }}</p>
       </div>
     </div>
     <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4">

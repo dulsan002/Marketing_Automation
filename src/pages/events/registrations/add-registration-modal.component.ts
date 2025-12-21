@@ -54,6 +54,17 @@ import { Event, Registration } from '../../../types';
               </div>
             </div>
             
+             <!-- Job Title -->
+            <div>
+              <label for="jobTitle" class="block text-sm font-medium text-gray-700 mb-1">Job Title</label>
+              <div class="relative">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <svg class="w-5 h-5 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd" /><path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z" /></svg>
+                </div>
+                <input type="text" id="jobTitle" formControlName="jobTitle" class="w-full pl-10 pr-3 py-3 rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500">
+              </div>
+            </div>
+            
             <!-- Event -->
             <div>
               <label for="event" class="block text-sm font-medium text-gray-700 mb-1">Event *</label>
@@ -105,6 +116,7 @@ export class AddRegistrationModalComponent {
     name: ['', Validators.required],
     email: ['', [Validators.required, Validators.email]],
     company: [''],
+    jobTitle: [''],
     eventId: ['', Validators.required],
   });
 
@@ -114,12 +126,13 @@ export class AddRegistrationModalComponent {
 
   onSave(): void {
     if (this.registrationForm.valid) {
-      const { name, email, company, eventId } = this.registrationForm.value;
+      const { name, email, company, jobTitle, eventId } = this.registrationForm.value;
       const selectedEvent = this.events().find(e => e.id === eventId);
-      
+
       const saveData = {
         registrant: { name: name!, email: email! },
         company: company!,
+        jobTitle: jobTitle!,
         eventId: eventId!,
         eventName: selectedEvent?.name || 'Unknown Event'
       };

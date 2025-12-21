@@ -5,7 +5,6 @@ import { EventService } from '../../../services/event.service';
 import { ContactService } from '../../../services/contact.service';
 import { Event, Contact } from '../../../types';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
-import { toObservable } from '@angular/core/rxjs-interop';
 
 @Component({
     selector: 'app-manual-registration-modal',

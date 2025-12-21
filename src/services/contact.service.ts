@@ -11,17 +11,13 @@ export class ContactService {
     private apiUrl = 'http://localhost:3001/api/contacts';
 
     async searchContacts(query: string): Promise<Contact[]> {
-        if (!query || query.length < 2) return [];
+        if (!query || query.length < 1) return []; // Allow single char search if backend supports it
         try {
-            // Backend returns all contacts on GET /, so we filter client-side for now
-            const res = await firstValueFrom(this.http.get<{ status: string, data: Contact[] }>(this.apiUrl));
-            const all = res.data;
-            const lowerQ = query.toLowerCase();
-            return all.filter(c =>
-                (c.firstName?.toLowerCase().includes(lowerQ) || false) ||
-                (c.lastName?.toLowerCase().includes(lowerQ) || false) ||
-                (c.email?.toLowerCase().includes(lowerQ) || false)
-            );
+            console.log(`DEBUG: Searching contacts for "${query}"`);
+            const params = new HttpParams().set('search', query);
+            const res = await firstValueFrom(this.http.get<{ status: string, data: Contact[] }>(this.apiUrl, { params }));
+            console.log(`DEBUG: Search found ${res.data.length} contacts`);
+            return res.data;
         } catch (e) {
             console.error('Failed to search contacts', e);
             return [];

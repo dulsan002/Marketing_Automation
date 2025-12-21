@@ -40,6 +40,7 @@ const getOne = async (req, res) => {
 const register = async (req, res) => {
     try {
         const { contactId, email, firstName, lastName, company, jobTitle } = req.body;
+        console.log('DEBUG [EventController] register req.body:', JSON.stringify(req.body, null, 2));
         const tenantId = req.context.tenantId;
         if (!tenantId) return res.status(401).json({ status: 'error', message: 'Tenant context missing' });
 
@@ -110,7 +111,7 @@ const updateRegistrationStatus = async (req, res) => {
         const { status } = req.body;
         if (!status) return res.status(400).json({ status: 'error', message: 'Status is required' });
 
-        const updatedReg = await eventService.updateRegistrationStatus(req.params.id, req.params.regId, status, tenantId);
+        const updatedReg = await eventService.updateRegistrationStatus(req.params.id, req.params.regId, status, tenantId, req.body);
         res.status(200).json({ status: 'success', data: updatedReg });
     } catch (error) {
         if (error.message === 'Registration not found') return res.status(404).json({ status: 'error', message: error.message });

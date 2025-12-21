@@ -18,6 +18,16 @@ const startServer = async () => {
 
     // Start Background Services
     if (process.env.NODE_ENV !== 'test') {
+        const { startAbmConsumer } = require('./modules/abm/abm.consumer');
+        const { connectKafka } = require('./config/kafka');
+
+        // Ensure Kafka Connection
+        // connectKafka is for producer, usually called implicitly or explicitly
+        await connectKafka();
+
+        // Start Consumers
+        startAbmConsumer();
+
         // Disabled to fix DB Lock/Timeout issues during debugging
         // startConsumer();
         // startScheduler();

@@ -12,9 +12,9 @@ const sequelize = new Sequelize({
         max: 3
     },
     pool: {
-        max: 1, // Strict serialization to fix SQLITE_BUSY on Windows
+        max: 5,
         min: 0,
-        acquire: 60000,
+        acquire: 30000,
         idle: 10000
     },
     dialectOptions: {
@@ -25,17 +25,14 @@ const sequelize = new Sequelize({
 const connectDB = async () => {
     try {
         await sequelize.authenticate();
-        console.log('Database connection established successfully.');
+        console.log('Database connection has been established successfully.');
 
-        // Enable WAL mode safely after connection
+        // Enable WAL mode for better concurrency
         try {
             await sequelize.query('PRAGMA journal_mode = WAL;');
-            await sequelize.query('PRAGMA synchronous = NORMAL;'); // Less locking
-            console.log('Database switched to WAL mode');
         } catch (walErr) {
             console.warn('Could not enable WAL mode:', walErr.message);
         }
-
     } catch (error) {
         console.error('Unable to connect to the database:', error);
         process.exit(1);

@@ -308,7 +308,7 @@ export type EventType = 'webinar' | 'conference' | 'meetup' | 'workshop';
 /** The current status of an event. */
 export type EventStatus = 'scheduled' | 'active' | 'finished';
 /** The status of a person's registration for an event. */
-export type RegistrationStatus = 'confirmed' | 'pending' | 'cancelled';
+export type RegistrationStatus = 'Registered' | 'Pending' | 'Cancelled' | 'Confirmed' | 'Attended' | 'NoShow' | 'Banned';
 /** The attendance status of a registrant for an event. */
 export type AttendanceStatus = 'attended' | 'no-show' | 'partial';
 
@@ -345,6 +345,7 @@ export interface Registration {
   eventId: string;
   eventName: string;
   status: RegistrationStatus;
+  banReason?: string; // Added field
   registeredDate: string; // ISO string
 }
 

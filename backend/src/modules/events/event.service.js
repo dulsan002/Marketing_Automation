@@ -1,6 +1,7 @@
 const Event = require('./event.model');
 const Registration = require('./registration.model');
 const Contact = require('../contacts/contact.model');
+const BanLog = require('./ban-log.model');
 const emailService = require('../../common/email.service');
 
 const createEvent = async (data) => {
@@ -22,10 +23,33 @@ const getEventById = async (id, tenantId) => {
 
 const updateEvent = async (id, tenantId, updates) => {
     const event = await getEventById(id, tenantId);
-    return await event.update(updates);
+    const oldStatus = event.status;
+
+    const updatedEvent = await event.update(updates);
+
+    // Auto-Attend Logic: If moving to Completed, mark all Registered/Confirmed as Attended
+    if (updatedEvent.status === 'Completed' && oldStatus !== 'Completed') {
+        const Registration = require('./registration.model');
+        const { Op } = require('sequelize');
+
+        console.log(`[EventService] Event ${id} Completed. Auto-marking attendees...`);
+
+        await Registration.update(
+            { status: 'Attended' },
+            {
+                where: {
+                    EventId: id,
+                    status: { [Op.in]: ['Registered', 'Confirmed', 'Pending'] } // Converting Pending too? Usually only Registered. User said "all confirmed". Let's stick to Registered/Confirmed (normalized).
+                }
+            }
+        );
+    }
+
+    return updatedEvent;
 };
 
 const registerContact = async (eventId, contactId, tenantId, snapshotOverrides = {}) => {
+    console.log('DEBUG [EventService] registerContact overrides:', JSON.stringify(snapshotOverrides, null, 2));
     const event = await getEventById(eventId, tenantId);
 
     // Check Status
@@ -61,6 +85,48 @@ const registerContact = async (eventId, contactId, tenantId, snapshotOverrides =
 
         // Increment count
         await event.increment('registeredCount');
+
+        // Fire & Forget Kafka Event for ABM
+        try {
+            const { producer } = require('../../config/kafka');
+            // Ensure connected? usually valid if app started.
+            // Use lightweight check or just send (it buffers)
+            await producer.send({
+                topic: 'event-registrations',
+                messages: [
+                    {
+                        value: JSON.stringify({
+                            tenantId,
+                            contactId,
+                            eventId,
+                            activityType: 'event_attend', // Mapped to 10 points in ABM logic
+                            source: 'Event'
+                        })
+                    }
+                ]
+            });
+            console.log(`[EventService] Published event-registrations for contact ${contactId}`);
+        } catch (kafkaErr) {
+            console.warn('[EventService] Kafka unavailable, using Fallback to direct ABM call', kafkaErr.message);
+            // Fallback: Direct Call for Dev/Demo resilience
+            try {
+                // We need to resolve AccountId locally just like the Consumer does
+                const contact = await Contact.findOne({ where: { id: contactId, TenantId: tenantId } });
+                if (contact) {
+                    const accountService = require('../abm/account.service');
+                    await accountService.processActivity(
+                        tenantId,
+                        contactId,
+                        contact.AccountId,
+                        'event_attend',
+                        'Event'
+                    );
+                    console.log('[EventService] Fallback ABM signal processed successfully');
+                }
+            } catch (fallbackErr) {
+                console.error('[EventService] Fallback also failed', fallbackErr);
+            }
+        }
 
         return registration;
     } catch (e) {
@@ -110,9 +176,11 @@ const registerManual = async (eventId, contactData, tenantId) => {
         }
     });
 
+    const { ensureAccount } = require('../contacts/contact.service');
+
     if (!contact) {
         try {
-            contact = await Contact.create({
+            const data = {
                 firstName: contactData.firstName,
                 lastName: contactData.lastName,
                 email: contactData.email,
@@ -120,7 +188,15 @@ const registerManual = async (eventId, contactData, tenantId) => {
                 jobTitle: contactData.jobTitle,
                 status: 'Lead',
                 TenantId: tenantId
-            });
+            };
+
+            // Sync Account
+            if (data.company) {
+                const accountId = await ensureAccount(tenantId, data.company);
+                if (accountId) data.AccountId = accountId;
+            }
+
+            contact = await Contact.create(data);
         } catch (e) {
             // If race condition or unique constraint hits now, try finding again
             if (e.name === 'SequelizeUniqueConstraintError') {
@@ -135,10 +211,17 @@ const registerManual = async (eventId, contactData, tenantId) => {
     // So we should try to update the contact if the field is currently empty in DB but provided in form.
     if (contact) {
         const updates = {};
-        if (!contact.firstName && contactData.firstName) updates.firstName = contactData.firstName;
-        if (!contact.lastName && contactData.lastName) updates.lastName = contactData.lastName;
-        if (!contact.company && contactData.company) updates.company = contactData.company;
-        if (!contact.jobTitle && contactData.jobTitle) updates.jobTitle = contactData.jobTitle;
+        // Always update contact details if provided in the registration form
+        if (contactData.firstName) updates.firstName = contactData.firstName;
+        if (contactData.lastName) updates.lastName = contactData.lastName;
+        if (contactData.company) updates.company = contactData.company;
+        if (contactData.jobTitle) updates.jobTitle = contactData.jobTitle;
+
+        // Sync Account if company changed or set
+        if (updates.company && updates.company !== contact.company) {
+            const accountId = await ensureAccount(tenantId, updates.company);
+            if (accountId) updates.AccountId = accountId;
+        }
 
         if (Object.keys(updates).length > 0) {
             await contact.update(updates);
@@ -150,10 +233,14 @@ const registerManual = async (eventId, contactData, tenantId) => {
     return await registerContact(eventId, contact.id, tenantId, contactData);
 };
 
-const updateRegistrationStatus = async (eventId, registrationId, status, tenantId) => {
+const updateRegistrationStatus = async (eventId, registrationId, status, tenantId, options = {}) => {
     // Validate inputs
-    if (!['pending', 'registered', 'cancelled', 'declined'].includes(status.toLowerCase())) {
-        throw new Error('Invalid status');
+    const validStatuses = ['Pending', 'Registered', 'Confirmed', 'Cancelled', 'Declined', 'Attended', 'NoShow', 'Banned'];
+    // Allow case-insensitive check
+    const normalizedInput = status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
+
+    if (!validStatuses.includes(normalizedInput)) {
+        throw new Error(`Invalid status: ${status}`);
     }
 
     const registration = await Registration.findOne({
@@ -173,14 +260,66 @@ const updateRegistrationStatus = async (eventId, registrationId, status, tenantI
     }
 
     const oldStatus = registration.status;
-    const newStatus = status.charAt(0).toUpperCase() + status.slice(1).toLowerCase(); // Normalize
+    const newStatus = normalizedInput;
 
     // Update
-    await registration.update({ status: newStatus });
+    const updates = { status: normalizedInput };
+
+    // Enforce Lock: If currently Banned, ONLY allow transition if isUnban flag is present (and presumably status is being reset)
+    if (oldStatus === 'Banned' && !options.isUnban) {
+        throw new Error('This user is Banned. You must Unban them first via the approved workflow.');
+    }
+
+    // Handle Ban Reason
+    if (normalizedInput === 'Banned') {
+        if (options.banReason) {
+            updates.banReason = options.banReason;
+
+            // Create Audit Log
+            await BanLog.create({
+                action: 'Banned',
+                reason: options.banReason,
+                bannedByName: options.adminName || 'Unknown Admin',
+                bannedByEmail: options.adminEmail || 'Unknown Email',
+                userEmail: registration.Contact?.email || 'Unknown User',
+                RegistrationId: registration.id,
+                TenantId: tenantId
+            });
+
+        } else {
+            // Should we enforce it? User requirement: "he have to give valid reson before baning"
+            throw new Error('Ban reason is required');
+        }
+    }
+
+    // Handle Unban
+    if (options.isUnban) {
+        if (options.unbanReason) {
+            updates.banReason = null; // Clear ban reason
+
+            // Create Audit Log for Unban
+            await BanLog.create({
+                action: 'Unbanned',
+                reason: options.unbanReason,
+                bannedByName: options.adminName || 'Unknown Admin',
+                bannedByEmail: options.adminEmail || 'Unknown Email',
+                userEmail: registration.Contact?.email || 'Unknown User',
+                RegistrationId: registration.id,
+                TenantId: tenantId
+            });
+        } else {
+            throw new Error('Unban reason is required');
+        }
+    }
+    await registration.update(updates);
 
     // Handle Side Effects (Email)
-    // Send email ONLY if transitioning TO 'Registered' FROM something else
-    if (newStatus === 'Registered' && oldStatus !== 'Registered') {
+    // Send email if transitioning TO 'Confirmed' or 'Registered' from a non-approved state
+    // FIX: Allow Registered -> Confirmed to trigger email
+    const isUpgradeToConfirmed = newStatus === 'Confirmed' && oldStatus !== 'Confirmed';
+    const isInitialApproval = newStatus === 'Registered' && oldStatus !== 'Registered' && oldStatus !== 'Confirmed';
+
+    if (isUpgradeToConfirmed || isInitialApproval) {
         try {
             await emailService.sendRegistrationApprovedEmail(registration.Contact, registration.Event);
         } catch (emailErr) {
@@ -205,6 +344,18 @@ const updateRegistrationStatus = async (eventId, registrationId, status, tenantI
     }
 
     return registration;
+};
+
+module.exports = {
+    createEvent,
+    getEvents,
+    getEventById,
+    updateEvent,
+    registerContact,
+    getAllRegistrations,
+    getRegistrations,
+    registerManual,
+    updateRegistrationStatus
 };
 
 
