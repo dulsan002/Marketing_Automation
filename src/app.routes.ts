@@ -123,11 +123,12 @@ export const APP_ROUTES: Routes = [
 
   // Events Module
   {
-    path: 'events/dashboard',
+    path: 'events/analytics',
     component: EventsAnalyticsComponent,
     canActivate: [authGuard],
-    data: { title: 'Events Overview' }
+    data: { title: 'Events Analytics' }
   },
+  { path: 'events/dashboard', redirectTo: 'events/analytics', pathMatch: 'full' },
   {
     path: 'events/all',
     component: AllEventsComponent,

@@ -119,6 +119,19 @@ const updateRegistrationStatus = async (req, res) => {
     }
 };
 
+const getAnalytics = async (req, res) => {
+    try {
+        const tenantId = req.context.tenantId;
+        if (!tenantId) return res.status(401).json({ status: 'error', message: 'Tenant context missing' });
+
+        const stats = await eventService.getAnalytics(tenantId);
+        res.status(200).json({ status: 'success', data: stats });
+    } catch (error) {
+        console.error('ERROR in getAnalytics:', error);
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+};
+
 module.exports = {
     create,
     getAll,
@@ -127,5 +140,6 @@ module.exports = {
     register,
     getRegistrants,
     getAllRegistrants,
-    updateRegistrationStatus
+    updateRegistrationStatus,
+    getAnalytics
 };

@@ -359,6 +359,7 @@ export interface EventAnalytics {
   noShows: number;
   attendanceByEvent: {
     eventName: string;
+    startDate?: string;
     registrations: number;
     attendees: number;
   }[];

@@ -346,6 +346,64 @@ const updateRegistrationStatus = async (eventId, registrationId, status, tenantI
     return registration;
 };
 
+const getAnalytics = async (tenantId) => {
+    // 1. Total Events
+    const totalEvents = await Event.count({ where: { TenantId: tenantId } });
+
+    // 2. Total Stats from Registrations
+    const registrations = await Registration.findAll({
+        include: [{
+            model: Event,
+            where: { TenantId: tenantId },
+            attributes: ['name', 'startDate']
+        }]
+    });
+
+    const totalRegistrations = registrations.length;
+    const totalAttendees = registrations.filter(r => r.status === 'Attended' || r.status === 'Confirmed').length; // Treating Confirmed as likely attendees for now, or just Attended? User usually wants 'Confirmed' included in pipeline. Let's stick to strict 'Attended' for retro, but maybe 'Confirmed' + 'Attended' for forward looking? 
+    // Let's stick to strict status for "Analysis" usually implies past performance. 
+    // But for active events, "Confirmed" are attendees-to-be. 
+    // Let's count 'Attended' + 'CheckedIn' + 'Confirmed'. 
+    // Actually, let's just use 'Attended' and 'Confirmed' as success.
+
+    // Better: 
+    // totalAttendees = status IN ['Attended', 'Confirmed', 'CheckedIn']
+    const attendedCount = registrations.filter(r => ['Attended', 'Confirmed', 'CheckedIn'].includes(r.status)).length;
+
+    const noShows = registrations.filter(r => r.status === 'NoShow').length;
+
+    // 3. Attendance by Event (Limit to top 10 or recent?)
+    // Group by Event
+    const eventStats = {};
+    registrations.forEach(r => {
+        if (!r.Event) return;
+        const eName = r.Event.name;
+        if (!eventStats[eName]) {
+            eventStats[eName] = {
+                eventName: eName,
+                startDate: r.Event.startDate,
+                registrations: 0,
+                attendees: 0
+            };
+        }
+        eventStats[eName].registrations++;
+        if (['Attended', 'Confirmed', 'CheckedIn'].includes(r.status)) {
+            eventStats[eName].attendees++;
+        }
+    });
+
+    const attendanceByEvent = Object.values(eventStats);
+
+    return {
+        totalEvents,
+        totalRegistrations,
+        totalAttendees: attendedCount,
+        noShows,
+        attendanceByEvent
+    };
+};
+
+
 module.exports = {
     createEvent,
     getEvents,
@@ -355,7 +413,8 @@ module.exports = {
     getAllRegistrations,
     getRegistrations,
     registerManual,
-    updateRegistrationStatus
+    updateRegistrationStatus,
+    getAnalytics
 };
 
 

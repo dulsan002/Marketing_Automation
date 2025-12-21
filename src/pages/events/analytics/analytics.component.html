@@ -1,13 +1,33 @@
-<div class="space-y-8">
-  <div class="flex justify-end no-print">
-    <button onclick="window.print()" title="Print Report"
-      class="p-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 bg-white shadow-sm transition-colors">
-      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
-        </path>
-      </svg>
-    </button>
+<div class="space-y-6">
+  <!-- Header -->
+  <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 no-print">
+    <div>
+      <h1 class="text-2xl font-bold text-gray-900 tracking-tight">Events Analytics</h1>
+      <p class="text-sm text-gray-500 mt-1">Real-time performance metrics for all your events.</p>
+    </div>
+    <div class="flex items-center gap-3">
+      <!-- Date Range Picker (Mock) -->
+      <div
+        class="hidden sm:flex items-center space-x-2 bg-white border border-gray-300 rounded-lg px-3 py-2 text-sm text-gray-700 shadow-sm">
+        <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+        </svg>
+        <span>Last 30 Days</span>
+        <svg class="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+        </svg>
+      </div>
+
+      <button onclick="window.print()" title="Print Report"
+        class="flex items-center justify-center p-2 border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-50 bg-white shadow-sm transition-all focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z">
+          </path>
+        </svg>
+      </button>
+    </div>
   </div>
   @if (analytics(); as data) {
   <!-- KPIs -->
@@ -68,9 +88,23 @@
 
   <!-- Chart -->
   <div class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-    <h3 class="text-lg font-semibold text-gray-900">Attendance by Event</h3>
+    <div class="flex items-center justify-between mb-4">
+      <h3 class="text-lg font-semibold text-gray-900">Attendance by Event (Last 8)</h3>
+      <div class="flex items-center gap-4">
+        <label class="inline-flex items-center cursor-pointer">
+          <input type="checkbox" [checked]="showRegistrations()" (change)="toggleRegistrations()"
+            class="form-checkbox h-4 w-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+          <span class="ml-2 text-sm text-gray-600">Show Registrations</span>
+        </label>
+        <label class="inline-flex items-center cursor-pointer">
+          <input type="checkbox" [checked]="showAttendees()" (change)="toggleAttendees()"
+            class="form-checkbox h-4 w-4 text-green-600 rounded border-gray-300 focus:ring-green-500">
+          <span class="ml-2 text-sm text-gray-600">Show Attendees</span>
+        </label>
+      </div>
+    </div>
     <div class="h-96 mt-4">
-      <app-bar-chart [data]="chartData()"></app-bar-chart>
+      <app-bar-chart [data]="chartData()" [legend]="chartLegend()"></app-bar-chart>
     </div>
   </div>
   } @else {

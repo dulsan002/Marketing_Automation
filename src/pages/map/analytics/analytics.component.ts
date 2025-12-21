@@ -26,7 +26,7 @@ export class MapAnalyticsComponent {
   /** Signal holding data for the engagement trends line chart. */
   readonly engagementTrends = signal(MOCK_ENGAGEMENT_TRENDS);
   /** Signal holding data for the campaign performance bar chart. */
-  readonly campaignPerformance = signal(MOCK_CAMPAIGN_PERFORMANCE);
+  readonly campaignPerformance = signal<any[]>([]);
   /** Signal holding data for the lead conversion funnel chart. */
   readonly funnelData = signal(MOCK_CONVERSION_FUNNEL);
   /** The currently selected date range for filtering analytics. */
@@ -38,6 +38,24 @@ export class MapAnalyticsComponent {
     this.campaignService.getCampaigns().then(campaigns => {
       this.allCampaigns.set(campaigns);
     });
+
+    // Transform mock data for BarChart
+    const formattedCampaignData: any[] = [];
+    MOCK_CAMPAIGN_PERFORMANCE.forEach(c => {
+      formattedCampaignData.push({
+        group: c.name,
+        name: 'Open Rate',
+        value: c.openRate,
+        color: '#3b82f6'
+      });
+      formattedCampaignData.push({
+        group: c.name,
+        name: 'Click Rate',
+        value: c.clickRate,
+        color: '#8b5cf6'
+      });
+    });
+    this.campaignPerformance.set(formattedCampaignData);
   }
   /** A computed signal that derives the top 5 performing campaigns based on Click-Through Rate (CTR). */
   readonly topCampaigns = computed(() => {

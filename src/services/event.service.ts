@@ -321,7 +321,23 @@ export class EventService {
     }
   }
 
-  getAnalytics(): Promise<EventAnalytics> {
-    return this.simulate(() => deepClone(this.analytics()));
+  async getAnalytics(): Promise<EventAnalytics> {
+    try {
+      // Fetch real data from backend
+      const res = await firstValueFrom(this.http.get<{ status: string, data: EventAnalytics }>(`${this.apiUrl}/analytics`));
+      return res.data;
+    } catch (e) {
+      console.error('Failed to fetch analytics', e);
+      // Return empty structure or mock if offline for dev resilience?
+      // User asked for "real backend data", so let's stick to that.
+      // But to prevent UI crash if server is down (e.g. during restart), we can return empty.
+      return {
+        totalEvents: 0,
+        totalRegistrations: 0,
+        totalAttendees: 0,
+        noShows: 0,
+        attendanceByEvent: []
+      };
+    }
   }
 }
