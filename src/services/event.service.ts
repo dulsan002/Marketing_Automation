@@ -129,7 +129,7 @@ export class EventService {
       // Safety check for status
       const rawStatus = e.status || 'Published';
 
-      if (rawStatus === 'Completed') {
+      if (rawStatus === 'Completed' || rawStatus === 'Cancelled') {
         status = 'finished';
       } else if (rawStatus === 'Published') {
         const now = new Date();

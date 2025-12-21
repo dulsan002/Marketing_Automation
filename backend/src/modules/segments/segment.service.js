@@ -77,11 +77,24 @@ const deleteSegment = async (id, tenantId) => {
     return await segment.destroy();
 };
 
+const previewCount = async (ruleGroups, matchType, tenantId) => {
+    // Stateless calculation for preview
+    const whereClause = buildWhereClause(ruleGroups, matchType || 'AND');
+
+    const finalWhere = {
+        ...whereClause,
+        TenantId: tenantId
+    };
+
+    return await Contact.count({ where: finalWhere });
+};
+
 module.exports = {
     createSegment,
     getSegments,
     getSegmentById,
     updateSegment,
     deleteSegment,
-    calculateMembers
+    calculateMembers,
+    previewCount
 };

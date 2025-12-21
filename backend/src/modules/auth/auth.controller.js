@@ -13,7 +13,7 @@ const register = async (req, res) => {
             return res.status(409).json({ status: 'error', message: error.message });
         }
         console.error(error);
-        res.status(500).json({ status: 'error', message: 'Internal Server Error' });
+        res.status(500).json({ status: 'error', message: error.message, stack: error.stack });
     }
 };
 

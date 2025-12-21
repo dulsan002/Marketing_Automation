@@ -76,11 +76,30 @@ const calculate = async (req, res) => {
     }
 };
 
+const preview = async (req, res) => {
+    try {
+        const tenantId = req.context.tenantId;
+        if (!tenantId) return res.status(401).json({ status: 'error', message: 'Tenant context missing' });
+
+        const { ruleGroups, matchType } = req.body;
+
+        if (!Array.isArray(ruleGroups)) {
+            return res.status(400).json({ status: 'error', message: 'ruleGroups must be an array' });
+        }
+
+        const count = await segmentService.previewCount(ruleGroups, matchType, tenantId);
+        res.status(200).json({ status: 'success', data: { count } });
+    } catch (error) {
+        res.status(500).json({ status: 'error', message: error.message });
+    }
+};
+
 module.exports = {
     create,
     getAll,
     getOne,
     update,
     remove,
-    calculate
+    calculate,
+    preview
 };
