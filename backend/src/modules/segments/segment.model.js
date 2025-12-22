@@ -61,7 +61,7 @@ const Segment = sequelize.define('Segment', {
 });
 
 // Associations
-Segment.belongsTo(Tenant);
+Segment.belongsTo(Tenant, { foreignKey: { allowNull: false } });
 Tenant.hasMany(Segment);
 
 module.exports = Segment;

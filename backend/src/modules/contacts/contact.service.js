@@ -32,6 +32,8 @@ const ensureAccount = async (tenantId, companyName) => {
     return account.id;
 };
 
+const segmentService = require('../segments/segment.service');
+
 const createContact = async (data) => {
     // Sync Account
     if (data.company) {
@@ -43,6 +45,10 @@ const createContact = async (data) => {
 
     const contact = await Contact.create(data);
     eventBus.emit('contact.created', { tenantId: data.TenantId, contactId: contact.id });
+
+    // Trigger Segment Recalculation (Async, don't block response)
+    segmentService.recalculateAllSegments(data.TenantId).catch(err => console.error('Segment Recalc Error:', err));
+
     return contact;
 };
 
@@ -78,7 +84,13 @@ const updateContact = async (id, tenantId, updates) => {
         }
     }
 
-    return await contact.update(updates);
+    const updatedContact = await contact.update(updates);
+
+    // Trigger Segment Recalculation if relevant fields changed
+    // For simplicity, always trigger on update for now
+    segmentService.recalculateAllSegments(tenantId).catch(err => console.error('Segment Recalc Error:', err));
+
+    return updatedContact;
 };
 
 const deleteContact = async (id, tenantId) => {

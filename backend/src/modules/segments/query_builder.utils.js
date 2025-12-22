@@ -7,30 +7,33 @@ const { Op } = require('sequelize');
 const mapRuleToCondition = (rule) => {
     const { field, operator, value } = rule;
 
+    // Robustness: Trim strings
+    const safeValue = (typeof value === 'string') ? value.trim() : value;
+
     // Security: Whitelist allowed fields or check against model attributes?
     // For now, allow known contact fields. In production, validate against model schema.
 
     switch (operator) {
         case 'equals':
-            return { [field]: { [Op.eq]: value } };
+            return { [field]: { [Op.eq]: safeValue } };
         case 'not_equals':
-            return { [field]: { [Op.ne]: value } };
+            return { [field]: { [Op.ne]: safeValue } };
         case 'contains':
-            return { [field]: { [Op.like]: `%${value}%` } };
+            return { [field]: { [Op.like]: `%${safeValue}%` } };
         case 'not_contains':
-            return { [field]: { [Op.notLike]: `%${value}%` } };
+            return { [field]: { [Op.notLike]: `%${safeValue}%` } };
         case 'starts_with':
-            return { [field]: { [Op.startsWith]: value } };
+            return { [field]: { [Op.startsWith]: safeValue } };
         case 'ends_with':
-            return { [field]: { [Op.endsWith]: value } };
+            return { [field]: { [Op.endsWith]: safeValue } };
         case 'gt':
-            return { [field]: { [Op.gt]: value } };
+            return { [field]: { [Op.gt]: safeValue } };
         case 'lt':
-            return { [field]: { [Op.lt]: value } };
+            return { [field]: { [Op.lt]: safeValue } };
         case 'gte':
-            return { [field]: { [Op.gte]: value } };
+            return { [field]: { [Op.gte]: safeValue } };
         case 'lte':
-            return { [field]: { [Op.lte]: value } };
+            return { [field]: { [Op.lte]: safeValue } };
         case 'is_empty':
             return {
                 [Op.or]: [

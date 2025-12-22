@@ -64,7 +64,7 @@ const Event = sequelize.define('Event', {
     timestamps: true
 });
 
-Event.belongsTo(Tenant);
+Event.belongsTo(Tenant, { foreignKey: { allowNull: false } });
 Tenant.hasMany(Event);
 
 module.exports = Event;

@@ -1,6 +1,6 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../../config/database');
-const Tenant = require('../auth/tenant.model');
+const Tenant = require('../tenants/tenant.model');
 
 const Account = sequelize.define('Account', {
     id: {
@@ -55,6 +55,10 @@ const Account = sequelize.define('Account', {
     employees: {
         type: DataTypes.INTEGER,
         allowNull: true
+    },
+    TenantId: {
+        type: DataTypes.UUID,
+        allowNull: false
     }
 }, {
     timestamps: true

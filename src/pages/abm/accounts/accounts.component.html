@@ -12,7 +12,7 @@
           <path stroke-linecap="round" stroke-linejoin="round"
             d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
         </svg>
-        <input type="text" placeholder="Search accounts..."
+        <input type="text" placeholder="Search accounts..." (input)="onSearch($event)"
           class="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
       </div>
       <!-- Filters can be added here -->
@@ -71,7 +71,7 @@
           </tr>
           }
           } @else {
-          @for (account of accounts(); track account.id) {
+          @for (account of filteredAccounts(); track account.id) {
           <tr class="bg-white border-b hover:bg-gray-50 transition-colors">
             <td class="px-6 py-4">
               <div class="font-medium text-gray-900">{{ account.name }}</div>

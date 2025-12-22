@@ -1,4 +1,7 @@
 import {
+  withHttpTransferCache
+} from "./chunk-VUHERMUS.js";
+import {
   DomEventsPlugin,
   DomRendererFactory2,
   EVENT_MANAGER_PLUGINS,
@@ -6,9 +9,6 @@ import {
   EventManagerPlugin,
   SharedStylesHost
 } from "./chunk-BUAADZDA.js";
-import {
-  withHttpTransferCache
-} from "./chunk-VUHERMUS.js";
 import {
   CommonModule,
   PLATFORM_BROWSER_ID
@@ -1056,4 +1056,4 @@ export {
   provideClientHydration,
   VERSION
 };
-//# sourceMappingURL=chunk-2URLEY4D.js.map
+//# sourceMappingURL=chunk-XB6O7G4J.js.map

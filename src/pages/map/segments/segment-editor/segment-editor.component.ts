@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, signal, inject, computed } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, inject, computed, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ReactiveFormsModule, FormBuilder, FormArray, FormGroup } from '@angular/forms';
@@ -24,6 +24,7 @@ export class SegmentEditorComponent {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private segmentService = inject(SegmentService);
+  private cdr = inject(ChangeDetectorRef);
 
   /** The ID of the segment being edited, or null if creating a new one. */
   readonly segmentId = signal<string | null>(null);
@@ -32,10 +33,41 @@ export class SegmentEditorComponent {
   /** A computed signal that returns true if the component is in edit mode. */
   readonly isEditMode = computed(() => this.segmentId() !== null);
 
+  /** Centralized Field Mapping (Frontend Label <-> Backend Key) */
+  private readonly FIELD_MAP: Record<string, string> = {
+    'Email': 'email',
+    'First Name': 'firstName',
+    'Last Name': 'lastName',
+    'Company': 'company',
+    'Job Title': 'jobTitle',
+    'Country': 'country',
+    'Created Date': 'createdAt',
+    'Last Purchase Date': 'lastPurchaseDate',
+    'Total Spent': 'totalSpent',
+    'Order Count': 'orderCount',
+    'Email Opened': 'emailOpened'
+  };
+
   /** The list of available fields for creating segment rules. */
-  readonly fields = ['Email', 'First Name', 'Last Name', 'Company', 'Job Title', 'Country', 'Created Date', 'Last Purchase Date', 'Total Spent', 'Order Count', 'Email Opened'];
+  readonly fields = Object.keys(this.FIELD_MAP);
+
+  /** Centralized Operator Mapping (Frontend Label <-> Backend Key) */
+  private readonly OPERATOR_MAP: Record<string, string> = {
+    'equals': 'equals',
+    'does not equal': 'not_equals',
+    'contains': 'contains',
+    'does not contain': 'not_contains',
+    'starts with': 'starts_with',
+    'ends with': 'ends_with',
+    'is greater than': 'gt',
+    'is less than': 'lt',
+    'is set': 'is_not_empty',
+    'is not set': 'is_empty',
+    'in the last': 'in_the_last' // TODO: Backend support
+  };
+
   /** The list of available operators for creating segment rules. */
-  readonly operators = ['equals', 'does not equal', 'contains', 'does not contain', 'starts with', 'ends with', 'is greater than', 'is less than', 'is set', 'is not set', 'in the last'];
+  readonly operators = Object.keys(this.OPERATOR_MAP);
 
   /** The main reactive form for the segment editor. */
   segmentForm = this.fb.group({
@@ -53,6 +85,7 @@ export class SegmentEditorComponent {
         const segment = await this.segmentService.getSegment(id);
         if (segment) {
           this.patchForm(segment);
+          this.cdr.markForCheck(); // Ensure UI updates after async load
         }
       }
     });
@@ -72,6 +105,7 @@ export class SegmentEditorComponent {
     segment.ruleGroups.forEach(group => {
       this.ruleGroups.push(this.createRuleGroup(group));
     });
+    this.cdr.markForCheck();
   }
 
   /** A getter for easy access to the `ruleGroups` FormArray. */
@@ -99,8 +133,8 @@ export class SegmentEditorComponent {
    */
   createRule(rule?: { field: string, operator: string, value: string }): FormGroup {
     return this.fb.group({
-      field: [rule?.field || this.fields[0]],
-      operator: [rule?.operator || this.operators[0]],
+      field: [rule ? this.mapBackendFieldToFrontend(rule.field) : this.fields[0]],
+      operator: [rule ? this.mapBackendOperatorToFrontend(rule.operator) : this.operators[0]],
       value: [rule?.value || '']
     });
   }
@@ -108,6 +142,7 @@ export class SegmentEditorComponent {
   /** Adds a new, empty rule group to the form. */
   addRuleGroup() {
     this.ruleGroups.push(this.createRuleGroup());
+    this.cdr.markForCheck();
   }
 
   /**
@@ -116,6 +151,7 @@ export class SegmentEditorComponent {
    */
   removeRuleGroup(index: number) {
     this.ruleGroups.removeAt(index);
+    this.cdr.markForCheck();
   }
 
   /**
@@ -133,6 +169,7 @@ export class SegmentEditorComponent {
    */
   addRule(groupIndex: number) {
     this.rules(groupIndex).push(this.createRule());
+    this.cdr.markForCheck();
   }
 
   /**
@@ -142,11 +179,63 @@ export class SegmentEditorComponent {
    */
   removeRule(groupIndex: number, ruleIndex: number) {
     this.rules(groupIndex).removeAt(ruleIndex);
+    this.cdr.markForCheck();
   }
 
   /** Navigates back to the main segments list page. */
   cancel() {
     this.router.navigate(['/map/prospect-segments']);
+  }
+
+  /**
+   * Calculates the estimated size of the segment based on current rules.
+   */
+  async calculateSize() {
+    const formValue = this.segmentForm.value;
+    const mappedGroups = (formValue.ruleGroups as any[]).map(group => ({
+      condition: group.condition,
+      rules: group.rules.map((r: any) => ({
+        field: this.mapFrontendFieldToBackend(r.field),
+        operator: this.mapFrontendOperatorToBackend(r.operator),
+        value: r.value
+      }))
+    }));
+
+    // Call service
+    const { count, samples } = await this.segmentService.previewSegment(mappedGroups);
+
+    this.estimatedSize.set(count);
+
+    // Transform backend sample to frontend SampleContact
+    const mappedSamples = samples.map((s: any) => ({
+      name: `${s.firstName} ${s.lastName}`,
+      email: s.email,
+      avatarInitial: (s.firstName || 'C').charAt(0).toUpperCase()
+    }));
+    this.sampleMatches.set(mappedSamples);
+    this.cdr.markForCheck();
+  }
+
+  readonly estimatedSize = signal(0);
+
+  // -- Helpers --
+
+  private mapFrontendFieldToBackend(frontendField: string): string {
+    return this.FIELD_MAP[frontendField] || frontendField;
+  }
+
+  private mapBackendFieldToFrontend(backendField: string): string {
+    // Reverse lookup
+    return Object.keys(this.FIELD_MAP).find(key => this.FIELD_MAP[key] === backendField) || backendField;
+  }
+
+  private mapFrontendOperatorToBackend(frontendOp: string): string {
+    return this.OPERATOR_MAP[frontendOp] || 'equals';
+  }
+
+  private mapBackendOperatorToFrontend(backendOp: string): string {
+    // Reverse lookup
+    return Object.keys(this.OPERATOR_MAP).find(key => this.OPERATOR_MAP[key] === backendOp) || 'equals';
   }
 
   /**
@@ -157,13 +246,39 @@ export class SegmentEditorComponent {
     const formValue = this.segmentForm.value;
     const rulesCount = formValue.ruleGroups?.reduce((acc, group) => acc + (group.rules?.length || 0), 0) || 0;
 
+    // We need to map the rules here too before saving, OR ensure backend handles the mapping.
+    // The current backend implementation expects { field, operator, value } directly from the DB schema JSON structure.
+    // Ideally, we save the "UI state" intact or we convert on save.
+    // If we convert on save, when we load back, we must convert back.
+    // For simplicity now, let's assume we save the RAW UI state (field='First Name') and backend ONLY uses it for evaluation.
+    // BUT backend evaluator `query_builder` creates SQL columns. It needs column names.
+    // So we MUST map to backend column names ('firstName') for the evaluator to work.
+    // Recommendation: Map on Save. When Loading, Map back? Or just store backend format.
+    // Let's store Backend Format in the DB.
+
+    // Map existing form groups to backend format
+    const backendRuleGroups = (formValue.ruleGroups as any[]).map(group => ({
+      condition: group.condition,
+      rules: group.rules.map((r: any) => ({
+        field: this.mapFrontendFieldToBackend(r.field),
+        operator: this.mapFrontendOperatorToBackend(r.operator),
+        value: r.value
+      }))
+    }));
+
     const segmentData: Partial<ProspectSegment> = {
       id: this.segmentId() || undefined,
       name: formValue.segmentName || 'Untitled Segment',
       description: formValue.description || '',
       rulesCount: rulesCount,
-      ruleGroups: formValue.ruleGroups as any,
+      ruleGroups: backendRuleGroups, // Store usable format
     };
+
+    // Basic Validation: Ensure Name
+    if (!segmentData.name?.trim()) {
+      alert('Please enter a segment name.');
+      return;
+    }
 
     this.segmentService.saveSegment(segmentData).then(() => {
       this.router.navigate(['/map/prospect-segments']);

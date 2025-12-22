@@ -66,7 +66,7 @@
             <div
               class="origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10">
               <div class="py-1">
-                <a [routerLink]="['/map/prospect-segments', segment.id]"
+                <a [routerLink]="['/map/prospect-segments/edit', segment.id]"
                   class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Edit</a>
                 <button (click)="deleteSegment(segment.id)"
                   class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">Delete</button>
@@ -88,7 +88,7 @@
       <div class="mt-6 border-t border-gray-100 pt-4 flex justify-between items-end">
         <div>
           <p class="text-3xl font-bold text-gray-900 tracking-tight">{{ segment.members | number }}</p>
-          <p class="text-xs text-gray-500">Updated {{ segment.updated }}</p>
+          <p class="text-xs text-gray-500">Updated {{ segment.updated | date:'short' }}</p>
         </div>
         <div class="flex items-center text-sm font-semibold" [class]="getChangeClass(segment.memberChange)">
           @if (segment.memberChange > 0) {

@@ -2,7 +2,7 @@ const userRepository = require('./user.repository');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('./user.model');
-const Tenant = require('./tenant.model');
+const Tenant = require('../tenants/tenant.model');
 const { sequelize } = require('../../config/database');
 const { comparePassword, verifyRefreshToken, generateAccessToken, generateRefreshToken } = require('./auth.utils');
 
@@ -81,14 +81,13 @@ const register = async (tenantName, email, password) => {
 };
 
 const login = async (tenantSlug, email, password) => {
+    console.log(`[AUTH] Login Attempt: slug='${tenantSlug}', email='${email}'`);
+
     // 1. Find Tenant
     const tenant = await Tenant.findOne({ where: { slug: tenantSlug } });
     if (!tenant) {
-        throw new Error('Invalid credentials'); // Security: Don't leak tenant existence? Or be explicit? user req says "Explicit errors".
-        // Actually, user req says "Errors must be: Explicit... Examples: Suspended tenant".
-        // But for "Tenant not found", "Invalid credentials" is safer against enumeration. 
-        // I will stick to "Invalid credentials" or "Invalid Tenant" if explicitly asked. 
-        // Let's use "Invalid credentials" for initial lookup failure.
+        console.error(`[AUTH] Tenant not found: '${tenantSlug}'`);
+        throw new Error(`Invalid credentials (Tenant '${tenantSlug}' not found)`);
     }
 
     if (tenant.status !== 'ACTIVE') {
@@ -101,7 +100,8 @@ const login = async (tenantSlug, email, password) => {
     });
 
     if (!user) {
-        throw new Error('Invalid credentials');
+        console.error(`[AUTH] User not found: '${email}' in tenant '${tenantSlug}'`);
+        throw new Error(`Invalid credentials (User '${email}' not found)`);
     }
 
     if (user.status !== 'active') {
@@ -111,7 +111,8 @@ const login = async (tenantSlug, email, password) => {
     // 3. Verify Password
     const isMatch = await comparePassword(password, user.password);
     if (!isMatch) {
-        throw new Error('Invalid credentials');
+        console.error(`[AUTH] Password mismatch for user '${email}'`);
+        throw new Error('Invalid credentials (Password mismatch)');
     }
 
     // 4. Generate Tokens

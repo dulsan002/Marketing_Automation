@@ -32,6 +32,20 @@ export class SegmentService {
     }
   }
 
+  async previewSegment(ruleGroups: any[]): Promise<{ count: number, samples: any[] }> {
+    try {
+      const response = await firstValueFrom(this.http.post<{ status: string, data: { count: number, samples: any[] } }>(`${this.apiUrl}/preview`, {
+        ruleGroups,
+        matchType: 'AND' // Default to AND for now, or allow passing it
+      }));
+      return response.data;
+    } catch (e) {
+      console.error('API Preview Error', e);
+      // Fallback
+      return { count: 0, samples: [] };
+    }
+  }
+
   async saveSegment(segmentToSave: Partial<ProspectSegment>): Promise<void> {
     const payload = { ...segmentToSave };
 

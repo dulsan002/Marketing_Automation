@@ -28,6 +28,16 @@ const startServer = async () => {
         // Start Consumers
         startAbmConsumer();
 
+        // Start Consumers
+        startAbmConsumer();
+
+        // Start Global Segment Recalculation (Every 5 seconds)
+        // This handles external DB updates ("database_new") that bypass API hooks.
+        const segmentService = require('./modules/segments/segment.service');
+        setInterval(() => {
+            segmentService.recalculateEverything();
+        }, 5000);
+
         // Disabled to fix DB Lock/Timeout issues during debugging
         // startConsumer();
         // startScheduler();

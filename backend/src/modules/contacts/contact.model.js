@@ -1,6 +1,7 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../../config/database');
-const Tenant = require('../auth/tenant.model');
+const Tenant = require('../tenants/tenant.model');
+const Account = require('../abm/account.model');
 
 const Contact = sequelize.define('Contact', {
     id: {
@@ -65,13 +66,11 @@ const Contact = sequelize.define('Contact', {
     ]
 });
 
-const Account = require('../abm/account.model');
-
-// Association
-Contact.belongsTo(Tenant);
+// Explicit FK Definition for Constraints
+Contact.belongsTo(Tenant, { foreignKey: { allowNull: false } });
 Tenant.hasMany(Contact);
 
-Contact.belongsTo(Account);
+Contact.belongsTo(Account, { foreignKey: { allowNull: true } }); // Changed to allow contacts without ABM accounts
 Account.hasMany(Contact);
 
 module.exports = Contact;

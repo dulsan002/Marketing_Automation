@@ -13,26 +13,39 @@ import { AddAccountModalComponent } from './add-account-modal.component';
 })
 export class AccountsComponent {
   private accountService = inject(AccountService);
-  
+
   readonly accounts = signal<Account[]>([]);
   readonly isLoading = signal(true);
   readonly isModalOpen = signal(false);
+  readonly searchTerm = signal('');
+
+  readonly filteredAccounts = computed(() => {
+    const term = this.searchTerm().toLowerCase();
+    return this.accounts().filter(account =>
+      account.name.toLowerCase().includes(term) ||
+      account.industry.toLowerCase().includes(term)
+    );
+  });
 
   constructor() {
     this.loadAccounts();
   }
-  
+
   async loadAccounts() {
     this.isLoading.set(true);
     const data = await this.accountService.getAccounts();
     this.accounts.set(data);
     this.isLoading.set(false);
   }
-  
+
   async handleSaveAccount(accountData: Omit<Account, 'id' | 'score' | 'intent'>) {
     await this.accountService.addAccount(accountData);
     this.isModalOpen.set(false);
     this.loadAccounts();
+  }
+
+  onSearch(event: Event): void {
+    this.searchTerm.set((event.target as HTMLInputElement).value);
   }
 
   getTierClass(tier: 'T1' | 'T2' | 'T3'): string {

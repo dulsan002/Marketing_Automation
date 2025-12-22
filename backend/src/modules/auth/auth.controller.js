@@ -26,7 +26,7 @@ const login = async (req, res) => {
         const result = await authService.login(tenantSlug, email, password);
         res.status(200).json({ status: 'success', data: result });
     } catch (error) {
-        if (error.message === 'Invalid credentials' || error.message === 'Tenant is suspended' || error.message === 'User account is disabled') {
+        if (error.message.includes('Invalid credentials') || error.message.includes('Tenant is suspended') || error.message.includes('User account is disabled')) {
             return res.status(401).json({ status: 'error', message: error.message });
         }
         console.error('LOGIN ERROR:', error);

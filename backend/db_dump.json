@@ -1,0 +1,158 @@
+{
+  "tenants": [
+    {
+      "id": "1907313c-5600-4cc9-aa6a-e55322524445",
+      "name": "Test Tenant",
+      "slug": null,
+      "domain": "test.com",
+      "status": "ACTIVE",
+      "subscriptionPlan": "free",
+      "createdAt": "2025-12-22T04:40:23.142Z",
+      "updatedAt": "2025-12-22T04:40:23.142Z",
+      "deletedAt": null
+    },
+    {
+      "id": "647a6ed8-7698-4978-a6c5-c74aa9b35a3d",
+      "name": "TestTenant1766380897320",
+      "slug": "testtenant1766380897320",
+      "domain": null,
+      "status": "ACTIVE",
+      "subscriptionPlan": "free",
+      "createdAt": "2025-12-22T05:21:37.352Z",
+      "updatedAt": "2025-12-22T05:21:37.352Z",
+      "deletedAt": null
+    }
+  ],
+  "users": [
+    {
+      "id": "6ea83b53-5498-468b-b03d-fe0aa37a5e9e",
+      "tenantId": "8da838a0-e73f-4226-98da-c4c901e7041f",
+      "email": "admin@demo-corp.com",
+      "password": "$2b$10$eVIeEEe9tvicB1hnRjI0feFBaeSjwDRe8avq2oPTSd8eNqRQD7Cse",
+      "role": "ADMIN",
+      "status": "active",
+      "lastLoginAt": null,
+      "refreshToken": null,
+      "createdAt": "2025-12-20T11:02:06.450Z",
+      "updatedAt": "2025-12-20T11:02:06.450Z",
+      "deletedAt": null
+    },
+    {
+      "id": "3dbff39a-4c29-4685-9faf-1bed835f8577",
+      "tenantId": "cfd2ce39-36a5-449e-a659-0ce23721b681",
+      "email": "debug_analytics_1766307593218@test.com",
+      "password": "$2b$10$ZEKL3qm1LhQEwlzeG6mYQuDFAEbIZFgnPxiU8lWbPxC60dX8UfK1a",
+      "role": "ADMIN",
+      "status": "active",
+      "lastLoginAt": null,
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzZGJmZjM5YS00YzI5LTQ2ODUtOWZhZi0xYmVkODM1Zjg1NzciLCJqdGkiOiJkNTU1ZWE3Ny1jYmVmLTQ2ZWEtODkxZi1lNTVmNWJhNDcyOWEiLCJpYXQiOjE3NjYzMDc1OTMsImV4cCI6MTc2NjkxMjM5M30.s7Hi5tPlSg-ArbYbIwZ5C243JUGbmjIyNyyBTmhrgsA",
+      "createdAt": "2025-12-21T08:59:53.431Z",
+      "updatedAt": "2025-12-21T08:59:53.452Z",
+      "deletedAt": null
+    },
+    {
+      "id": "341d21a1-1f27-4f6c-91d3-85abe17d4876",
+      "tenantId": "42ce5ddc-d8c4-425a-af4a-d75544d1d14f",
+      "email": "admin-1766312540832-77@example.com",
+      "password": "$2b$10$OUtb6g89RktdwChdlW9G1eveHkDN7ujEy.feS5uOjK8fM3rKiGdje",
+      "role": "ADMIN",
+      "status": "active",
+      "lastLoginAt": null,
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIzNDFkMjFhMS0xZjI3LTRmNmMtOTFkMy04NWFiZTE3ZDQ4NzYiLCJqdGkiOiI0Mjg3NmY0OS1hZDc1LTQzMjQtYjE0Zi05YmQzMDJkOGFhY2MiLCJpYXQiOjE3NjYzMTI1NDEsImV4cCI6MTc2NjkxNzM0MX0.ShntnwodTMtI7ePigNYcFe2BQJ_gvanadrKJjlKZl-w",
+      "createdAt": "2025-12-21T10:22:21.317Z",
+      "updatedAt": "2025-12-21T10:22:21.343Z",
+      "deletedAt": null
+    },
+    {
+      "id": "e37d9ecc-17ff-45dc-9e4f-a9b88dff2d8f",
+      "tenantId": "d6b10ded-6297-410d-9e97-23422d29993d",
+      "email": "admin-1766312657438-355@example.com",
+      "password": "$2b$10$iJ3W96R6FlDAFGfyz096kO.OX3vmmOnN.IPDsLh24zBG3Od42cuDq",
+      "role": "ADMIN",
+      "status": "active",
+      "lastLoginAt": null,
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlMzdkOWVjYy0xN2ZmLTQ1ZGMtOWU0Zi1hOWI4OGRmZjJkOGYiLCJqdGkiOiI4MjExNmY2Ni0zYTkyLTQ5MWItODkzZi0xNWVjYmVkNWJkODgiLCJpYXQiOjE3NjYzMTI2NTcsImV4cCI6MTc2NjkxNzQ1N30.QPB_n9-SbUp2DPGQ_QrQmMpMKlmIhOLyaRmmde5mx1U",
+      "createdAt": "2025-12-21T10:24:17.580Z",
+      "updatedAt": "2025-12-21T10:24:17.587Z",
+      "deletedAt": null
+    },
+    {
+      "id": "c804e4dd-8944-4078-9215-848d5dc3ff7c",
+      "tenantId": "f283b0f4-5365-4e99-bd75-0fac40012ca2",
+      "email": "admin-1766312722138-725@example.com",
+      "password": "$2b$10$MSYxfmVPmRkGK7qTpW4TbumfXgkY7OHudkM3/EUiOa.0UERsFHuwK",
+      "role": "ADMIN",
+      "status": "active",
+      "lastLoginAt": null,
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjODA0ZTRkZC04OTQ0LTQwNzgtOTIxNS04NDhkNWRjM2ZmN2MiLCJqdGkiOiJkMjc2OGM4Ni1kYjM3LTRkYTktOWY1NC0zOWIwODhiODE1NzQiLCJpYXQiOjE3NjYzMTI3MjIsImV4cCI6MTc2NjkxNzUyMn0.bCBDjBMRqIcdHOuqU5ZVacFqpmlQicFv4v4o_YrRAX0",
+      "createdAt": "2025-12-21T10:25:22.284Z",
+      "updatedAt": "2025-12-21T10:25:22.290Z",
+      "deletedAt": null
+    },
+    {
+      "id": "c15740e5-750a-4219-858a-328998a0b237",
+      "tenantId": "9d638d50-f690-4176-8aa6-516901706547",
+      "email": "ev-admin-1766312782982-112@example.com",
+      "password": "$2b$10$pJWLVhPeWJwvwUrCjIN0ieZrJDSxtsQ73ioQcPclA.Ci8g/ITLr1q",
+      "role": "ADMIN",
+      "status": "active",
+      "lastLoginAt": null,
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjMTU3NDBlNS03NTBhLTQyMTktODU4YS0zMjg5OThhMGIyMzciLCJqdGkiOiJiNzhiYWZlNC1mMjFlLTQ4OGMtYTYyMy1lNjM0MWJiOTViODkiLCJpYXQiOjE3NjYzMTI3ODMsImV4cCI6MTc2NjkxNzU4M30.uW29TS3J3q8JX3GS77wJibkk9nToAKOw7WTPLxoNNz8",
+      "createdAt": "2025-12-21T10:26:23.114Z",
+      "updatedAt": "2025-12-21T10:26:23.121Z",
+      "deletedAt": null
+    },
+    {
+      "id": "91c322a7-d22b-46de-a379-c7c967973e19",
+      "tenantId": "f0214440-9983-4a88-917f-b37f7e5255dd",
+      "email": "ev-admin-1766312866601-73@example.com",
+      "password": "$2b$10$69kFQiDaOE/CHH/xqbtPqebDTU68DJIhqwsNDf4Y//RpGGnLcBRMW",
+      "role": "ADMIN",
+      "status": "active",
+      "lastLoginAt": null,
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI5MWMzMjJhNy1kMjJiLTQ2ZGUtYTM3OS1jN2M5Njc5NzNlMTkiLCJqdGkiOiI3YzY5NDY1YS04ODE4LTQxNTgtYTJhNC1jMDg5NWY2ZDMyNDgiLCJpYXQiOjE3NjYzMTI4NjYsImV4cCI6MTc2NjkxNzY2Nn0.0TcIjZk5NPTzjxwExeArjDu83_eaeZSx4JXZHTbDsI0",
+      "createdAt": "2025-12-21T10:27:46.769Z",
+      "updatedAt": "2025-12-21T10:27:46.784Z",
+      "deletedAt": null
+    },
+    {
+      "id": "d56fa0ab-8268-4512-b7d2-0636b2409c06",
+      "tenantId": "4b7c76c7-c01b-4cb6-b37a-5869d0f52b6b",
+      "email": "ev-admin-1766312971982-994@example.com",
+      "password": "$2b$10$IbF0o11IUCBlKXI3YDtbxu3WO8nwpOT4XWJXlBDgDRNAjt79VcIfO",
+      "role": "ADMIN",
+      "status": "active",
+      "lastLoginAt": null,
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkNTZmYTBhYi04MjY4LTQ1MTItYjdkMi0wNjM2YjI0MDljMDYiLCJqdGkiOiJkMjcxM2MxMC02NThhLTQwZTUtYmNjMi1lYjA0MDQ3ODI5NDMiLCJpYXQiOjE3NjYzMTI5NzIsImV4cCI6MTc2NjkxNzc3Mn0.M2KxDsP3aoT21eRCSVPAeQpeFC239yFq8zubYsA0yJI",
+      "createdAt": "2025-12-21T10:29:32.109Z",
+      "updatedAt": "2025-12-21T10:29:32.120Z",
+      "deletedAt": null
+    },
+    {
+      "id": "203e64f9-f0d9-4dcb-a68c-ebf177d353e9",
+      "tenantId": "9eaebf21-1aa2-4d42-96f5-830ca62fe5ac",
+      "email": "ev-admin-1766313024170-312@example.com",
+      "password": "$2b$10$E4qM5xPMsXV4vbSOXlJsket7D3QA5HekZUfSIbMNKNZfPO8V4duby",
+      "role": "ADMIN",
+      "status": "active",
+      "lastLoginAt": null,
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIyMDNlNjRmOS1mMGQ5LTRkY2ItYTY4Yy1lYmYxNzdkMzUzZTkiLCJqdGkiOiI3MWZjMmRjYi1kMDM1LTQ5MzUtOTg0MS0xNDkwMzZmYWJkMjAiLCJpYXQiOjE3NjYzMTMwMjQsImV4cCI6MTc2NjkxNzgyNH0.u8zaKELPylts03tPUjIO4UZdqr0eJGk4b7HmC2-gxpo",
+      "createdAt": "2025-12-21T10:30:24.325Z",
+      "updatedAt": "2025-12-21T10:30:24.335Z",
+      "deletedAt": null
+    },
+    {
+      "id": "f8baafb9-6194-4662-a079-51b125139b6b",
+      "tenantId": "647a6ed8-7698-4978-a6c5-c74aa9b35a3d",
+      "email": "test1766380897320@example.com",
+      "password": "$2b$10$GFHmciSdKLTUe9ky1hhmhOqTRWRFfW.i9EdAjyXuLrwtojQqBTGQ.",
+      "role": "ADMIN",
+      "status": "active",
+      "lastLoginAt": null,
+      "refreshToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmOGJhYWZiOS02MTk0LTQ2NjItYTA3OS01MWIxMjUxMzliNmIiLCJqdGkiOiJiYTRjOTI0NC03YThhLTRiNTItYjQwMC02NTYyNThiODU1YzAiLCJpYXQiOjE3NjYzODA4OTcsImV4cCI6MTc2Njk4NTY5N30.PfzmkaZ_XuFzKf5J1cV2nkFqDy3FfnX3oAJOC_kIyUA",
+      "createdAt": "2025-12-22T05:21:37.598Z",
+      "updatedAt": "2025-12-22T05:21:37.652Z",
+      "deletedAt": null
+    }
+  ]
+}

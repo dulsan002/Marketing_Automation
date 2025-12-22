@@ -24,7 +24,7 @@ const Registration = sequelize.define('Registration', {
     // Snapshot Attributes
     firstName: { type: DataTypes.STRING, allowNull: true },
     lastName: { type: DataTypes.STRING, allowNull: true },
-    email: { type: DataTypes.STRING, allowNull: true },
+    email: { type: DataTypes.STRING, allowNull: false },
     company: { type: DataTypes.STRING, allowNull: true },
     jobTitle: { type: DataTypes.STRING, allowNull: true }
 }, {

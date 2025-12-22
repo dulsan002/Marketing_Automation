@@ -77,7 +77,7 @@ const deleteSegment = async (id, tenantId) => {
     return await segment.destroy();
 };
 
-const previewCount = async (ruleGroups, matchType, tenantId) => {
+const previewData = async (ruleGroups, matchType, tenantId) => {
     // Stateless calculation for preview
     const whereClause = buildWhereClause(ruleGroups, matchType || 'AND');
 
@@ -86,7 +86,53 @@ const previewCount = async (ruleGroups, matchType, tenantId) => {
         TenantId: tenantId
     };
 
-    return await Contact.count({ where: finalWhere });
+    // Parallel fetch
+    const [count, samples] = await Promise.all([
+        Contact.count({ where: finalWhere }),
+        Contact.findAll({
+            where: finalWhere,
+            limit: 5,
+            attributes: ['id', 'firstName', 'lastName', 'email', 'company'] // minimal fields
+        })
+    ]);
+
+    return { count, samples };
+};
+
+const recalculateAllSegments = async (tenantId) => {
+    // Find all dynamic segments for this tenant
+    const segments = await Segment.findAll({
+        where: { TenantId: tenantId, type: 'Dynamic' }
+    });
+
+    // Recalculate each
+    // Optimization: In a real system, we might queue this or check which segments are affected.
+    // For now, simple loop is fine.
+    for (const segment of segments) {
+        await calculateMembers(segment.id, tenantId);
+    }
+};
+const recalculateEverything = async () => {
+    try {
+        // 1. Find ALL dynamic segments (across all tenants)
+        const segments = await Segment.findAll({
+            where: { type: 'Dynamic' }
+        });
+
+        if (segments.length === 0) return;
+
+        console.log(`[Auto-Recalc] Updating ${segments.length} segments...`);
+
+        // 2. Update each
+        for (const segment of segments) {
+            // We need the tenantId to scope the Contact query correctly
+            if (segment.TenantId) {
+                await calculateMembers(segment.id, segment.TenantId);
+            }
+        }
+    } catch (err) {
+        console.error('[Auto-Recalc] Failed:', err.message);
+    }
 };
 
 module.exports = {
@@ -96,5 +142,7 @@ module.exports = {
     updateSegment,
     deleteSegment,
     calculateMembers,
-    previewCount
+    previewData,
+    recalculateAllSegments,
+    recalculateEverything
 };

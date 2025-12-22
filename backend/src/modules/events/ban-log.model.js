@@ -26,7 +26,7 @@ const BanLog = sequelize.define('BanLog', {
     },
     userEmail: {
         type: DataTypes.STRING,
-        allowNull: true
+        allowNull: false
     },
     TenantId: { // Explicitly defining for clarity, though associations handle it usually
         type: DataTypes.UUID,

@@ -100,7 +100,11 @@ export class LoginComponent {
       const response = await firstValueFrom(
         this.http.post<{ status: string, data: { accessToken: string, user: User } }>(
           'http://localhost:3001/api/auth/login',
-          { tenantSlug: this.tenantSlug, email: this.email, password: this.password }
+          {
+            tenantSlug: this.tenantSlug.trim(),
+            email: this.email.trim(),
+            password: this.password
+          }
         )
       );
 

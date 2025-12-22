@@ -281,7 +281,7 @@ const addCommitteeMember = async (accountId, tenantId, memberData) => {
 
     await contact.update({
         AccountId: accountId,
-        title: title || contact.title,
+        jobTitle: title || contact.jobTitle,
         tags: tags
     });
 
@@ -319,7 +319,7 @@ const removeCommitteeMember = async (accountId, tenantId, memberId) => {
     // Actually, tags might contain other things. Let's just unlink.
     await contact.update({
         AccountId: null,
-        title: contact.title // No change to title
+        jobTitle: contact.jobTitle // No change to title
         // tags: [] // unsafe to clear all tags
     });
 
@@ -402,7 +402,7 @@ module.exports = {
     addCommitteeMember,
     updateCommitteeMember,
     removeCommitteeMember,
-    removeCommitteeMember,
+
     updateAccountIntentScore,
     updateAccountIntentData,
     getAbmAnalytics

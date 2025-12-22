@@ -31,6 +31,10 @@ const Campaign = sequelize.define('Campaign', {
     segmentId: {
         type: DataTypes.UUID,
         allowNull: true
+    },
+    createdBy: {
+        type: DataTypes.UUID,
+        allowNull: true // Optional for now until Auth is fully strict
     }
 }, {
     timestamps: true,

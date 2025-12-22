@@ -2,11 +2,11 @@ import { ChangeDetectionStrategy, Component, signal, computed, inject, DestroyRe
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MOCK_SEGMENTS } from '../../../data/mock-data';
 import { WysiwygEditorComponent } from '../../../components/wysiwyg-editor/wysiwyg-editor.component';
+import { SegmentService } from '../../../services/segment.service';
+import { ProspectSegment, Campaign } from '../../../types';
 import { CampaignService } from '../../../services/campaign.service';
 import { AiService } from '../../../services/ai.service';
-import { Campaign } from '../../../types';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 type CampaignType = 'Email' | 'SMS' | 'Social Post' | 'In-app' | 'Offline';
@@ -14,6 +14,7 @@ type ScheduleType = 'immediate' | 'later';
 
 @Component({
   selector: 'app-new-campaign',
+  standalone: true,
   imports: [CommonModule, ReactiveFormsModule, WysiwygEditorComponent],
   templateUrl: './new-campaign.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -23,12 +24,13 @@ export class NewCampaignComponent {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
   private campaignService = inject(CampaignService);
+  private segmentService = inject(SegmentService);
   private aiService = inject(AiService);
   private destroyRef = inject(DestroyRef);
 
   readonly isGeneratingSubject = signal(false);
   readonly aiSubjectSuggestions = signal<string[]>([]);
-  readonly prospectSegments = signal(MOCK_SEGMENTS);
+  readonly prospectSegments = signal<ProspectSegment[]>([]);
 
   readonly currentStep = signal(1);
 
@@ -102,6 +104,8 @@ export class NewCampaignComponent {
   readonly progress = computed(() => ((this.currentStep() - 1) / (this.steps.length - 1)) * 100);
 
   constructor() {
+    this.loadSegments();
+
     this.detailsForm.statusChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.detailsFormValid.set(this.detailsForm.valid));
     this.contentForm.statusChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.contentFormValid.set(this.contentForm.valid));
     this.smsContentForm.statusChanges.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(() => this.smsContentFormValid.set(this.smsContentForm.valid));
@@ -121,6 +125,15 @@ export class NewCampaignComponent {
         }
       }
     });
+  }
+
+  async loadSegments() {
+    try {
+      const segments = await this.segmentService.getSegments();
+      this.prospectSegments.set(segments);
+    } catch (e) {
+      console.error('Failed to load segments', e);
+    }
   }
 
   private patchForm(campaign: Campaign) {

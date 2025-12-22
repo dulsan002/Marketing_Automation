@@ -6,7 +6,7 @@ import { authGuard } from './services/auth.guard';
 import { CampaignsComponent } from './pages/map/campaigns/campaigns.component';
 import { NewCampaignComponent } from './pages/map/new-campaign/new-campaign.component';
 import { ProspectSegmentsComponent } from './pages/map/segments/segments.component';
-import { NewSegmentComponent } from './pages/map/segments/new-segment/new-segment.component';
+import { SegmentEditorComponent } from './pages/map/segments/segment-editor/segment-editor.component';
 import { WorkflowsComponent } from './pages/map/workflows/workflows.component';
 import { WorkflowBuilderComponent } from './pages/map/workflows/workflow-builder/workflow-builder.component';
 import { MapAnalyticsComponent } from './pages/map/analytics/analytics.component';
@@ -71,9 +71,15 @@ export const APP_ROUTES: Routes = [
   },
   {
     path: 'map/prospect-segments/new',
-    component: NewSegmentComponent,
+    component: SegmentEditorComponent,
     canActivate: [authGuard],
     data: { title: 'New Segment' }
+  },
+  {
+    path: 'map/prospect-segments/edit/:id',
+    component: SegmentEditorComponent,
+    canActivate: [authGuard],
+    data: { title: 'Edit Segment' }
   },
   {
     path: 'map/workflows',

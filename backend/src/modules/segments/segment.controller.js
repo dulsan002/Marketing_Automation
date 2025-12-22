@@ -87,8 +87,8 @@ const preview = async (req, res) => {
             return res.status(400).json({ status: 'error', message: 'ruleGroups must be an array' });
         }
 
-        const count = await segmentService.previewCount(ruleGroups, matchType, tenantId);
-        res.status(200).json({ status: 'success', data: { count } });
+        const { count, samples } = await segmentService.previewData(ruleGroups, matchType, tenantId);
+        res.status(200).json({ status: 'success', data: { count, samples } });
     } catch (error) {
         res.status(500).json({ status: 'error', message: error.message });
     }

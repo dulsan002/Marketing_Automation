@@ -1,8 +1,10 @@
-import { ChangeDetectionStrategy, Component, signal, computed, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, signal, computed, inject, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { ProspectSegment } from '../../../types';
 import { SegmentService } from '../../../services/segment.service';
+import { Subscription, timer } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 /**
  * Manages the display and interaction of the main prospect segments list.
@@ -15,8 +17,11 @@ import { SegmentService } from '../../../services/segment.service';
   templateUrl: './segments.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ProspectSegmentsComponent {
+export class ProspectSegmentsComponent implements OnInit, OnDestroy {
   private segmentService = inject(SegmentService);
+  private cdr = inject(ChangeDetectorRef);
+
+  private pollSubscription: Subscription | null = null;
 
   /** A signal holding the list of all prospect segments. */
   readonly segments = signal<ProspectSegment[]>([]);
@@ -28,11 +33,23 @@ export class ProspectSegmentsComponent {
   readonly activeDropdown = signal<string | null>(null);
 
   constructor() {
-    this.loadData();
+    // Initial load happens in ngOnInit via polling
   }
 
-  private loadData() {
-    this.segmentService.getSegments().then(data => this.segments.set(data));
+  ngOnInit() {
+    // Poll every 5 seconds to keep segment counts in sync
+    this.pollSubscription = timer(0, 5000).pipe(
+      switchMap(() => this.segmentService.getSegments())
+    ).subscribe(data => {
+      this.segments.set(data);
+      this.cdr.markForCheck(); // Ensure UI updates even with OnPush
+    });
+  }
+
+  ngOnDestroy() {
+    if (this.pollSubscription) {
+      this.pollSubscription.unsubscribe();
+    }
   }
 
   /** A computed signal that returns a filtered list of segments based on the current search term and type filter. */
@@ -77,7 +94,9 @@ export class ProspectSegmentsComponent {
    */
   async deleteSegment(segmentId: string): Promise<void> {
     await this.segmentService.deleteSegment(segmentId);
-    this.loadData(); // Reload
+    // Reload manually or let polling catch it
+    const data = await this.segmentService.getSegments();
+    this.segments.set(data);
     this.activeDropdown.set(null);
   }
 

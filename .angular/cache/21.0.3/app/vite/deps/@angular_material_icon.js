@@ -1,16 +1,16 @@
 import {
-  DomSanitizer
-} from "./chunk-2URLEY4D.js";
-import "./chunk-BUAADZDA.js";
-import {
-  HttpClient
-} from "./chunk-VUHERMUS.js";
-import {
   trustedHTMLFromString
 } from "./chunk-UQBCUGD5.js";
 import {
   BidiModule
 } from "./chunk-WR3A3MLZ.js";
+import {
+  DomSanitizer
+} from "./chunk-XB6O7G4J.js";
+import {
+  HttpClient
+} from "./chunk-VUHERMUS.js";
+import "./chunk-BUAADZDA.js";
 import "./chunk-2BKG3EYL.js";
 import "./chunk-3WG6FAFV.js";
 import {

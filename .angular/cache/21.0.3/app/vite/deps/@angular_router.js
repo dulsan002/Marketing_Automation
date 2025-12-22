@@ -1,8 +1,8 @@
 import {
   Title
-} from "./chunk-2URLEY4D.js";
-import "./chunk-BUAADZDA.js";
+} from "./chunk-XB6O7G4J.js";
 import "./chunk-VUHERMUS.js";
+import "./chunk-BUAADZDA.js";
 import {
   HashLocationStrategy,
   Location,
